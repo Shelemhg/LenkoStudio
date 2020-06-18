@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styleT.css" />
+    <link rel="icon" type="image/png" href="media/logo.png" />
+    <title>Lenko Studio</title>
+</head>
+<body>
+    <div class="outer-wrapper">
+        <div class="wrapper">
+            <!-- ___________________________________  S E C T I O N  1   ____________________________________-->
+            <section class="section-1 section">
+                <div class="section-wrapper section-1-wrapper">
+                    <div class="section-1-heading-wrapper">
+                        <h1 class="section-1-heading">
+                            Lenko Studio</h1>
+                    </div>
+                </div>
+            </section>
+            <!-- _________________________________________  H O M E   ____________________________________-->
+            <section class="section-2 section">
+                <div class="section-wrapper section-2-wrapper">
+                    <div class="texture"></div>
+                    <video
+                        loop
+                        muted
+                        autoplay
+                        preload="auto"
+                    >
+                        <source 
+                            src="media/oceanvideo.mp4" 
+                            type="video/mp4">
+                    </video>
+                    <div class="home-options-wrapper">
+                        <h2 class="hom">
+                            Projects</h2>
+                        <h2 class="hom">
+                            Weddings</h2>
+                        <h2 class="hom">
+                            Portraits</h2>
+                    </div>
+                </div>
+            </section>
+            <!-- ___________________________________  S E C T I O N  3  ____________________________________-->
+            <section class="section-3 section">
+                <div class="autum-wrapper">
+                    <img 
+                        src="media/autum.jpg" 
+                        alt="Autum" 
+                        class="autum-img">
+                </div>
+                <div class="introduction-wrapper">
+                    <h2 class="section-3-heading">Lenko Studio</h2>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script type="text/javascript">
+        $(window).scroll(function() {
+            var scroll = $(window).scrollTop(),
+                dh = $(document).height(),
+                wh = $(window).height();
+                value = (scroll /(dh-wh)) *100;
+            $('.wrapper').css('left', - value *3 + '%')    
+        })
+    </script>
+</body>
+</html>

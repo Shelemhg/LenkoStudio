@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200;0,300;0,400;0,700;0,900;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,700;0,900;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&display=swap');
+
+
+* {
+    margin: 0;
+    padding: 0;
+}
+html, body {
+    height: 100vh;
+    overflow: hidden;
+  }
+
+
+.outer-wrapper {
+    scroll-snap-type: mandatory;
+    scroll-snap-points-y: repeat(3rem);
+    scroll-snap-type: y mandatory;
+}
+.section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+}
+
+.wrapper {
+    overflow: scroll;
+    height: 100vh;
+  }
+
+section{
+    width: 100%;
+    height: 100vh;
+    position: relative;
+
+    
+  height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/*_________________________________   S E C T I O N   1    ___________________________*/
+.section-1-wrapper{
+    background: #000;
+    background-size: cover;
+    width: 100vw;
+    height:100vh;
+}
+.section-1-heading-wrapper{
+    position: absolute;
+    top: 50%;
+    left: 50%;/*move the element halfway across the container as well, with 'left: 50%', and at the same time move it leftwards by half its own width in the 'translate' transformation*/
+    transform: translate(-50%, -50%);
+}
+.section-1-heading {
+    font-size: 2rem;
+    font-weight: 100;
+    color: #fff;
+    letter-spacing: 0.1rem;
+    text-align: right;
+    user-select: none;
+    font-family: "Roboto", sans-serif;
+}
+/*_______________________________________   H O M E    ___________________________*/
+.section-2-wrapper {
+    width: 100vw;
+    height:100vh;
+}
+.section-2-wrapper video{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    object-fit: cover;
+}
+.section-2-wrapper .texture{
+    z-index: 95;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: url('media/texture.png');
+}
+.home-options-wrapper{
+    z-index: 100;
+    position: relative;
+    text-align: center;
+    top: 50%;
+    transform: translate(0, -50%);
+    color: #fff;
+    letter-spacing: 0.3rem;
+    font-size: 1.5rem;
+}
+.home-options-wrapper h2{
+    padding:.7rem;
+    font-weight: 300;
+    font-family: "Roboto", serif;
+}
+/*_________________________________   S E C T I O N   3    ___________________________*/
+.section-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-row: 1fr 1fr 1fr;
+}
+.autum-wrapper {
+    grid-column: 0 / 1;
+    grid-row: 0 / 2;
+}
+.autum-wrapper img {
+    height: 100vh;
+}
+.introduction-wrapper {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    padding:.7rem;
+    font-weight: 400;
+    font-size: 1.5rem;
+    font-family: "Roboto", serif;
+    top: 0;
+    display: inline;
+}
