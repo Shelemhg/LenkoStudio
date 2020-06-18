@@ -43,7 +43,7 @@ h2 {
     scrollbar-width: none;
     -ms-overflow-style: none;
 
-    scroll-snap-type: mandatory;
+   scroll-snap-type: mandatory; /*  +++++++++  SNAP STUFF ++++++++++ */
     scroll-snap-points-y: repeat(3rem);
     scroll-snap-type: y mandatory;
 }
