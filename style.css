@@ -2,92 +2,104 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,700;0,900;1,400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&display=swap');
 
-
-* {
+*{
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    text-decoration: none;
+    
+    
 }
-html, body {
+h2 {
+    font-family: "Roboto", Arial, sans-ser;
+}
+.slide {
+    width: 100vw;
     height: 100vh;
-    overflow: hidden;
-  }
-
-
-.outer-wrapper {
-    scroll-snap-type: mandatory;
-    scroll-snap-points-y: repeat(3rem);
-    scroll-snap-type: y mandatory;
-}
-.section {
+    
     scroll-snap-align: start;
     scroll-snap-stop: always;
 }
 
 .wrapper {
-    overflow: scroll;
-    height: 100vh;
-  }
-
-section{
-    width: 100%;
-    height: 100vh;
-    position: relative;
-
+    display: flex; 
+    flex-direction: row;
+    width: 400vw;
+    transform: rotate(90deg) translateY(-100vh);
+    transform-origin: top left;
     
-  height: 100vh;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+    
 }
 
-/*_________________________________   S E C T I O N   1    ___________________________*/
-.section-1-wrapper{
+.outer-wrapper {
+    width: 100vh;
+    height: 100vw;
+    transform: rotate(-90deg) translateX(-100vh);
+    transform-origin: top left;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    position: absolute;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    scroll-snap-type: mandatory;
+    scroll-snap-points-y: repeat(3rem);
+    scroll-snap-type: y mandatory;
+}
+
+.section-1 {
     background: #000;
     background-size: cover;
     width: 100vw;
     height:100vh;
 }
 .section-1-heading-wrapper{
-    position: absolute;
-    top: 50%;
-    left: 50%;/*move the element halfway across the container as well, with 'left: 50%', and at the same time move it leftwards by half its own width in the 'translate' transformation*/
-    transform: translate(-50%, -50%);
+    /* position: absolute; */
+    text-align: center;
+    padding: 50vh;
+    color: #fff;
 }
 .section-1-heading {
-    font-size: 2rem;
-    font-weight: 100;
-    color: #fff;
-    letter-spacing: 0.1rem;
-    text-align: right;
-    user-select: none;
-    font-family: "Roboto", sans-serif;
+    font-family: Roboto;
+    font-size: 2em;
+    font-weight: 300;
+    letter-spacing:.1em;
 }
 /*_______________________________________   H O M E    ___________________________*/
-.section-2-wrapper {
+
+.section-2 {
+    /* background: green; */
     width: 100vw;
     height:100vh;
 }
 .section-2-wrapper video{
-    width: 100%;
-    height: 100%;
+    z-index: -1;
+    width: 100vw;
+    height: 100vh;
     position: absolute;
     object-fit: cover;
+    
 }
 .section-2-wrapper .texture{
-    z-index: 95;
-    width: 100%;
-    height: 100%;
+    /* z-index: 95; */
+    width: 100vw;
+    height: 100vh;
     position: absolute;
     background: url('media/texture.png');
 }
 .home-options-wrapper{
-    z-index: 100;
-    position: relative;
+    /* z-index: 100; */
+    /* position: relative; */
     text-align: center;
-    top: 50%;
+    text-justify: center;
+    /* top: 50%; */
     transform: translate(0, -50%);
     color: #fff;
     letter-spacing: 0.3rem;
     font-size: 1.5rem;
+    padding-top:50%;
+    text-shadow: 0 0 5px #fff, 0 0 7px #fff, 0 0 13px #000, 0 0 25px #000;
 }
 .home-options-wrapper h2{
     padding:.7rem;
@@ -98,22 +110,174 @@ section{
 .section-3 {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-row: 1fr 1fr 1fr;
 }
 .autum-wrapper {
-    grid-column: 0 / 1;
-    grid-row: 0 / 2;
+    margin: auto;
 }
-.autum-wrapper img {
-    height: 100vh;
+.autum-img {
+    height:100vh;
 }
 .introduction-wrapper {
-    grid-column: 1 / 2;
-    grid-row: 1 / 2;
-    padding:.7rem;
-    font-weight: 400;
+    transform: translate(40%, 30%);
+    width: 27vw;
+}
+.introduction-wrapper h2{
+    font-size:2rem;
+    padding: 2rem;
+    font-weight: 500;
+}
+.introduction-wrapper .introduction {
+    font-family: "Crimson Pro", serif;
     font-size: 1.5rem;
-    font-family: "Roboto", serif;
-    top: 0;
-    display: inline;
+    line-height: 2rem;
+    text-align: justify;
+}
+.introduction-wrapper .question {
+    font-family: "Crimson Pro", serif;
+    font-weight: bold;
+    font-size: 1.8rem;
+    padding-top: 2rem;
+ }
+/*____________________________________________  B U T T O N S ______________________________________ */
+.buttons {
+    width: 50vw;
+    margin-left: -40%;
+    margin-top: 20%;
+    display: flex;
+    justify-content: space-evenly;
+}
+.weddings-btn {
+    background:#D0253C;
+    color:#fff;
+    border:none;
+    position:relative;
+    height:60px;
+    font-size:1.6em;
+    padding:0 2em;
+    cursor:pointer;
+    transition:800ms ease all;
+    outline:none;
+  }
+  .weddings-btn:hover{
+    background:#fff;
+    color:#D0253C;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  }
+  .weddings-btn:before,.weddings-btn:after{
+    content:'';
+    position:absolute;
+    top:0;
+    right:0;
+    height:2px;
+    width:0;
+    background: #D0253C;
+    transition:400ms ease all;
+  }
+  .weddings-btn:after{
+    right:inherit;
+    top:inherit;
+    left:0;
+    bottom:0;
+  }
+  .weddings-btn:hover:before,.weddings-btn:hover:after{
+    width:100%;
+    transition:800ms ease all;
+  }
+  .weddings-btn:active{
+    background:#D0253C;
+    color:#fff;
+  }
+  
+/* _________________________   PORTRAITS BUTTON  __________________________ */
+
+.portraits-btn {
+    background:#2f2a50;
+    color:#fff;
+    border:none;
+    position:relative;
+    height:60px;
+    font-size:1.6em;
+    padding:0 2em;
+    cursor:pointer;
+    transition:800ms ease all;
+    outline:none;
+  }
+  .portraits-btn:hover{
+    background:#fff;
+    color:#2f2a50;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  }
+  .portraits-btn:before,.portraits-btn:after{
+    content:'';
+    position:absolute;
+    top:0;
+    right:0;
+    height:2px;
+    width:0;
+    background: #2f2a50;
+    transition:400ms ease all;
+  }
+  .portraits-btn:after{
+    right:inherit;
+    top:inherit;
+    left:0;
+    bottom:0;
+  }
+  .portraits-btn:hover:before,.portraits-btn:hover:after{
+    width:100%;
+    transition:800ms ease all;
+  }
+  .portraits-btn:active{
+    background:#2f2a50;
+    color:#fff;
+  }
+/* _________________________   PROJECTS BUTTON  __________________________ */
+.projects-btn {
+    background:#f4572A;
+    color:#fff;
+    border:none;
+    position:relative;
+    height:60px;
+    font-size:1.6em;
+    padding:0 2em;
+    cursor:pointer;
+    transition:800ms ease all;
+    outline:none;
+  }
+  .projects-btn:hover{
+    background:#fff;
+    color:#f4572A;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  }
+  .projects-btn:before,.projects-btn:after{
+    content:'';
+    position:absolute;
+    top:0;
+    right:0;
+    height:2px;
+    width:0;
+    background: #f4572A;
+    transition:400ms ease all;
+  }
+  .projects-btn:after{
+    right:inherit;
+    top:inherit;
+    left:0;
+    bottom:0;
+  }
+  .projects-btn:hover:before,.projects-btn:hover:after{
+    width:100%;
+    transition:800ms ease all;
+  }
+  .projects-btn:active{
+    background:#f4572A;
+    color:#fff;
+  }
+
+
+
+
+
+::-webkit-scrollbar {
+    display: none;
 }
