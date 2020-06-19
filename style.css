@@ -81,31 +81,50 @@ h2 {
     object-fit: cover;
     
 }
-.section-2-wrapper .texture{
+.texture{
     /* z-index: 95; */
     width: 100vw;
     height: 100vh;
     position: absolute;
     background: url('media/texture.png');
 }
-.home-options-wrapper{
-    /* z-index: 100; */
-    /* position: relative; */
-    text-align: center;
-    text-justify: center;
-    /* top: 50%; */
-    transform: translate(0, -50%);
-    color: #fff;
-    letter-spacing: 0.3rem;
-    font-size: 1.5rem;
-    padding-top:50%;
-    text-shadow: 0 0 5px #fff, 0 0 7px #fff, 0 0 13px #000, 0 0 25px #000;
+.home-options-wrapper {
+    position: absolute;
 }
-.home-options-wrapper h2{
-    padding:.7rem;
+.home-btns-wrapper {
+    
+    /* position: relative;  +++++++ After a bizilion years, one container inside another, behold, the perfect centerization */
+    padding-top: 100vh;
+    padding-left:100vw;
+    transform: translate(-50%, -50%);
+    
+}
+.home-btn {
+    margin: auto;
+
+    color: #fff;
+    
+    cursor:pointer;
+    letter-spacing: 0.3rem;
+    font-size: 2rem;
     font-weight: 300;
     font-family: "Roboto", serif;
+    
+    padding: 1rem;
+    display:flex;
+    width: 100vw;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    text-shadow: 0 0 5px #fff, 0 0 7px #fff, 0 0 13px #000, 0 0 25px #000;
 }
+
+.home-btn:hover {
+    background: rgb(0, 0, 0, .4);
+    transition: 1000ms;
+}
+
+
 /*_________________________________   S E C T I O N   3    ___________________________*/
 .section-3 {
     display: grid;
