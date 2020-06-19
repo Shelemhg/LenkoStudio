@@ -8,12 +8,14 @@
     box-sizing: border-box;
     outline: none;
     text-decoration: none;
-    
-    
 }
 h2 {
     font-family: "Roboto", Arial, sans-ser;
 }
+
+
+
+
 .slide {
     width: 100vw;
     height: 100vh;
@@ -21,6 +23,7 @@ h2 {
     scroll-snap-align: start;
     scroll-snap-stop: always;
 }
+
 
 .wrapper {
     display: flex; 
@@ -48,6 +51,26 @@ h2 {
     scroll-snap-type: y mandatory;
 }
 
+.mute-btn {
+    margin:2rem;
+    width: 2rem;
+    height: 2rem;
+    
+
+    z-index: 100;/* +++++++++++++ Remember that Z-INDEX only works after position: relative or absolute*/
+    position: relative;
+
+    border: none;
+    background: url("media/mute.png") no-repeat;
+    background-size: 2rem auto;/* to specify dimensions explicitly */
+    cursor:pointer;
+    opacity: .5;
+}
+
+.mute-btn:hover {
+    opacity: 1;
+}
+
 .section-1 {
     background: #000;
     background-size: cover;
@@ -55,10 +78,12 @@ h2 {
     height:100vh;
 }
 .section-1-heading-wrapper{
-    /* position: absolute; */
+    position: absolute;
     text-align: center;
-    padding: 50vh;
     color: #fff;
+    padding-top: 100vh;
+    padding-left:100vw;
+    transform: translate(-50%, -60%);
 }
 .section-1-heading {
     font-family: Roboto;
@@ -117,11 +142,12 @@ h2 {
     background: transparent;
     border: none;
     text-shadow: 0 0 5px #fff, 0 0 7px #fff, 0 0 13px #000, 0 0 25px #000;
+    transition: 1000ms;
 }
 
 .home-btn:hover {
     background: rgb(0, 0, 0, .4);
-    transition: 1000ms;
+    
 }
 
 

@@ -6,12 +6,55 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" type="image/png" href="media/logo.png" />
     <title>Lenko Studio</title>
+    <style>
+        
+    </style>
+    
 </head>
+
+
+<!-- autoplay -->
+
 <body>
+
+
+
+    <audio
+        id="myVideo" 
+        autoplay
+        loop>
+        <source src="media/audio.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        var vid = document.getElementById("myVideo");
+        
+        function Mute() { 
+              if(vid.muted == true){
+                vid.muted = false;
+            }else{
+                vid.muted = true;
+            }
+        } 
+        </script> 
+
+
     <div class="outer-wrapper">
         <div class="wrapper">
-                <!-- ___________________________________  S E C T I O N  1   ____________________________________-->
+            <!-- ___________________________________  S E C T I O N  1   ____________________________________-->
             <section class="section-1 slide">
+
+
+<!-- _____________________  M U T E    B U T T O N   ____________-->
+                <div class="mute-wrapper">
+                    <button
+                        class="mute-btn"
+                        onclick="Mute()">
+                    </button>
+                </div>
+
+
+                
                 <div class="section-wrapper section-1-wrapper">
                     <div class="section-1-heading-wrapper">
                         <h1 class="section-1-heading">
