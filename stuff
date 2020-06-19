@@ -1,61 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css" />
-    <link rel="icon" type="image/png" href="media/logo.png" />
-    <title>Lenko Studio</title>
-        
-</head>
-    <body>
-
-
-
-        <audio
-            id="mySong" 
-            autoplay
-            loop>
-            <source src="media/audio.mp3" type="audio/mpeg">
-                Audio not supported by device.
-        </audio>
-
-        <script>
-            var song = document.getElementById("mySong");
-            
-            function Mute() { 
-                if(song.paused == true){
-                    song.play();
-                }else{
-                    song.pause();
-                }
-            } 
-            </script> 
-
-
-        <div class="outer-wrapper">
-            <div class="wrapper">
-                <!-- ___________________________________  S E C T I O N  1   ____________________________________-->
-                <section class="section-1 slide">
-
-
-                    <!-- _____________________  M U T E    B U T T O N   ____________-->
-                    <div class="mute-wrapper">
-                        <button
-                            class="mute-btn"
-                            onclick="Mute()">
-                        </button>
-                    </div>
-
-
-                    
-                    <div class="section-wrapper section-1-wrapper">
-                        <div class="section-1-heading-wrapper">
-                            <h1 class="section-1-heading">
-                                Lenko Studio</h1>
-                        </div>
-                    </div>
-                </section>
                 <!-- _________________________________________  H O M E   ____________________________________-->
                 <section class="section-2 slide">
                     <div class="texture"></div>
@@ -152,15 +94,3 @@
                     </div>
                     
                 </section>
-                
-                
-            </div>
-        </div>
-
-
-    </body>
-</html>
-
-
-
-
