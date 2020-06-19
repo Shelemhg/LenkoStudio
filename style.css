@@ -2,12 +2,89 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,700;0,900;1,400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&display=swap');
 
+/* _________________________ Mobile SITE CONFIGURATION _____________________________________________ */
+
+*{
+margin: 0;
+padding: 0;
+/* box-sizing: border-box; */
+outline: none;
+text-decoration: none;
+}
+
+
+.mute-btn {
+  margin:1rem;
+  width: 2rem;
+  height: 2rem;
+  
+
+  z-index: 100;/* +++++++++++++ Remember that Z-INDEX only works after position: relative or absolute*/
+  position: relative;
+
+  border: none;
+  background: url("media/mute.png") no-repeat;
+  background-size: 2rem;/* to specify dimensions explicitly */
+  cursor:pointer;
+  opacity: .5;
+}
+
+.section-1 {
+  background: #000;
+  width:100vw;
+  height:100vh;
+  box-sizing: border-box;
+
+  /* background-size: cover;
+  width: 100vw;
+  height:100vh;
+
+  position: relative;
+  z-index: 0; */
+}
+.section-1-wrapper {
+  background:blue;
+  background-size: cover;
+  width: 100px;
+  height:100px;
+
+}
+.section-1-heading-wrapper{
+  position: absolute;
+  text-align: center;
+  color: #fff;
+background: red;
+
+
+  /* padding-top: 100vh;
+  padding-left:100vw;
+  transform: translate(-55%, -65%); */
+}
+.section-1-heading {
+  font-family: Roboto;
+  font-size: 1.3em;
+  font-weight: 300;
+  letter-spacing:.1em;
+}
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+/* _________________________ DESKTOP SITE CONFIGURATION _____________________________________________ */
 @media  (min-width: 1000px) {
+
+
   *{
     margin: 0;
     padding: 0;
@@ -50,7 +127,7 @@ h2 {
     scrollbar-width: none;
     -ms-overflow-style: none;
 
-   scroll-snap-type: mandatory; /*  +++++++++  SNAP STUFF ++++++++++ */
+    scroll-snap-type: mandatory; /*  +++++++++  SNAP STUFF ++++++++++ */
     scroll-snap-points-y: repeat(3rem);
     scroll-snap-type: y mandatory;
 }
