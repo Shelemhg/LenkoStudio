@@ -153,7 +153,6 @@
     display: grid;
     grid-template-columns: 1fr ;
     grid-row: 1fr 1fr;
-    background: blue;
   
     /* ++++++++++++++++ DUDE, DUUUUDE, this is what makes alignment fly */
     /* display: flex; */
@@ -164,6 +163,10 @@
 
   max-width: 800px;
   margin: 5vh auto;
+  }
+  .text-wrapper h2 {
+    margin-top: 1rem;
+    margin-left: 3rem;
   }
   .text-wrapper p {
     margin-top: 1rem;
@@ -179,16 +182,10 @@
     justify-content: center;
   }
 
-
-  .autum-wrapper {
-    
-    background: red;
-  }
   .autum-wrapper img{
     width: 100vw;
   }
   .buttons-options {
-    background: green;
     margin-top: 2rem;
     display: flex;
     justify-content: space-evenly;
