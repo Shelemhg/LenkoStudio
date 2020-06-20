@@ -166,7 +166,8 @@
   }
   #img-click {
     width: 100px;
-    height: 100px
+    height: 100px;
+    opacity: 0;
   }
 
   /*_________________________________   S E C T I O N   3   MOBILE  ___________________________*/
@@ -494,7 +495,7 @@ h2 {
 }
 #img-click {
   width: 100px;
-  height: 100px
+  height: 100px;
   
 }
 
