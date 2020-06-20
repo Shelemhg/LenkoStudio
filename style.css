@@ -500,35 +500,31 @@ h2 {
     /* display: flex; */
   }
 
-.introduction-wrapper {
-  background: blue;
-  margin-top: 50vh;
-  
-  transform: translate(0%, -50%);
-  
-  
-}
-
-.text-wrapper {
-
-  max-width: 800px;
-  margin: 10vh auto;
-  
-  background: green;
-}
-.introduction {
-  background: red;
-}
+  .introduction-wrapper {
+    margin-top: 50vh;
+    transform: translate(0%, -50%);
+  }
+  .text-wrapper {
+    max-width: 800px;
+    margin: 10vh auto;
+  }
+  .introduction {
+  }
+  .buttons-options {
+    margin: 3rem;
+    display: flex;/*         THIS PLUS   JUSTIFY CONTENT !!!*/
+    justify-content: space-evenly; 
+  }
 
  .autum-wrapper {
     width: 50vw;
     height: 100vh;
-}
+  }
 
 
-.autum-img {
-    height:100vh;
-}
+  .autum-img {
+      height:100vh;
+  }
 
 /*
 .introduction-wrapper {
