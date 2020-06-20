@@ -26,7 +26,7 @@
     
     scroll-snap-align: start;/*  +++++++++  SNAP  MOBILE  STUFF ++++++++++ */
     scroll-snap-stop: always;
-}
+  }
 
 
 
@@ -107,54 +107,214 @@
     height: 100vh;
     position: absolute;
     background: url('media/texture.png');
-}
+  }
 
-.home-options-wrapper {
-  position: absolute;
-}
-.home-btns-wrapper {
+  .home-options-wrapper {
+    position: absolute;
+  }
+  .home-btns-wrapper {
+      
+    /* position: relative;  +++++++ After a bizilion years, one container inside another, behold, the perfect centerization */
+    padding-top: 100vh;
+    padding-left:100vw;
+    transform: translate(-50%, -50%);
     
-  /* position: relative;  +++++++ After a bizilion years, one container inside another, behold, the perfect centerization */
-  padding-top: 100vh;
-  padding-left:100vw;
-  transform: translate(-50%, -50%);
+  }
+
+  .home-btn {
+    margin: auto;
+
+    color: #fff;
+    
+    cursor:pointer;
+    letter-spacing: 0.3rem;
+    font-size: 2rem;
+    font-weight: 300;
+    font-family: "Roboto", serif;
+    
+    padding: 1rem;
+    display:flex;
+    width: 100vw;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    text-shadow: 0 0 5px #fff, 0 0 7px #fff, 0 0 13px #000, 0 0 25px #000;
+    transition: 1000ms;
+  }
+
+  .home-btn:hover {
+    background: rgb(0, 0, 0, .4);
+    
+  }
+
+
+  /*_________________________________   S E C T I O N   3   MOBILE  ___________________________*/
+  .section-3 {
+    display: grid;
+    grid-template-columns: 1fr ;
+    grid-row: 1fr 1fr;
+    
   
-}
+    /* ++++++++++++++++ DUDE, DUUUUDE, this is what makes alignment fly */
+    /* display: flex; */
+  }
 
-.home-btn {
-  margin: auto;
-
-  color: #fff;
   
-  cursor:pointer;
-  letter-spacing: 0.3rem;
-  font-size: 2rem;
-  font-weight: 300;
-  font-family: "Roboto", serif;
-  
-  padding: 1rem;
-  display:flex;
-  width: 100vw;
-  justify-content: center;
-  background: transparent;
-  border: none;
-  text-shadow: 0 0 5px #fff, 0 0 7px #fff, 0 0 13px #000, 0 0 25px #000;
-  transition: 1000ms;
-}
+.text-wrapper {
 
-.home-btn:hover {
-  background: rgb(0, 0, 0, .4);
-  
-}
+  max-width: 800px;
+  margin: 10vh auto;
+  }
+
+
+
+  .autum-wrapper img{
+    width: 100vw;
+  }
 
 
 
 
 
 
+  /*____________________________________________  B U T T O N S  MOBILE ______________________________________ */
+  /* .buttons {
+      width: 50vw;
+      margin-left: -40%;
+      margin-top: 20%;
+      display: flex;
+      justify-content: space-evenly;
+  } */
+  .button {
+    color:#fff;
+    border:none;
+    position:relative;
+    height:60px;
+    font-size:1.3em;
+    padding:0 2em;
+    cursor:pointer;
+    transition:800ms ease all;
+    outline:none;
+  }
+  .weddings-btn {
+    background:#D0253C;
+    
+  }
+  .weddings-btn:hover{
+    background:#fff;
+    color:#D0253C;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  }
+  .weddings-btn:before,.weddings-btn:after{
+    content:'';
+    position:absolute;
+    top:0;
+    right:0;
+    height:2px;
+    width:0;
+    background: #D0253C;
+    transition:400ms ease all;
+  }
+  .weddings-btn:after{
+    right:inherit;
+    top:inherit;
+    left:0;
+    bottom:0;
+  }
+  .weddings-btn:hover:before,.weddings-btn:hover:after{
+    width:100%;
+    transition:800ms ease all;
+  }
+  .weddings-btn:active{
+    background:#D0253C;
+    color:#fff;
+  }
 
+  /* _________________________   PORTRAITS BUTTON  DESKTOP  __________________________ */
 
-
+  .portraits-btn {
+    background:#2f2a50;
+    /* color:#fff;
+    border:none;
+    position:relative;
+    height:60px;
+    font-size:1.6em;
+    padding:0 2em;
+    cursor:pointer;
+    transition:800ms ease all;
+    outline:none; */
+  }
+  .portraits-btn:hover{
+    background:#fff;
+    color:#2f2a50;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  }
+  .portraits-btn:before,.portraits-btn:after{
+    content:'';
+    position:absolute;
+    top:0;
+    right:0;
+    height:2px;
+    width:0;
+    background: #2f2a50;
+    transition:400ms ease all;
+  }
+  .portraits-btn:after{
+    right:inherit;
+    top:inherit;
+    left:0;
+    bottom:0;
+  }
+  .portraits-btn:hover:before,.portraits-btn:hover:after{
+    width:100%;
+    transition:800ms ease all;
+  }
+  .portraits-btn:active{
+    background:#2f2a50;
+    color:#fff;
+  }
+  /* _________________________   PROJECTS BUTTON  __________________________ */
+  .projects-btn {
+    background:#f4572A;
+    color:#fff;
+    /* border:none;
+    position:relative;
+    height:60px;
+    font-size:1.6em;
+    padding:0 2em;
+    cursor:pointer;
+    transition:800ms ease all;
+    outline:none; */
+  }
+  .projects-btn:hover{
+    background:#fff;
+    color:#f4572A;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  }
+  .projects-btn:before,.projects-btn:after{
+    content:'';
+    position:absolute;
+    top:0;
+    right:0;
+    height:2px;
+    width:0;
+    background: #f4572A;
+    transition:400ms ease all;
+  }
+  .projects-btn:after{
+    right:inherit;
+    top:inherit;
+    left:0;
+    bottom:0;
+  }
+  .projects-btn:hover:before,.projects-btn:hover:after{
+    width:100%;
+    transition:800ms ease all;
+  }
+  .projects-btn:active{
+    background:#f4572A;
+    color:#fff;
+  }
 
 
 
@@ -175,12 +335,12 @@
 @media  (min-width: 1000px) {
 
 
-  *{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    outline: none;
-    text-decoration: none;
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  text-decoration: none;
 }
 h2 {
     font-family: "Roboto", Arial, sans-ser;
@@ -211,7 +371,7 @@ h2 {
     scrollbar-width: none;
     -ms-overflow-style: none;
 
-    scroll-snap-type: mandatory; /*  +++++++++  SNAP STUFF ++++++++++ */
+    scroll-snap-type: mandatory; /*  +++++++++  SNAP DESKTOP STUFF ++++++++++ */
     scroll-snap-points-y: repeat(3rem);
     scroll-snap-type: y mandatory;
 }
@@ -221,8 +381,8 @@ h2 {
   height: 100vh;
   
   -webkit-overflow-scrolling: touch;
-  /* scroll-snap-align: start;/*  +++++++++  SNAP  DESKTOP  STUFF ++++++++++ */
-  /* scroll-snap-stop: always; */ */
+  scroll-snap-align: start;/*  +++++++++  SNAP  DESKTOP  STUFF ++++++++++ */
+  scroll-snap-stop: always;
 }
 
 
@@ -269,7 +429,7 @@ h2 {
     font-weight: 300;
     letter-spacing:.1em;
 }
-/*_______________________________________   H O M E    ___________________________*/
+/*_______________________________________   H O M E    DESKTOP   ___________________________*/
 
 .section-2 {
     /* background: green; */
@@ -329,7 +489,7 @@ h2 {
 }
 
 
-/*_________________________________   S E C T I O N   3    ___________________________*/
+/*_________________________________   S E C T I O N   3   DESKTOP  ___________________________*/
 .section-3 {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -392,7 +552,7 @@ h2 {
     font-size: 1.8rem;
     padding-top: 2rem;
  }
-/*____________________________________________  B U T T O N S ______________________________________ */
+/*____________________________________________  B U T T O N S  DESKTOP ______________________________________ */
 /* .buttons {
     width: 50vw;
     margin-left: -40%;
@@ -442,7 +602,7 @@ h2 {
     color:#fff;
   }
   
-/* _________________________   PORTRAITS BUTTON  __________________________ */
+/* _________________________   PORTRAITS BUTTON  DESKTOP  __________________________ */
 
 .portraits-btn {
     background:#2f2a50;
@@ -532,8 +692,8 @@ h2 {
 
 
 
-::-webkit-scrollbar {
-    display: none;
-}
+  ::-webkit-scrollbar {
+      display: none;
+  }
 
 }
