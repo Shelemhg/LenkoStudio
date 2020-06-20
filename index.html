@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" type="image/png" href="media/Logo.png">
     <title>Lenko Studio</title>
-        
+    
 </head>
     <body>
 
@@ -29,8 +29,8 @@
                 }else{
                     song.pause();
                 }
-            } 
-            </script> 
+            }             
+        </script> 
 
 
         <div class="outer-wrapper">
@@ -58,22 +58,40 @@
                 </section>
                 <!-- _________________________________________  H O M E   ____________________________________-->
                 <section class="section-2 slide">
-                    <div class="texture"></div>
+                    <div 
+                        id="texture"
+                        onclick="Play()">
+                    </div>
                     <div class="section-wrapper section-2-wrapper">
                         
                         <video
                             loop
                             muted
-                            autoplay
+
+                            id="myVideo"
                             preload="auto"
+                            
                         >
                             <source 
                                 src="media/oceanvideo.mp4" 
                                 type="video/mp4">
                         </video>
-                                        
+
+                        <script>
+                            var video = document.getElementById("myVideo");
+                            function Play() { 
+                                video.play();
+                                document.getElementById('myVideo').style.cssText = 'filter:none; position: absolute; z-index: -1 ';
+                                document.getElementById('texture').style.cssText = 'filter:none; position: absolute; z-index: 0';
+                                document.getElementById('home-btns-wrapper').style.cssText = 'opacity: 1; position: absolute;';
+                                document.getElementById('img-click').style.cssText = 'opacity: 0;';
+                                
+                            }
+                        </script>
+
+
                         <div class="home-options-wrapper">
-                            <div class="home-btns-wrapper">
+                            <div id="home-btns-wrapper">
                                 <button class="btn1 home-btn">
                                     Gallery
                                 </button>
@@ -84,6 +102,9 @@
                                     About Us
                                 </button>
                             </div>
+                        </div>
+                        <div id="click">
+                            <img id="img-click" src="media/click.gif" alt="click">
                         </div>
                         
                     </div>
