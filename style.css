@@ -332,10 +332,11 @@ h2 {
     position: absolute;
     scrollbar-width: none;
     -ms-overflow-style: none;
-
-    scroll-snap-type: mandatory; /*  +++++++++  SNAP DESKTOP STUFF ++++++++++ */
-    scroll-snap-points-y: repeat(3rem);
+                                /*  +++++++++  SNAP DESKTOP STUFF ++++++++++ */
+    /* scroll-snap-type: mandatory;  */
+    /* scroll-snap-points-y: repeat(3rem); */
     scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
 }
 
 .slide {
@@ -343,8 +344,9 @@ h2 {
   height: 100vh;
   
   -webkit-overflow-scrolling: touch;
-  scroll-snap-align: start;/*  +++++++++  SNAP  DESKTOP  STUFF ++++++++++ */
-  scroll-snap-stop: always;
+  scroll-snap-align: start;
+  /*  +++++++++  SNAP  DESKTOP  STUFF ++++++++++ */
+  /* scroll-snap-stop: always; */
 }
 
 
@@ -442,12 +444,12 @@ h2 {
     background: transparent;
     border: none;
     text-shadow: 0 0 5px #fff, 0 0 7px #fff, 0 0 13px #000, 0 0 25px #000;
-    transition: 1000ms;
+    transition: 700ms;
 }
 
 .home-btn:hover {
     background: rgb(0, 0, 0, .4);
-    
+    padding: 2.5rem;
 }
 
 
