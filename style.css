@@ -16,8 +16,7 @@
 
 
   .outer-wrapper {
-    scroll-snap-type: mandatory; /*  +++++++++  SNAP   MOBILE  STUFF ++++++++++ */
-    scroll-snap-points-y: repeat(3rem);
+    /*  +++++++++  SNAP   MOBILE  STUFF ++++++++++ */
     scroll-snap-type: y mandatory;
   }
   .slide {
@@ -80,11 +79,26 @@
   }
   .section-1-heading {
     font-family: Roboto;
-    font-size: 1.3em;
+    font-size: 2em;
     font-weight: 300;
     letter-spacing:.1em;
-    text-align: center;
+
+    opacity:0;
+    animation:fadeIn 4s;
+    animation-delay: .5s;
+    -webkit-animation-fill-mode: forwards
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale3d(.75, .75,1);
   }
+  to {
+    opacity: 1;
+    transform: scale3d( 1, 1, 1);
+  }
+}
   /*_______________________________________   H O M E     M O B I L E   ___________________________*/
   
   .section-2 {
@@ -173,50 +187,105 @@
   .section-3 {
     display: grid;
     grid-template-columns: 1fr ;
-    grid-row: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    height: 300vh
   
     /* ++++++++++++++++ DUDE, DUUUUDE, this is what makes alignment fly */
     /* display: flex; */
   }
 
   
-.text-wrapper {
-
-  max-width: 800px;
-  margin: 5vh auto;
+  /* .section-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 40vh 20vh 35vh;
+    margin: 0;
+  } */
+  .section-3 h2 {
+    margin: 2rem;
+    text-align: center;
   }
-  .text-wrapper h2 {
-    margin-top: 1rem;
-    margin-left: 3rem;
-  }
-  .text-wrapper p {
-    margin-top: 1rem;
-    margin-left: 1rem;
-    margin-right: 1rem;
+  .section-3 p {
+    margin: 3rem 3rem;
     text-align: justify;
+    font-size: 1.5rem;
+    font-family: "Crimson Text";
   }
-  .question {
-    font-weight: bold;
+  
+  .portraits-text-wrapper {
+    grid-row: 1 / 2;
+    background: #ffff;
+    text-align: center;
   }
-  .buttons-options {
+  .portraits-heading {
+    font-family: "Crimson Pro";
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  .portraits-img-wrapper {
+    grid-row: 2 / 3;
+    text-align: center;
+  }
+  .home-imgs {
     max-width: 100%;
-    justify-content: center;
+    max-height: 100%;
+  }
+  .button {
+    margin: 2rem;
+  }
+  .weddings-text-wrapper {
+    grid-row: 3 / 4;
+    background: #ffff;
+    text-align: center;
+  }
+  .weddings-img-wrapper {
+    grid-row: 4 / 5;
+    text-align: center;
   }
 
-  .autum-wrapper img{
-    width: 100vw;
+  .weddings-heading {
+    font-family: "Tangerine";
+    font-size: 3rem;
   }
-  .buttons-options {
-    margin-top: 2rem;
-    display: flex;
-    justify-content: space-evenly;
+  .projects-text-wrapper {
+    background: #fff;
+    text-align: center;
+    grid-row: 5 / 6;
+  }
+  .weddings-heading {
+    font-family: "Tangerine";
+    font-size: 3rem;
+  }
+  .projects-img-wrapper {
+    text-align: center;
+    grid-row: 6 / 7;
+  }
+  .footerh {
+    
+    grid-row: 7 / 8;
+    position: relative;
+    background: #707070;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+  .name {
+    margin: auto 2rem;
+    font-size: 1.5rem;
+    color: #ffff;
+    font-family: "Roboto";
+    font-weight: 100;
+    letter-spacing: .1rem;
+  }
+  .social {
+    margin: auto 2rem auto auto;
   }
 
 
 
 
-
-  /*____________________________________________  BUTTONS FORMAT DESKTOP ______________________________________ */
+  /*____________________________________________  BUTTONS FORMAT MOBILE ______________________________________ */
 
   .button {
     color:#fff;
@@ -314,6 +383,13 @@
 
 
 
+
+
+
+
+
+
+
 /* _________________________ DESKTOP SITE CONFIGURATION _____________________________________________ */
 @media  (min-width: 1000px) {
 
@@ -351,7 +427,6 @@ h2 {
     overflow-y: scroll;
     overflow-x: hidden;
     position: absolute;
-    scrollbar-width: none;
     -ms-overflow-style: none;
                                 /*  +++++++++  SNAP DESKTOP STUFF ++++++++++ */
     /* scroll-snap-type: mandatory;  */
@@ -413,6 +488,22 @@ h2 {
     font-size: 2em;
     font-weight: 300;
     letter-spacing:.1em;
+
+    opacity:0;
+    animation:fadeIn 4s;
+    animation-delay: .5s;
+    -webkit-animation-fill-mode: forwards
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale3d(.75, .75,1);
+  }
+  to {
+    opacity: 1;
+    transform: scale3d( 1, 1, 1);
+  }
 }
 /*_______________________________________   H O M E    DESKTOP   ___________________________*/
 
@@ -502,51 +593,96 @@ h2 {
 /*_________________________________   S E C T I O N   3   DESKTOP  ___________________________*/
 .section-3 {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-row: 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 40vh 20vh 35vh;
+    margin: 0;
   }
-
-  .introduction-wrapper {
-    margin-top: 50vh;
-    transform: translate(0%, -50%);
+  .section-3 h2 {
+    margin: 2rem;
+    text-align: center;
   }
-  .text-wrapper {
-    max-width: 800px;
-    margin: 10vh auto;
-  }
-  .buttons-options {
-    width: 100%;
-    margin-top: 6rem;
-    display: flex;/*         THIS PLUS   JUSTIFY CONTENT !!!*/
-    justify-content: space-evenly; 
-  }
-
- .autum-wrapper {
-    width: 50vw;
-    height: 100vh;
-  }
-
-
-  .autum-img {
-      height:100vh;
-  }
-.introduction-wrapper h2{
-    font-size:2rem;
-    padding: 2rem;
-    font-weight: 500;
-}
-.introduction-wrapper .introduction {
-    font-family: "Crimson Pro", serif;
-    font-size: 1.5rem;
-    line-height: 2rem;
+  .section-3 p {
+    margin: 3rem 3rem;
     text-align: justify;
-}
-.introduction-wrapper .question {
-    font-family: "Crimson Pro", serif;
-    font-weight: bold;
-    font-size: 1.8rem;
-    padding-top: 2rem;
- }
+    font-size: 1.5rem;
+    font-family: "Crimson Text";
+  }
+  
+  .portraits-text-wrapper {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    background: #ffff;
+    text-align: center;
+  }
+  .portraits-heading {
+    font-family: "Crimson Pro";
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  .portraits-img-wrapper {
+    grid-column: 1 / 2;
+    grid-row: 2 / 4;
+    text-align: center;
+  }
+  .home-imgs {
+    max-width: 100%;
+    max-height: 100%;
+  }
+  .button {
+    margin: 2rem;
+  }
+  .weddings-img-wrapper {
+    grid-column: 2 / 3;
+    grid-row: 1 / 3;
+    
+    text-align: center;
+  }
+  .weddings-text-wrapper {
+    grid-column: 2 / 3;
+    grid-row: 3 / 4;
+    background: #ffff;
+    text-align: center;
+  }
+  .weddings-heading {
+    font-family: "Tangerine";
+    font-size: 3rem;
+  }
+  .projects-text-wrapper {
+    background: #fff;
+    text-align: center;
+  }
+  .weddings-heading {
+    font-family: "Tangerine";
+    font-size: 3rem;
+  }
+  .projects-img-wrapper {
+    text-align: center;
+    grid-column: 3 / 4;
+    grid-row: 2 / 4;
+  }
+  .footerh {
+    position: relative;
+    grid-column: 1 / 4;
+    grid-row: 4 / 5;
+    background: #707070;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+  .name {
+    margin: auto 2rem;
+    font-size: 1.5rem;
+    color: #ffff;
+    font-family: "Roboto";
+    font-weight: 100;
+    letter-spacing: .1rem;
+  }
+  .social {
+    margin: auto 2rem auto auto;
+  }
+
+
 /*____________________________________________  BUTTONS FORMAT DESKTOP ______________________________________ */
 
   .button {
