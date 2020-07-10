@@ -90,7 +90,7 @@
     opacity:0;
     animation:fadeIn 5s;
     animation-delay: 1s;
-    -webkit-animation-fill-mode: forwards
+    -webkit-animation-fill-mode: forwards;
 }
 
 @keyframes fadeIn {
@@ -724,7 +724,7 @@ h2 {
     opacity:0;
     animation:fadeIn 5s;
     animation-delay: 1s;
-    -webkit-animation-fill-mode: forwards
+    -webkit-animation-fill-mode: forwards;
 }
 
 @keyframes fadeIn {
@@ -830,17 +830,14 @@ h2 {
     margin: 0;
   }
   .section-3 h2 {
-    margin: 3rem;
+    margin:2rem;
     text-align: center;
-  }
-  .weddings-introduction {
-    margin-bottom: 1rem; 
   }
   .section-3 p {
     margin-left: 4rem;
     margin-right: 4rem;
     text-align: justify;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-family: "Crimson Text";
   }
 
@@ -862,11 +859,15 @@ h2 {
     grid-row: 2 / 4;
     position: relative;
     margin-left:50%;
+    margin-top: 2rem;
     transform: translate(-50%, 0);
     min-width: 230px;
-    max-width: 63%;
+    
     min-height: 220px;
-    width: 100%;
+    height: 100%;
+    width: 63%;
+
+    overflow: hidden;
     color: #ffffff;
     text-align: right;
     line-height: 1.4em;
@@ -954,9 +955,9 @@ h2 {
     margin-left:50%;
     transform: translate(-50%, 0);
     min-width: 230px;
-    max-width: 63%;
     min-height: 220px;
-    width: 100%;
+    height: 90%;
+    width: 60%;
     color: #ffffff;
     text-align: right;
     line-height: 1.4em;
@@ -1037,15 +1038,11 @@ h2 {
   }
   .weddings-heading {
     font-family: "Tangerine";
-    font-size: 3rem;
+    font-size: 2.5rem;
   }
   .projects-text-wrapper {
     background: #fff;
     text-align: center;
-  }
-  .weddings-heading {
-    font-family: "Tangerine";
-    font-size: 3rem;
   }
 
   /*_________________________________  P R O J E C T S   D E S K T O P___________________________*/
@@ -1055,11 +1052,14 @@ h2 {
     position: relative;
     /* margin: 10px 20px; */
     margin-left:50%;
+    margin-top: 2rem;
     transform: translate(-50%, 0);
     min-width: 230px;
-    max-width: 60%;
+    
     min-height: 220px;
-    width: 100%;
+    height: 100%;
+    width: 60%;
+    
     color: #ffffff;
     text-align: right;
     line-height: 1.4em;
@@ -1150,6 +1150,7 @@ h2 {
     cursor:pointer;
     transition:800ms ease all;
     outline:none;
+    /* margin-bottom: 2rem; */
   }
   .button:hover {
     background:#fff;
@@ -1241,6 +1242,7 @@ h2 {
   grid-template-columns: 1fr 1fr;
   padding-left: 1em;
   padding-right: 1em;
+  margin-bottom: -1rem;
 }
 .name {
   margin: auto 2rem;
