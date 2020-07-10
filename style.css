@@ -8,17 +8,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 /* _________________________ Mobile SITE CONFIGURATION _____________________________________________ */
 @media  (max-width: 999px) {
 
@@ -210,12 +199,7 @@
   }
 
   
-  /* .section-3 {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 40vh 20vh 35vh;
-    margin: 0;
-  } */
+/*_________________________________   PORTRAITS   MOBILE  ___________________________*/
   .section-3 h2 {
     margin: 2rem;
     text-align: center;
@@ -239,7 +223,6 @@
   }
   .portraits-img-wrapper {
     grid-row: 2 / 3;
-    font-family: 'Fauna One', Arial, sans-serif;
     position: relative;
     margin-left:50%;
     margin-top: 50%;
@@ -319,27 +302,6 @@
     transform: translateX(0px);
     opacity: 1;
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   .home-imgs {
     max-width: 100%;
     max-height: 100%;
@@ -347,12 +309,7 @@
   .button {
     margin: 2rem;
   }
-  /* .weddings-img-wrapper {
-    grid-column: 2 / 3;
-    grid-row: 1 / 3;
-    
-    text-align: center;
-  } */
+  /*_________________________________   WEDDINGS   MOBILE  ___________________________*/
   .weddings-text-wrapper {
     grid-row: 3 / 4;
     background: #ffff;
@@ -373,7 +330,6 @@
 
   .weddings-img-wrapper {
     grid-row: 4 / 5;
-    font-family: 'Fauna One', Arial, sans-serif;
     position: relative;
     margin-left:50%;
     margin-top: 50%;
@@ -453,44 +409,12 @@
     transform: translateX(0px);
     opacity: 1;
   }
-
-
-
-
-
-
-
-
-  
-
-.projects-text-wrapper {
+  /*_________________________________   PROJECTS   MOBILE  ___________________________*/
+  .projects-text-wrapper {
     background: #fff;
     text-align: center;
   }
-
-
-  /* .projects-img-wrapper {
-    text-align: center;
-    grid-column: 3 / 4;
-    grid-row: 2 / 4;
-  }
-  .projects-img {
-    z-index: 100;
-    left: 25%;
-    transition: 2s;
-  } */
-
-  
-
-
-
-
-
-
-
-
   .projects-img-wrapper {
-    font-family: 'Fauna One', Arial, sans-serif;
     position: relative;
     margin-left:50%;
     margin-top: 50%;
@@ -657,9 +581,6 @@
     background:#f4572A;
   }
 
-
-
-
 }
 
 
@@ -701,7 +622,8 @@
 
 
 
-/* _________________________ DESKTOP SITE CONFIGURATION _____________________________________________ */
+/* ________________________________ DESKTOP SITE CONFIGURATION ________________________________________ */
+/* ____________________________________________________________________________________________________ */
 @media  (min-width: 1000px) {
 
 
@@ -765,7 +687,6 @@ h2 {
     width: 2rem;
     height: 2rem;
     
-
     z-index: 100;/* +++++++++++++ Remember that Z-INDEX only works after position: relative or absolute*/
     position: relative;
 
@@ -923,7 +844,7 @@ h2 {
     font-family: "Crimson Text";
   }
 
-  
+  /*_________________________________   P O R T R A I T S     D E S K T O P ___________________________*/
   .portraits-text-wrapper {
     grid-column: 1 / 2;
     grid-row: 1 / 2;
@@ -935,19 +856,11 @@ h2 {
     font-size: 2rem;
     font-weight: 700;
   }
-  /* .portraits-img-wrapper {
-    grid-column: 1 / 2;
-    grid-row: 2 / 4;
-    text-align: center;
-    
-  } */
   
   .portraits-img-wrapper {
     grid-column: 1 / 2;
     grid-row: 2 / 4;
-    font-family: 'Fauna One', Arial, sans-serif;
     position: relative;
-    /* margin: 10px 20px; */
     margin-left:50%;
     transform: translate(-50%, 0);
     min-width: 230px;
@@ -1025,26 +938,6 @@ h2 {
     opacity: 1;
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   .home-imgs {
     max-width: 100%;
     max-height: 100%;
@@ -1052,18 +945,11 @@ h2 {
   .button {
     margin: 2rem;
   }
-  /* .weddings-img-wrapper {
-    grid-column: 2 / 3;
-    grid-row: 1 / 3;
-    
-    text-align: center;
-  } */
 
-
+  /*_________________________________   W E D D I N G S   D E S K T O P ___________________________*/
   .weddings-img-wrapper {
     grid-column: 2 / 3;
     grid-row: 1 / 3;
-    font-family: 'Fauna One', Arial, sans-serif;
     position: relative;
     margin-left:50%;
     transform: translate(-50%, 0);
@@ -1143,12 +1029,6 @@ h2 {
   }
 
 
-
-
-
-
-
-
   .weddings-text-wrapper {
     grid-column: 2 / 3;
     grid-row: 3 / 4;
@@ -1168,33 +1048,10 @@ h2 {
     font-size: 3rem;
   }
 
-
-
-
-  /* .projects-img-wrapper {
-    text-align: center;
-    grid-column: 3 / 4;
-    grid-row: 2 / 4;
-  }
-  .projects-img {
-    z-index: 100;
-    left: 25%;
-    transition: 2s;
-  } */
-
-  
-
-
-
-
-
-
-
-
+  /*_________________________________  P R O J E C T S   D E S K T O P___________________________*/
   .projects-img-wrapper {
     grid-column: 3 / 4;
     grid-row: 2 / 4;
-    font-family: 'Fauna One', Arial, sans-serif;
     position: relative;
     /* margin: 10px 20px; */
     margin-left:50%;
@@ -1373,11 +1230,12 @@ h2 {
 
 }
 
-
+  /*____________________________________________   F O O T E R    D E S K T O P______________________________*/
 .footerh {
   position: relative;
   grid-column: 1 / 4;
   grid-row: 4 / 5;
+  margin: 0;
   background: #707070;
   display: grid;
   grid-template-columns: 1fr 1fr;
