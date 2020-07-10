@@ -2,6 +2,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,700;0,900;1,400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&display=swap');
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* _________________________ Mobile SITE CONFIGURATION _____________________________________________ */
 @media  (max-width: 999px) {
 
@@ -71,8 +88,6 @@
     position: absolute;
     text-align: center;
     color: #fff;
-
-
     padding-top: 100vh;
     padding-left:100vw;
     transform: translate(-55%, -65%);
@@ -146,7 +161,6 @@
     animation-delay: 1s;
     transition:35000ms;
 }
-
   .home-btn {
     margin: auto;
     color: #fff;
@@ -189,8 +203,8 @@
     display: grid;
     grid-template-columns: 1fr ;
     grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    height: 300vh
-  
+    height: 300vh;
+    display: block;
     /* ++++++++++++++++ DUDE, DUUUUDE, this is what makes alignment fly */
     /* display: flex; */
   }
@@ -225,8 +239,107 @@
   }
   .portraits-img-wrapper {
     grid-row: 2 / 3;
-    text-align: center;
+    font-family: 'Fauna One', Arial, sans-serif;
+    position: relative;
+    margin-left:50%;
+    margin-top: 50%;
+    margin-bottom:100%;
+    transform: translate(-50%, 50%);
+    min-width: 230px;
+    max-width: 100%;
+    min-height: 220px;
+    width: 100%;
+    color: #ffffff;
+    text-align: right;
+    line-height: 1.4em;
+    background-color: #1a1a1a;
+    font-size: 16px;
   }
+  .portraits-img-wrapper * {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-transition: all 15s ease;
+    transition: all 1s ease;
+  }
+  .portraits-img-wrapper img {
+    position: absolute;
+    right: 0%;
+    top: 50%;
+    opacity: 1;
+    width: 100%;
+    -webkit-transform: translate(0%, -50%);
+    transform: translate(0%, -50%);
+  }
+  .portraits-img-wrapper figcaption {
+    position: absolute;
+    width: 50%;
+    top: 50%;
+    left: 0;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    padding: 20px 0 20px 20px;
+  }
+  .portraits-img-wrapper h2,
+  .portraits-img-wrapper p {
+    margin: 0;
+    width: 100%;
+    -webkit-transform: translateX(20px);
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  .portraits-img-wrapper h2 {
+    font-family: 'Roboto', Arial, sans-serif;
+    font-weight: 100;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .portraits-img-wrapper p {
+    font-size: 1.2em;
+    font-family: 'Roboto', Arial, sans-serif;
+    text-align: left;
+  }
+  .portraits-img-wrapper a {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+  }
+  .portraits-img-wrapper:hover img,
+  .portraits-img-wrapper.hover img {
+    width: 55%;
+    right: -10%;
+  }
+  .portraits-img-wrapper:hover figcaption h2,
+  .portraits-img-wrapper.hover figcaption h2,
+  .portraits-img-wrapper:hover figcaption p,
+  .portraits-img-wrapper.hover figcaption p {
+    -webkit-transform: translateX(0px);
+    transform: translateX(0px);
+    opacity: 1;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   .home-imgs {
     max-width: 100%;
     max-height: 100%;
@@ -234,54 +347,230 @@
   .button {
     margin: 2rem;
   }
+  /* .weddings-img-wrapper {
+    grid-column: 2 / 3;
+    grid-row: 1 / 3;
+    
+    text-align: center;
+  } */
   .weddings-text-wrapper {
     grid-row: 3 / 4;
     background: #ffff;
     text-align: center;
   }
+  .weddings-heading {
+    font-family: "Tangerine";
+    font-size: 3rem;
+  }
+  
+  .weddings-heading {
+    font-family: "Tangerine";
+    font-size: 3rem;
+  }
+
+
+
+
   .weddings-img-wrapper {
     grid-row: 4 / 5;
+    font-family: 'Fauna One', Arial, sans-serif;
+    position: relative;
+    margin-left:50%;
+    margin-top: 50%;
+    margin-bottom:100%;
+    transform: translate(-50%, 50%);
+    min-width: 230px;
+    max-width: 100%;
+    min-height: 220px;
+    width: 100%;
+    color: #ffffff;
+    text-align: right;
+    line-height: 1.4em;
+    background-color: #1a1a1a;
+    font-size: 16px;
+  }
+  .weddings-img-wrapper * {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-transition: all 15s ease;
+    transition: all 1s ease;
+  }
+  .weddings-img-wrapper img {
+    position: absolute;
+    right: 0%;
+    top: 50%;
+    opacity: 1;
+    width: 100%;
+    -webkit-transform: translate(0%, -50%);
+    transform: translate(0%, -50%);
+  }
+  .weddings-img-wrapper figcaption {
+    position: absolute;
+    width: 50%;
+    top: 50%;
+    left: 0;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    padding: 20px 0 20px 20px;
+  }
+  .weddings-img-wrapper h2,
+  .weddings-img-wrapper p {
+    margin: 0;
+    width: 100%;
+    -webkit-transform: translateX(20px);
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  .weddings-img-wrapper h2 {
+    font-family: 'Roboto', Arial, sans-serif;
+    font-weight: 100;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .weddings-img-wrapper p {
+    font-size: 1.2em;
+    font-family: 'Roboto', Arial, sans-serif;
+    text-align: left;
+  }
+  .weddings-img-wrapper a {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+  }
+  .weddings-img-wrapper:hover img,
+  .weddings-img-wrapper.hover img {
+    width: 55%;
+    right: -10%;
+  }
+  .weddings-img-wrapper:hover figcaption h2,
+  .weddings-img-wrapper.hover figcaption h2,
+  .weddings-img-wrapper:hover figcaption p,
+  .weddings-img-wrapper.hover figcaption p {
+    -webkit-transform: translateX(0px);
+    transform: translateX(0px);
+    opacity: 1;
+  }
+
+
+
+
+
+
+
+
+  
+
+.projects-text-wrapper {
+    background: #fff;
     text-align: center;
   }
 
-  .weddings-heading {
-    font-family: "Tangerine";
-    font-size: 3rem;
-  }
-  .projects-text-wrapper {
-    background: #fff;
+
+  /* .projects-img-wrapper {
     text-align: center;
-    grid-row: 5 / 6;
+    grid-column: 3 / 4;
+    grid-row: 2 / 4;
   }
-  .weddings-heading {
-    font-family: "Tangerine";
-    font-size: 3rem;
-  }
+  .projects-img {
+    z-index: 100;
+    left: 25%;
+    transition: 2s;
+  } */
+
+  
+
+
+
+
+
+
+
+
   .projects-img-wrapper {
-    text-align: center;
-    grid-row: 6 / 7;
-  }
-  .footerh {
-    
-    grid-row: 7 / 8;
+    font-family: 'Fauna One', Arial, sans-serif;
     position: relative;
-    background: #707070;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding-left: 1em;
-    padding-right: 1em;
+    margin-left:50%;
+    margin-top: 50%;
+    margin-bottom:100%;
+    transform: translate(-50%, 50%);
+    min-width: 230px;
+    max-width: 100%;
+    min-height: 220px;
+    width: 100%;
+    color: #ffffff;
+    text-align: right;
+    line-height: 1.4em;
+    background-color: #1a1a1a;
+    font-size: 16px;
   }
-  .name {
-    margin: auto 2rem;
-    font-size: 1.5rem;
-    color: #ffff;
-    font-family: "Roboto";
+  .projects-img-wrapper * {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-transition: all 15s ease;
+    transition: all 1s ease;
+  }
+  .projects-img-wrapper img {
+    position: absolute;
+    right: 0%;
+    top: 50%;
+    opacity: 1;
+    width: 100%;
+    -webkit-transform: translate(0%, -50%);
+    transform: translate(0%, -50%);
+  }
+  .projects-img-wrapper figcaption {
+    position: absolute;
+    width: 50%;
+    top: 50%;
+    left: 0;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    padding: 20px 0 20px 20px;
+  }
+  .projects-img-wrapper h2,
+  .projects-img-wrapper p {
+    margin: 0;
+    width: 100%;
+    -webkit-transform: translateX(20px);
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  .projects-img-wrapper h2 {
+    font-family: 'Roboto', Arial, sans-serif;
     font-weight: 100;
-    letter-spacing: .1rem;
+    text-transform: uppercase;
+    margin-bottom: 5px;
   }
-  .social {
-    margin: auto 2rem auto auto;
+  .projects-img-wrapper p {
+    font-size: 1.2em;
+    font-family: 'Roboto', Arial, sans-serif;
+    text-align: left;
   }
+  .projects-img-wrapper a {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+  }
+  .projects-img-wrapper:hover img,
+  .projects-img-wrapper.hover img {
+    width: 55%;
+    right: -10%;
+  }
+  .projects-img-wrapper:hover figcaption h2,
+  .projects-img-wrapper.hover figcaption h2,
+  .projects-img-wrapper:hover figcaption p,
+  .projects-img-wrapper.hover figcaption p {
+    -webkit-transform: translateX(0px);
+    transform: translateX(0px);
+    opacity: 1;
+  }
+  
 
 
 
@@ -374,7 +663,28 @@
 }
 
 
-
+.footerh {
+    
+    grid-row: 7 / 8;
+    position: relative;
+    margin-top: 130vh;
+    background: #707070;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+  .name {
+    margin: auto 2rem;
+    font-size: 1.5rem;
+    color: #ffff;
+    font-family: "Roboto";
+    font-weight: 100;
+    letter-spacing: .1rem;
+  }
+  .social {
+    margin: auto 2rem auto auto;
+  }
 
 
 
