@@ -18,7 +18,6 @@
 
         <script>
             var song = document.getElementById("mySong");
-            
             function Mute() { 
                 if(song.paused == true){
                     song.play();
@@ -27,14 +26,10 @@
                 }
             }             
         </script> 
-
-
         <div class="outer-wrapper">
             <div class="wrapper">
                 <!-- ___________________________________  S E C T I O N  1   ____________________________________-->
                 <section class="section-1 slide">
-
-
                     <!-- _________________  M U T E    B U T T O N   ____________-->
                     <div class="mute-wrapper">
                         <button
@@ -56,14 +51,12 @@
                         onclick="Play()">
                     </div>
                     <div class="section-wrapper section-2-wrapper">
-                        
                         <video
                             loop
                             muted
 
                             id="myVideo"
                             preload="auto"
-                            
                         >
                             <source 
                                 src="media/oceanvideo.mp4" 
