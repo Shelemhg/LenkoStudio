@@ -1232,6 +1232,8 @@ h2 {
 }
 
   /*____________________________________________   F O O T E R    D E S K T O P______________________________*/
+
+  /* Maybe try POSITION FIXED with bottom: 0; and right: 0; */
 .footerh {
   position: relative;
   grid-column: 1 / 4;
