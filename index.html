@@ -8,232 +8,49 @@
         <title>Lenko Studio</title>        
     </head>
     <body>
-        <audio
+        <section id="section-1" class="center black-bkgd fadeInOut">
+            <h1 class="title-h1" onclick="Play()">Lenko Studio</h1>
+        </section>
+        <section class="section-2">
+            <div 
+            id="texture">
+        </div>
+        <div class="section-wrapper section-2-wrapper">
+            <video
+                loop
+                muted
+
+                id="myVideo"
+                preload="auto"
+            >
+                <source 
+                    src="media/oceanvideo.mp4" 
+                    type="video/mp4">
+            </video>
+
+
+            <div class="home-options-wrapper">
+                <div id="home-btns-wrapper">
+                    <button class="btn1 home-btn">
+                        Gallery
+                    </button>
+                    <button id="weddings-btn" class="home-btn">
+                        Weddings
+                    </button>
+                    <button id="portraits-btn" class="home-btn">
+                        About Us
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+        </section>
+    </body>
+    <audio
             id="mySong" 
-            autoplay
             loop>
             <source src="media/audio.mp3" type="audio/mpeg">
                 Audio not supported by device.
         </audio>
-
-        <script>
-            var song = document.getElementById("mySong");
-            function Mute() { 
-                if(song.paused == true){
-                    song.play();
-                }else{
-                    song.pause();
-                }
-            }             
-        </script> 
-        <div class="outer-wrapper">
-            <div class="wrapper">
-                <!-- ___________________________________  S E C T I O N  1   ____________________________________-->
-                <section class="section-1 slide">
-                    <!-- _________________  M U T E    B U T T O N   ____________-->
-                    <div class="mute-wrapper">
-                        <button
-                            class="mute-btn"
-                            onclick="Mute()">
-                        </button>
-                    </div>
-                    <div class="section-wrapper section-1-wrapper">
-                        <div class="section-1-heading-wrapper">
-                            <h1 class="section-1-heading">
-                                Lenko Studio</h1>
-                        </div>
-                    </div>
-                </section>
-                    <!-- _________________________________________  S E C T I O N  2   ____________________________________-->
-                <section class="section-2 slide">
-                    <div 
-                        id="texture"
-                        onclick="Play()">
-                    </div>
-                    <div class="section-wrapper section-2-wrapper">
-                        <video
-                            loop
-                            muted
-
-                            id="myVideo"
-                            preload="auto"
-                        >
-                            <source 
-                                src="media/oceanvideo.mp4" 
-                                type="video/mp4">
-                        </video>
-
-                        <script>
-                            var video = document.getElementById("myVideo");
-                            function Play() { 
-                                video.play();
-                                song.play();
-                                document.getElementById('myVideo').style.cssText = 'filter:none; position: absolute; z-index: -1 ';
-                                document.getElementById('texture').style.cssText = 'filter:none; position: absolute; z-index: 0';
-                                document.getElementById('home-btns-wrapper').style.cssText = 'opacity: 1; position: absolute;';
-                                document.getElementById('img-click').style.cssText = 'opacity: 0;';
-                                
-                            }
-                        </script>
-
-
-                        <div class="home-options-wrapper">
-                            <div id="home-btns-wrapper">
-                                <button class="btn1 home-btn">
-                                    Gallery
-                                </button>
-                                <button id="weddings-btn" class="home-btn">
-                                    Weddings
-                                </button>
-                                <button id="portraits-btn" class="home-btn">
-                                    About Us
-                                </button>
-                            </div>
-                        </div>
-                        <div id="click">
-                            <img id="img-click" src="media/click.gif" alt="click">
-                        </div>
-                        
-                    </div>
-                </section>
-                 <!-- ___________________________________  S E C T I O N  3  ____________________________________ -->
-                <section class="slide">
-                    <div class="section-3">
-                        <!-- _________________________________________  Portraits   ____________________________________-->   
-                        <div class="portraits-text-wrapper">
-                            <h2 class="portraits-heading">
-                                Portraits
-                            </h2>
-                            <p class="portraits-introduction">
-                                Social media has become your presentation card. 
-                                Either Facebook, Linked In, Instagram and many more, 
-                                your profile picture is more relevant than ever. 
-                                Transmit what you want and not what your phone can.
-                                Click bellow to know more:
-        
-            
-                            </p>
-                            <button class="portraits-btn button">Portraits</button>
-                        
-                        </div>
-                        <figure class="portraits-img-wrapper">
-                            <img src="media/portraits.jpg" alt="portrait model">
-                            <figcaption>
-                                <h2>
-                                    You.
-                                </h2>
-                                <p>
-                                    <br>
-                                    "Your greatest work: your most important creation is and will ever be you"
-                                    <br><br>
-                                    Lawrence E. Cobridge
-                                </p>
-                            </figcaption>
-                        </figure>
-                        <!-- _________________________________________  Weddings   ____________________________________-->
-                        <div class="weddings-text-wrapper">
-                            <h2 class="weddings-heading">
-                                Weddings
-                            </h2>
-                            <p class="weddings-introduction">
-                                "Perfect moments only happen once." Make sure they last forever 
-                                as you would like to relive them.
-            
-                            </p>
-                            <button class="weddings-btn button">Weddings</button>
-                        </div>
-                        <figure class="weddings-img-wrapper">
-                            <img src="media/weddings.jpg" alt="couple">
-                            <figcaption>
-                                <h2>
-                                    "Perfect moments only happen once." 
-                                </h2>
-                                <p>
-                                    <br>
-                                    Make sure they last forever 
-                                    as you would like to relive them.
-                                </p>
-                            </figcaption>
-                        </figure>
-                        <!-- _________________________________________  Projects   ____________________________________-->
-                        <div class="projects-text-wrapper">
-                            <h2 class="projects-heading">
-                                Projects
-                            </h2>
-                            <p class="projects-introduction">
-                                Either for your portfolio, your business or an idea you have, 
-                                bring them to life and present them to the world as you always intended.
-                            </p>
-                            <button class="projects-btn button">Projects</button>
-                            
-                        </div>
-                        <figure class="projects-img-wrapper">
-                            <img src="media/projects.jpg" alt="project model">
-                            <figcaption>
-                                <h2>
-                                    Color Shaped
-                                </h2>
-                                <p>
-                                    <br>
-                                    An abstract exploration of the femenine beauty. 
-                                    Intense colors and sharp edges enheance the natural beauty 
-                                    of the model.
-                                </p>
-                            </figcaption>
-                        </figure>
-                    </div>    
-                    
-                    
-
-
-
-
-
-
-                    <!-- __________________________________________     F O O T E R   ______________________________________________-->
-                    <div class="footerh">
-                        <p class="name">
-                            &copy; 2020 Lenko Studio
-                        </p>
-                        <div class="social">
-                            <a 
-                                href="https://www.instagram.com/lenkostudio/" 
-                                target="_blank"
-                            >
-                            <img 
-                                class= "instagram-img"
-                                src="https://byui-cit.github.io/wdd130/images/icons/color/instagram.png" 
-                                alt="Instagram icon"
-                            />
-                            </a>
-                            <a 
-                                href="https://www.facebook.com/LenkoStudio/" 
-                                target="_blank">
-                                <img 
-                                    class= "facebook-img"
-                                    src="https://byui-cit.github.io/wdd130/images/icons/color/facebook.png" 
-                                    alt="Facebook icon"
-                                />
-                            </a>
-                            <a 
-                                href="https://obtainable-rowan-check.glitch.me/site-plan.html" 
-                                target="_blank">
-                                <img 
-                                    class= "source-img"
-                                    src="media/source.jpg" 
-                                    alt="source image"
-                                />
-                            </a>
-                        </div>
-                    </div>
-                </section>
-
-                
-            </div>
-        </div>
-
-
-    
-        
-    </body>
+        <script src="scripts.js"></script>
 </html>
