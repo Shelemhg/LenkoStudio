@@ -1,1261 +1,269 @@
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200;0,300;0,400;0,700;0,900;1,300;1,400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,700;0,900;1,400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&display=swap');
+/* ========================================================================== */
+/* Lenko Studio — Mobile-first, accessible, high-contrast styles              */
+/* Professional divisions for easy reading and maintenance                     */
+/* ========================================================================== */
 
+/* 1) Design Tokens ---------------------------------------------------------- */
+:root {
+  --bg: #0a0a0a;
+  --fg: #f7f7f7;
+  --muted: #c7c7c7;
+  --accent: #ff4d8f; /* Orana Pink tone */
+  --cta-bg: rgba(0, 0, 0, 0.5);
+  --cta-bg-hover: rgba(255, 255, 255, 0.12);
+  --focus: #ffffff;
+}
 
-
-
-
-
-
-/* _________________________ Mobile SITE CONFIGURATION _____________________________________________ */
-@media  (max-width: 999px) {
-
-
-  *{
+/* 2) Base / Reset ----------------------------------------------------------- */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
   margin: 0;
-  padding: 0;
-  /* box-sizing: border-box; */
-  outline: none;
-  text-decoration: none;
-  }
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-size: 16px;
+}
+img, video { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 2px; }
+button { font: inherit; color: inherit; }
 
+/* 3) Accessibility: Skip Link & Focus -------------------------------------- */
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #000;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transform: translateY(-150%);
+}
+.skip-link:focus { transform: translateY(0); outline: 2px solid var(--focus); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
 
-  .outer-wrapper {
-    /*  +++++++++  SNAP   MOBILE  STUFF ++++++++++ */
-    scroll-snap-type: y mandatory;
-  }
-  .slide {
-    width: 100vw;
-    height: 100vh;
-    
-    scroll-snap-align: start;/*  +++++++++  SNAP  MOBILE  STUFF ++++++++++ */
-    scroll-snap-stop: always;
-  }
+/* 4) Header / Navigation ---------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 10px 12px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.7), rgba(0,0,0,0));
+}
+.site-nav { display: flex; align-items: center; gap: 12px; }
+.brand { font-weight: 700; letter-spacing: 0.03em; }
+.nav-list {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; gap: 12px; overflow-x: auto;
+}
+.nav-list a { padding: 6px 8px; border-radius: 6px; white-space: nowrap; }
+.nav-list a:hover { background: rgba(255,255,255,0.06); text-decoration: none; }
+.orana-link { color: var(--accent); font-weight: 600; }
 
+.sound-toggle {
+  justify-self: end;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.sound-toggle:hover { background: rgba(255,255,255,0.14); }
 
+/* 5) Hero (video, scrim, content) ------------------------------------------ */
+.hero { position: relative; min-height: 100svh; display: grid; }
+.video-wrap { position: absolute; inset: 0; overflow: hidden; z-index: 0; }
+#bgVideo { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); transition: filter 900ms ease; }
+.scrim { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.65)); pointer-events: none; z-index: 1; }
 
+/* Grid overlay (texture) sits above video, below content */
+.grid-overlay { position: absolute; inset: 0; z-index: 10; background: url('media/texture.png') repeat; opacity: 0.35; pointer-events: none; }
 
-
-
-
-
-  .mute-btn {
-    margin:1rem;
-    width: 2rem;
-    height: 2rem;
-    
-
-    z-index: 100;/* +++++++++++++ Remember that Z-INDEX only works after position: relative or absolute*/
-    position: relative;
-
-    border: none;
-    background: url("media/mute.png") no-repeat;
-    background-size: 2rem;/* to specify dimensions explicitly */
-    cursor:pointer;
-    opacity: .5;
-  }
-
-  .section-1 {
-    background: #000;
-    box-sizing: border-box;
-
-    background-size: cover;
-    width: 100vw;
-    height:100vh;
-
-    position: relative;
-    z-index: 0;
-  }
-  .section-1-wrapper {
-    background-size: cover;
-    width: 100px;
-    height:100px;
-
-  }
-  .section-1-heading-wrapper{
-    position: absolute;
-    text-align: center;
-    color: #fff;
-    padding-top: 100vh;
-    padding-left:100vw;
-    transform: translate(-55%, -65%);
-  }
-  .section-1-heading {
-    font-family: Roboto;
-    font-size: 2em;
-    font-weight: 300;
-    letter-spacing:.1em;
-
-    opacity:0;
-    animation:fadeIn 5s;
-    animation-delay: 1s;
-    -webkit-animation-fill-mode: forwards;
+.hero-content {
+  position: relative; z-index: auto;
+  display: grid; place-items: center; padding: 24px; gap: 24px;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale3d(.75, .75,1);
-  }
-  to {
-    opacity: 1;
-    transform: scale3d( 1, 1, 1);
-  }
+/* 5.1) Hero Title ----------------------------------------------------------- */
+.intro-title { /* title must be above everything */
+  position: relative; z-index: 210;
+  font-size: 3rem; font-weight: 300; letter-spacing: 0.08em; text-align: center; cursor: pointer;
+  transition: transform 300ms ease, opacity 300ms ease;
 }
-  /*_______________________________________   H O M E     M O B I L E   ___________________________*/
-  
-  .section-2 {
-    /* background: green; */
-    width: 100vw;
-    height:100vh;
-  }
-  .section-2-wrapper video{
-    z-index: -1;
-    width: 100vw;
-    height: 100vh;
-    position: absolute;
-    object-fit: cover;
-    
-}
-#texture{
-    z-index: 95;
-    width: 100vw;
-    height: 100vh;
-    position: absolute;
-    background: url('media/texture.png');
-    transition: 2000ms;
-    
-}
-.home-options-wrapper {
-    position: absolute;
+.intro-title:hover { transform: scale(1.06); text-shadow: 0 0 24px rgba(255,255,255,0.2); }
+@media (hover: none) {
+  .intro-title { animation: pulse 4s infinite ease-in-out; }
+  @keyframes pulse { 0%,100%{ transform: scale(1) } 50%{ transform: scale(1.04) } }
 }
 
+/* Title: opacity flash on first click (dip then return) */
+.title-opacity-flash { animation: titleOpacityFlash 1s ease; }
+@keyframes titleOpacityFlash { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-#myVideo {
-  filter: grayscale(100%);
-  transition:4000ms;
-}
-
-
-
-#home-btns-wrapper {
-    opacity: 0;
-    /* position: relative;  +++++++ After a bizilion years, one container inside another, behold, the perfect centerization */
-    position: absolute;
-    z-index: 90;
-    padding-top: 100vh;
-    padding-left:100vw;
-    transform: translate(-50%, -50%);
-    animation-delay: 1s;
-    transition:35000ms;
-}
-  .home-btn {
-    margin: auto;
-    color: #fff;
-    
-    cursor:pointer;
-    letter-spacing: 0.3rem;
-    font-size: 2rem;
-    font-weight: 300;
-    font-family: "Roboto", serif;
-    
-    padding: 1rem;
-    display:flex;
-    width: 100vw;
-    justify-content: center;
-    background: transparent;
-    border: none;
-    text-shadow: 0 0 5px #fff, 0 0 7px #fff, 0 0 13px #000, 0 0 25px #000;
-    transition: 1000ms;
-  }
-
-  .home-btn:hover {
-    background: rgb(0, 0, 0, .4);
-    
-  }
-  #click {
-    height: 100vh;
-    justify-content: center;/*THIS IS HOW YOU ACTUALY ALIGN STUFF ON A DIV*/
-    align-content: end;
-    object-fit:cover;
-    display: grid;
-    padding-bottom: 10rem;
-  }
-  #img-click {
-    width: 100px;
-    height: 100px;
-  }
-
-  /*_________________________________   S E C T I O N   3   MOBILE  ___________________________*/
-  .section-3 {
-    display: grid;
-    grid-template-columns: 1fr ;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    height: 300vh;
-    display: block;
-    /* ++++++++++++++++ DUDE, DUUUUDE, this is what makes alignment fly */
-    /* display: flex; */
-  }
-
-  
-/*_________________________________   PORTRAITS   MOBILE  ___________________________*/
-  .section-3 h2 {
-    margin: 2rem;
-    text-align: center;
-  }
-  .section-3 p {
-    margin: 3rem 3rem;
-    text-align: justify;
-    font-size: 1.5rem;
-    font-family: "Crimson Text";
-  }
-  
-  .portraits-text-wrapper {
-    grid-row: 1 / 2;
-    background: #ffff;
-    text-align: center;
-  }
-  .portraits-heading {
-    font-family: "Crimson Pro";
-    font-size: 2rem;
-    font-weight: 700;
-  }
-  .portraits-img-wrapper {
-    grid-row: 2 / 3;
-    position: relative;
-    margin-left:50%;
-    margin-top: 50%;
-    margin-bottom:100%;
-    transform: translate(-50%, 50%);
-    min-width: 230px;
-    max-width: 100%;
-    min-height: 220px;
-    width: 100%;
-    color: #ffffff;
-    text-align: right;
-    line-height: 1.4em;
-    background-color: #1a1a1a;
-    font-size: 16px;
-  }
-  .portraits-img-wrapper * {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    -webkit-transition: all 15s ease;
-    transition: all 1s ease;
-  }
-  .portraits-img-wrapper img {
-    position: absolute;
-    right: 0%;
-    top: 50%;
-    opacity: 1;
-    width: 100%;
-    -webkit-transform: translate(0%, -50%);
-    transform: translate(0%, -50%);
-  }
-  .portraits-img-wrapper figcaption {
-    position: absolute;
-    width: 50%;
-    top: 50%;
-    left: 0;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-    padding: 20px 0 20px 20px;
-  }
-  .portraits-img-wrapper h2,
-  .portraits-img-wrapper p {
-    margin: 0;
-    width: 100%;
-    -webkit-transform: translateX(20px);
-    transform: translateX(20px);
-    opacity: 0;
-  }
-  .portraits-img-wrapper h2 {
-    font-family: 'Roboto', Arial, sans-serif;
-    font-weight: 100;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-  }
-  .portraits-img-wrapper p {
-    font-size: 1.2em;
-    font-family: 'Roboto', Arial, sans-serif;
-    text-align: left;
-  }
-  .portraits-img-wrapper a {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1;
-  }
-  .portraits-img-wrapper:hover img,
-  .portraits-img-wrapper.hover img {
-    width: 55%;
-    right: -10%;
-  }
-  .portraits-img-wrapper:hover figcaption h2,
-  .portraits-img-wrapper.hover figcaption h2,
-  .portraits-img-wrapper:hover figcaption p,
-  .portraits-img-wrapper.hover figcaption p {
-    -webkit-transform: translateX(0px);
-    transform: translateX(0px);
-    opacity: 1;
-  }
-  .home-imgs {
-    max-width: 100%;
-    max-height: 100%;
-  }
-  .button {
-    margin: 2rem;
-  }
-  /*_________________________________   WEDDINGS   MOBILE  ___________________________*/
-  .weddings-text-wrapper {
-    grid-row: 3 / 4;
-    background: #ffff;
-    text-align: center;
-  }
-  .weddings-heading {
-    font-family: "Tangerine";
-    font-size: 3rem;
-  }
-  
-  .weddings-heading {
-    font-family: "Tangerine";
-    font-size: 3rem;
-  }
-
-
-
-
-  .weddings-img-wrapper {
-    grid-row: 4 / 5;
-    position: relative;
-    margin-left:50%;
-    margin-top: 50%;
-    margin-bottom:100%;
-    transform: translate(-50%, 50%);
-    min-width: 230px;
-    max-width: 100%;
-    min-height: 220px;
-    width: 100%;
-    color: #ffffff;
-    text-align: right;
-    line-height: 1.4em;
-    background-color: #1a1a1a;
-    font-size: 16px;
-  }
-  .weddings-img-wrapper * {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    -webkit-transition: all 15s ease;
-    transition: all 1s ease;
-  }
-  .weddings-img-wrapper img {
-    position: absolute;
-    right: 0%;
-    top: 50%;
-    opacity: 1;
-    width: 100%;
-    -webkit-transform: translate(0%, -50%);
-    transform: translate(0%, -50%);
-  }
-  .weddings-img-wrapper figcaption {
-    position: absolute;
-    width: 50%;
-    top: 50%;
-    left: 0;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-    padding: 20px 0 20px 20px;
-  }
-  .weddings-img-wrapper h2,
-  .weddings-img-wrapper p {
-    margin: 0;
-    width: 100%;
-    -webkit-transform: translateX(20px);
-    transform: translateX(20px);
-    opacity: 0;
-  }
-  .weddings-img-wrapper h2 {
-    font-family: 'Roboto', Arial, sans-serif;
-    font-weight: 100;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-  }
-  .weddings-img-wrapper p {
-    font-size: 1.2em;
-    font-family: 'Roboto', Arial, sans-serif;
-    text-align: left;
-  }
-  .weddings-img-wrapper a {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1;
-  }
-  .weddings-img-wrapper:hover img,
-  .weddings-img-wrapper.hover img {
-    width: 55%;
-    right: -10%;
-  }
-  .weddings-img-wrapper:hover figcaption h2,
-  .weddings-img-wrapper.hover figcaption h2,
-  .weddings-img-wrapper:hover figcaption p,
-  .weddings-img-wrapper.hover figcaption p {
-    -webkit-transform: translateX(0px);
-    transform: translateX(0px);
-    opacity: 1;
-  }
-  /*_________________________________   PROJECTS   MOBILE  ___________________________*/
-  .projects-text-wrapper {
-    background: #fff;
-    text-align: center;
-  }
-  .projects-img-wrapper {
-    position: relative;
-    margin-left:50%;
-    margin-top: 50%;
-    margin-bottom:100%;
-    transform: translate(-50%, 50%);
-    min-width: 230px;
-    max-width: 100%;
-    min-height: 220px;
-    width: 100%;
-    color: #ffffff;
-    text-align: right;
-    line-height: 1.4em;
-    background-color: #1a1a1a;
-    font-size: 16px;
-  }
-  .projects-img-wrapper * {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    -webkit-transition: all 15s ease;
-    transition: all 1s ease;
-  }
-  .projects-img-wrapper img {
-    position: absolute;
-    right: 0%;
-    top: 50%;
-    opacity: 1;
-    width: 100%;
-    -webkit-transform: translate(0%, -50%);
-    transform: translate(0%, -50%);
-  }
-  .projects-img-wrapper figcaption {
-    position: absolute;
-    width: 50%;
-    top: 50%;
-    left: 0;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-    padding: 20px 0 20px 20px;
-  }
-  .projects-img-wrapper h2,
-  .projects-img-wrapper p {
-    margin: 0;
-    width: 100%;
-    -webkit-transform: translateX(20px);
-    transform: translateX(20px);
-    opacity: 0;
-  }
-  .projects-img-wrapper h2 {
-    font-family: 'Roboto', Arial, sans-serif;
-    font-weight: 100;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-  }
-  .projects-img-wrapper p {
-    font-size: 1.2em;
-    font-family: 'Roboto', Arial, sans-serif;
-    text-align: left;
-  }
-  .projects-img-wrapper a {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1;
-  }
-  .projects-img-wrapper:hover img,
-  .projects-img-wrapper.hover img {
-    width: 55%;
-    right: -10%;
-  }
-  .projects-img-wrapper:hover figcaption h2,
-  .projects-img-wrapper.hover figcaption h2,
-  .projects-img-wrapper:hover figcaption p,
-  .projects-img-wrapper.hover figcaption p {
-    -webkit-transform: translateX(0px);
-    transform: translateX(0px);
-    opacity: 1;
-  }
-  
-
-
-
-
-  /*____________________________________________  BUTTONS FORMAT MOBILE ______________________________________ */
-
-  .button {
-    color:#fff;
-    border:none;
-    position:relative;
-    height:3rem;
-    font-size:1.2em;
-    cursor:pointer;
-    transition:800ms ease all;
-    outline:none;
-    padding: 1rem;
-  }
-  .button:hover {
-    background:#fff;
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
-  }
-  .button:before,.button:after{
-    content:'';
-    position:absolute;
-    top:0;
-    right:0;
-    height:2px;
-    width:0;
-    transition:400ms ease all;
-  }
-  .button:after{
-    right:inherit;
-    top:inherit;
-    left:0;
-    bottom:0;
-  }
-  .button:hover:before,.button:hover:after{
-    width:100%;
-    transition:800ms ease all;
-  }
-  .button:active{
-    color:#fff;
-  }
-
-  /* _________________________   PORTRAITS BUTTON  MOBILE  __________________________ */
-.weddings-btn {
-    background:#D0253C;
-  }
-  .weddings-btn:hover{
-    color:#D0253C;
-  }
-  .weddings-btn:before,.weddings-btn:after{
-    background: #D0253C;
-  }
-  .weddings-btn:active{
-    background:#D0253C;
-  }
-  
-  /* _________________________   PORTRAITS BUTTON  MOBILE  __________________________ */
-
-  .portraits-btn {
-    background:#2f2a50;
-  }
-  .portraits-btn:hover{
-    color:#2f2a50;
-  }
-  .portraits-btn:before,.portraits-btn:after{
-    background: #2f2a50;
-  }
-  .portraits-btn:active{
-    background:#2f2a50;
-  }
-  /* _________________________   PROJECTS BUTTON   MOBILE  __________________________ */
-  .projects-btn {
-    background:#f4572A;
-  }
-  .projects-btn:hover{
-    color:#f4572A;
-  }
-  .projects-btn:before,.projects-btn:after{
-    background: #f4572A;
-  }
-  .projects-btn:active{
-    background:#f4572A;
-  }
-
-}
-
-
-.footerh {
-    
-    grid-row: 7 / 8;
-    position: relative;
-    margin-top: 130vh;
-    background: #707070;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding-left: 1em;
-    padding-right: 1em;
-  }
-  .name {
-    margin: auto 2rem;
-    font-size: 1.5rem;
-    color: #ffff;
-    font-family: "Roboto";
-    font-weight: 100;
-    letter-spacing: .1rem;
-  }
-  .social {
-    margin: auto 2rem auto auto;
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ________________________________ DESKTOP SITE CONFIGURATION ________________________________________ */
-/* ____________________________________________________________________________________________________ */
-@media  (min-width: 1000px) {
-
-
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  outline: none;
-  text-decoration: none;
-}
-h2 {
-    font-family: "Roboto", Arial, sans-ser;
-}
-
-
-
-
-
-
-
-.wrapper {
-    display: flex; 
-    flex-direction: row;
-    width: 400vw;
-    transform: rotate(90deg) translateY(-100vh);
-    transform-origin: top left;
-}
-
-.outer-wrapper {
-    width: 100vh;
-    height: 100vw;
-    transform: rotate(-90deg) translateX(-100vh);
-    transform-origin: top left;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    position: absolute;
-    -ms-overflow-style: none;
-                                /*  +++++++++  SNAP DESKTOP STUFF ++++++++++ */
-    /* scroll-snap-type: mandatory;  */
-    /* scroll-snap-points-y: repeat(3rem); */
-    scroll-snap-type: y mandatory;
-    scroll-behavior: smooth;
-}
-
-.slide {
+/* 6) Hero CTAs -------------------------------------------------------------- */
+.hero-ctas {
+  display: grid; gap: 0;
+  /* Full-bleed like original buttons */
   width: 100vw;
-  height: 100vh;
-  
-  -webkit-overflow-scrolling: touch;
-  scroll-snap-align: start;
-  /*  +++++++++  SNAP  DESKTOP  STUFF ++++++++++ */
-  /* scroll-snap-stop: always; */
+  position: relative; left: 50%; transform: translate(-50%, 0);
+  /* Layer above the grid texture, below the black overlay */
+  z-index: 20;
+  padding-inline: 0;
+  /* Position slightly higher on the screen */
+  margin-top: -8vh;
+  opacity: 1;
 }
-
-
-
-
-
-.mute-btn {
-    margin:2rem;
-    width: 2rem;
-    height: 2rem;
-    
-    z-index: 100;/* +++++++++++++ Remember that Z-INDEX only works after position: relative or absolute*/
-    position: relative;
-
-    border: none;
-    background: url("media/mute.png") no-repeat;
-    background-size: 2rem auto;/* to specify dimensions explicitly */
-    cursor:pointer;
-    opacity: .5;
-}
-
-.mute-btn:hover {
-    opacity: 1;
-}
-
-.section-1 {
-    background: #000;
-    background-size: cover;
-    width: 100vw;
-    height:100vh;
-}
-.section-1-heading-wrapper{
-    position: absolute;
-    text-align: center;
-    color: #fff;
-    padding-top: 100vh;
-    padding-left:100vw;
-    transform: translate(-50%, -60%);
-}
-.section-1-heading {
-    font-family: Roboto;
-    font-size: 2em;
-    font-weight: 300;
-    letter-spacing:.1em;
-
-    opacity:0;
-    animation:fadeIn 5s;
-    animation-delay: 1s;
-    -webkit-animation-fill-mode: forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale3d(.75, .75,1);
-  }
-  to {
-    opacity: 1;
-    transform: scale3d( 1, 1, 1);
-  }
-}
-/*_______________________________________   H O M E    DESKTOP   ___________________________*/
-
-.section-2 {
-    width: 100vw;
-    height:100vh;
-}
-.section-2-wrapper video{
-    z-index: -1;
-    width: 100vw;
-    height: 100vh;
-    position: absolute;
-    object-fit: cover;
-    
-}
-#texture{
-    z-index: 95;
-    width: 100vw;
-    height: 100vh;
-    position: absolute;
-    background: url('media/texture.png');
-    transition: 2000ms;
-    
-}
-.home-options-wrapper {
-    position: absolute;
-}
-
-
-#myVideo {
-  filter: grayscale(100%);
-  transition:4000ms;
-}
-
-
-
-#home-btns-wrapper {
-    opacity: 0;
-    /* position: relative;  +++++++ After a bizilion years, one container inside another, behold, the perfect centerization */
-    position: absolute;
-    z-index: 90;
-    padding-top: 100vh;
-    padding-left:100vw;
-    transform: translate(-50%, -50%);
-    animation-delay: 1s;
-    transition:35000ms;
-}
-.home-btn {
-    margin: auto;
-    color: #fff;
-    
-    cursor:pointer;
-    letter-spacing: 0.3rem;
-    font-size: 2rem;
-    font-weight: 300;
-    font-family: "Roboto", serif;
-    
-    padding: 1rem;
-    display:flex;
-    width: 100vw;
-    justify-content: center;
-    background: transparent;
-    border: none;
-    text-shadow: 0 0 5px #fff, 0 0 7px #fff, 0 0 13px #000, 0 0 25px #000;
-    transition: 700ms;
-}
-
-.home-btn:hover {
-    background: rgb(0, 0, 0, .4);
-    padding: 2.5rem;
-}
-#click {
-  height: 100vh;
-  justify-content: center;/*THIS IS HOW YOU ACTUALY ALIGN STUFF ON A DIV*/
-  align-content: end;
-  object-fit:cover;
-  display: grid;
-  padding-bottom: 3rem;
-}
-#img-click {
-  width: 100px;
-  height: 100px;
-  
-}
-
-
-  /*_________________________________   S E C T I O N   3   DESKTOP  ___________________________*/
-  .section-3 {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 40vh 20vh 35vh;
-    margin: 0;
-  }
-  .section-3 h2 {
-    margin:2rem;
-    text-align: center;
-  }
-  .section-3 p {
-    margin-left: 4rem;
-    margin-right: 4rem;
-    text-align: justify;
-    font-size: 1.2rem;
-    font-family: "Crimson Text";
-  }
-
-  /*_________________________________   P O R T R A I T S     D E S K T O P ___________________________*/
-  .portraits-text-wrapper {
-    grid-column: 1 / 2;
-    grid-row: 1 / 2;
-    background: #ffff;
-    text-align: center;
-  }
-  .portraits-heading {
-    font-family: "Crimson Pro";
-    font-size: 2rem;
-    font-weight: 700;
-  }
-  
-  .portraits-img-wrapper {
-    grid-column: 1 / 2;
-    grid-row: 2 / 4;
-    position: relative;
-    margin-left:50%;
-    margin-top: 2rem;
-    transform: translate(-50%, 0);
-    min-width: 230px;
-    
-    min-height: 220px;
-    height: 100%;
-    width: 63%;
-
-    overflow: hidden;
-    color: #ffffff;
-    text-align: right;
-    line-height: 1.4em;
-    background-color: #1a1a1a;
-    font-size: 16px;
-  }
-  .portraits-img-wrapper * {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    -webkit-transition: all 15s ease;
-    transition: all 1s ease;
-  }
-  .portraits-img-wrapper img {
-    position: absolute;
-    right: 0%;
-    top: 50%;
-    opacity: 1;
-    width: 100%;
-    -webkit-transform: translate(0%, -50%);
-    transform: translate(0%, -50%);
-  }
-  .portraits-img-wrapper figcaption {
-    position: absolute;
-    width: 50%;
-    top: 50%;
-    left: 0;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-    padding: 20px 0 20px 20px;
-  }
-  .portraits-img-wrapper h2,
-  .portraits-img-wrapper p {
-    margin: 0;
-    width: 100%;
-    -webkit-transform: translateX(20px);
-    transform: translateX(20px);
-    opacity: 0;
-  }
-  .portraits-img-wrapper h2 {
-    font-family: 'Roboto', Arial, sans-serif;
-    font-weight: 100;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-  }
-  .portraits-img-wrapper p {
-    font-size: 1.2em;
-    font-family: 'Roboto', Arial, sans-serif;
-    text-align: left;
-  }
-  .portraits-img-wrapper a {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1;
-  }
-  .portraits-img-wrapper:hover img,
-  .portraits-img-wrapper.hover img {
-    width: 55%;
-    right: -10%;
-  }
-  .portraits-img-wrapper:hover figcaption h2,
-  .portraits-img-wrapper.hover figcaption h2,
-  .portraits-img-wrapper:hover figcaption p,
-  .portraits-img-wrapper.hover figcaption p {
-    -webkit-transform: translateX(0px);
-    transform: translateX(0px);
-    opacity: 1;
-  }
-
-  .home-imgs {
-    max-width: 100%;
-    max-height: 100%;
-  }
-  .button {
-    margin: 2rem;
-  }
-
-  /*_________________________________   W E D D I N G S   D E S K T O P ___________________________*/
-  .weddings-img-wrapper {
-    grid-column: 2 / 3;
-    grid-row: 1 / 3;
-    position: relative;
-    margin-left:50%;
-    transform: translate(-50%, 0);
-    min-width: 230px;
-    min-height: 220px;
-    height: 90%;
-    width: 60%;
-    color: #ffffff;
-    text-align: right;
-    line-height: 1.4em;
-    background-color: #1a1a1a;
-    font-size: 16px;
-  }
-  .weddings-img-wrapper * {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    -webkit-transition: all 15s ease;
-    transition: all 1s ease;
-  }
-  .weddings-img-wrapper img {
-    position: absolute;
-    right: 0%;
-    top: 50%;
-    opacity: 1;
-    width: 100%;
-    -webkit-transform: translate(0%, -50%);
-    transform: translate(0%, -50%);
-  }
-  .weddings-img-wrapper figcaption {
-    position: absolute;
-    width: 50%;
-    top: 50%;
-    left: 0;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-    padding: 20px 0 20px 20px;
-  }
-  .weddings-img-wrapper h2,
-  .weddings-img-wrapper p {
-    margin: 0;
-    width: 100%;
-    -webkit-transform: translateX(20px);
-    transform: translateX(20px);
-    opacity: 0;
-  }
-  .weddings-img-wrapper h2 {
-    font-family: 'Roboto', Arial, sans-serif;
-    font-weight: 100;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-  }
-  .weddings-img-wrapper p {
-    font-size: 1.2em;
-    font-family: 'Roboto', Arial, sans-serif;
-    text-align: left;
-  }
-  .weddings-img-wrapper a {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1;
-  }
-  .weddings-img-wrapper:hover img,
-  .weddings-img-wrapper.hover img {
-    width: 55%;
-    right: -10%;
-  }
-  .weddings-img-wrapper:hover figcaption h2,
-  .weddings-img-wrapper.hover figcaption h2,
-  .weddings-img-wrapper:hover figcaption p,
-  .weddings-img-wrapper.hover figcaption p {
-    -webkit-transform: translateX(0px);
-    transform: translateX(0px);
-    opacity: 1;
-  }
-
-
-  .weddings-text-wrapper {
-    grid-column: 2 / 3;
-    grid-row: 3 / 4;
-    background: #ffff;
-    text-align: center;
-  }
-  .weddings-heading {
-    font-family: "Tangerine";
-    font-size: 2.5rem;
-  }
-  .projects-text-wrapper {
-    background: #fff;
-    text-align: center;
-  }
-
-  /*_________________________________  P R O J E C T S   D E S K T O P___________________________*/
-  .projects-img-wrapper {
-    grid-column: 3 / 4;
-    grid-row: 2 / 4;
-    position: relative;
-    /* margin: 10px 20px; */
-    margin-left:50%;
-    margin-top: 2rem;
-    transform: translate(-50%, 0);
-    min-width: 230px;
-    
-    min-height: 220px;
-    height: 100%;
-    width: 60%;
-    
-    color: #ffffff;
-    text-align: right;
-    line-height: 1.4em;
-    background-color: #1a1a1a;
-    font-size: 16px;
-  }
-  .projects-img-wrapper * {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    -webkit-transition: all 15s ease;
-    transition: all 1s ease;
-  }
-  .projects-img-wrapper img {
-    position: absolute;
-    right: 0%;
-    top: 50%;
-    opacity: 1;
-    width: 100%;
-    -webkit-transform: translate(0%, -50%);
-    transform: translate(0%, -50%);
-  }
-  .projects-img-wrapper figcaption {
-    position: absolute;
-    width: 50%;
-    top: 50%;
-    left: 0;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-    padding: 20px 0 20px 20px;
-  }
-  .projects-img-wrapper h2,
-  .projects-img-wrapper p {
-    margin: 0;
-    width: 100%;
-    -webkit-transform: translateX(20px);
-    transform: translateX(20px);
-    opacity: 0;
-  }
-  .projects-img-wrapper h2 {
-    font-family: 'Roboto', Arial, sans-serif;
-    font-weight: 100;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-  }
-  .projects-img-wrapper p {
-    font-size: 1.2em;
-    font-family: 'Roboto', Arial, sans-serif;
-    text-align: left;
-  }
-  .projects-img-wrapper a {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1;
-  }
-  .projects-img-wrapper:hover img,
-  .projects-img-wrapper.hover img {
-    width: 55%;
-    right: -10%;
-  }
-  .projects-img-wrapper:hover figcaption h2,
-  .projects-img-wrapper.hover figcaption h2,
-  .projects-img-wrapper:hover figcaption p,
-  .projects-img-wrapper.hover figcaption p {
-    -webkit-transform: translateX(0px);
-    transform: translateX(0px);
-    opacity: 1;
-  }
-
-
-
-
-
-
-
-
-  /*____________________________________________  BUTTONS FORMAT DESKTOP ______________________________________ */
-
-  .button {
-    color:#fff;
-    border:none;
-    position:relative;
-    height:60px;
-    font-size:1.6em;
-    padding:0 2em;
-    cursor:pointer;
-    transition:800ms ease all;
-    outline:none;
-    /* margin-bottom: 2rem; */
-  }
-  .button:hover {
-    background:#fff;
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
-  }
-  .button:before,.button:after{
-    content:'';
-    position:absolute;
-    top:0;
-    right:0;
-    height:2px;
-    width:0;
-    transition:400ms ease all;
-  }
-  .button:after{
-    right:inherit;
-    top:inherit;
-    left:0;
-    bottom:0;
-  }
-  .button:hover:before,.button:hover:after{
-    width:100%;
-    transition:800ms ease all;
-  }
-  .button:active{
-    color:#fff;
-  }
-
-  /* _________________________   PORTRAITS BUTTON  DESKTOP  __________________________ */
-  .weddings-btn {
-    background:#D0253C;
-  }
-  .weddings-btn:hover{
-    color:#D0253C;
-  }
-  .weddings-btn:before,.weddings-btn:after{
-    background: #D0253C;
-  }
-  .weddings-btn:active{
-    background:#D0253C;
-  }
-  
-  /* _________________________   PORTRAITS BUTTON  DESKTOP  __________________________ */
-
-  .portraits-btn {
-    background:#2f2a50;
-  }
-  .portraits-btn:hover{
-    color:#2f2a50;
-  }
-  .portraits-btn:before,.portraits-btn:after{
-    background: #2f2a50;
-  }
-  .portraits-btn:active{
-    background:#2f2a50;
-  }
-  /* _________________________   PROJECTS BUTTON   DESKTOP  __________________________ */
-  .projects-btn {
-    background:#f4572A;
-  }
-  .projects-btn:hover{
-    color:#f4572A;
-  }
-  .projects-btn:before,.projects-btn:after{
-    background: #f4572A;
-  }
-  .projects-btn:active{
-    background:#f4572A;
-  }
-
-
-
-
-
-  ::-webkit-scrollbar {
-      display: none;
-  }
-
-}
-
-  /*____________________________________________   F O O T E R    D E S K T O P______________________________*/
-.footerh {
+<<<<<<< ours
+/* Original index buttons (portraits / weddings / projects) */
+.hero-ctas .button {
+  color: #fff;
+  border: none;
   position: relative;
-  grid-column: 1 / 4;
-  grid-row: 4 / 5;
-  margin: 0;
-  background: #707070;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  padding-left: 1em;
-  padding-right: 1em;
-  margin-bottom: -1rem;
+  height: 3.5rem;
+  font-size: clamp(1.3rem, 6vw, 2rem);
+  cursor: pointer;
+  transition: 1000ms ease all;
+  outline: none;
+  padding: 1rem;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  letter-spacing: 0.3rem;
+  background: transparent;
+  border-radius: 0;
+  text-shadow: 0 0 5px #fff, 0 0 7px #fff, 0 0 13px #000, 0 0 25px #000;
 }
-.name {
-  margin: auto 2rem;
-  font-size: 1.5rem;
-  color: #ffff;
-  font-family: "Roboto";
-  font-weight: 100;
-  letter-spacing: .1rem;
+.hero-ctas .button:hover {
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
-.social {
-  margin: auto 2rem auto auto;
+.hero-ctas .button:before, .hero-ctas .button:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background: #fff;
+  transition: width 400ms ease;
 }
-.source-img {
-  max-width: 30%;
-  margin-bottom: 2%;
+.hero-ctas .button:before { top: 0; }
+.hero-ctas .button:after { bottom: 0; }
+.hero-ctas .button:hover:before, .hero-ctas .button:hover:after { width: 100%; right: 0; }
+=======
+.cta { display: block; text-align: center; padding: 18px 16px; border-radius: 12px; font-size: 1.0625rem; }
+/* Hero CTA overrides to mimic original style */
+.hero-ctas .cta {
+  background: transparent; border: none; color: rgba(255,255,255,0.85);
+  display: flex; justify-content: center; align-items: center;
+  width: 100%; min-height: 56px;
+  letter-spacing: 0.3rem; font-size: clamp(1.25rem, 6vw, 2rem); font-weight: 300;
+  border-radius: 0; /* remove roundness */
+  /* Stronger default glow for visibility */
+  text-shadow: 0 0 6px rgba(255,255,255,0.55), 0 0 12px rgba(255,255,255,0.35), 0 0 18px rgba(0,0,0,0.6);
+  transform: scale(1);
+  transition: color 1s ease, opacity 1s ease, transform 1s ease, text-shadow 1s ease, background-color 1s ease;
+}
+.hero-ctas .cta:hover {
+  color: #ffffff;
+  opacity: 1;
+  transform: scale(1.05);
+  /* More visible background on hover */
+  background: rgba(0, 0, 0, 0.55);
+  /* Stronger white glow around the text */
+  text-shadow: 0 0 12px rgba(255,255,255,0.95), 0 0 24px rgba(255,255,255,0.75), 0 0 36px rgba(255,255,255,0.5);
+  text-decoration: none;
+}
+.hero-ctas .cta.primary { color: rgba(255,255,255,0.85); }
+>>>>>>> theirs
+
+/* 7) Floating CTA ----------------------------------------------------------- */
+.floating-cta {
+  position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%);
+  z-index: 30; padding: 12px 18px; border-radius: 999px; background: #fff; color: #000; border: 1px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+.floating-cta:hover { background: #e9e9e9; text-decoration: none; }
+
+/* Full-screen black overlay (fades on click) under title */
+.overlay-black { position: fixed; inset: 0; background: #000; z-index: 150; opacity: 1; transition: opacity 4s ease 1s; }
+.overlay-black.is-hidden { opacity: 0; pointer-events: none; }
+
+/* 8) Intro Stages (state machine styling) ---------------------------------- */
+/* body.stage-0 #bgVideo { filter: grayscale(1); } */
+body.stage-0 .hero-ctas { opacity: 1; pointer-events: auto; }
+body.stage-0 .intro-title { position: relative; top: 0; left: 0; opacity: 0; animation: titleFade 1.2s ease forwards 0.6s; }
+@keyframes titleFade { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+
+/* body.stage-1 #bgVideo { filter: grayscale(1); } */
+body.stage-1 .hero-ctas { opacity: 1; pointer-events: auto; }
+
+body.stage-2 #bgVideo { filter: grayscale(0); }
+body.stage-2 .hero-ctas { opacity: 1; transform: translate(-50%, 0); }
+/* Tuck the title in final stage to avoid duplication with brand in nav */
+body.stage-2 .intro-title { opacity: 1; pointer-events: auto; }
+
+/* 9) Footer ----------------------------------------------------------------- */
+.site-footer { border-top: 1px solid rgba(255,255,255,0.12); margin-top: 24px; }
+.footer-inner {
+  padding: 20px 12px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;
+}
+.site-footer nav a { margin-right: 12px; }
+.social a { margin-left: 12px; }
+
+/* 10) Page Content Shells --------------------------------------------------- */
+.page { max-width: 960px; margin: 0 auto; padding: 20px 12px 80px; }
+.page h1 { font-size: 2rem; font-weight: 600; margin: 10px 0 20px; }
+.page section { margin: 24px 0; }
+.muted { color: var(--muted); }
+
+/* Work page — original buttons copied -------------------------------------- */
+.work-ctas { display: grid; gap: 12px; width: min(720px, 92vw); margin: 24px auto 0; }
+.work-ctas .button {
+  color:#fff;
+  border:none;
+  position:relative;
+  height:3rem;
+  font-size:1.2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+  padding: 1rem;
+}
+.work-ctas .button:hover {
+  background:#fff;
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+.work-ctas .button:before,.work-ctas .button:after{
+  content:'';
+  position:absolute;
+  height:2px;
+  width:0;
+  background:#fff;
+  transition:400ms ease all;
+}
+.work-ctas .button:before { top:0; right:0; }
+.work-ctas .button:after { bottom:0; left:0; }
+.work-ctas .button:hover:before, .work-ctas .button:hover:after{ width:100%; }
+
+/* 11) Forms ----------------------------------------------------------------- */
+label { display: block; margin-bottom: 8px; }
+input, select, textarea { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.06); color: var(--fg); }
+input[type="range"] { width: 100%; }
+button[type="submit"], .btn { padding: 12px 16px; border-radius: 10px; background: #fff; border: 1px solid #fff; color: #000; cursor: pointer; }
+button[type="submit"]:hover, .btn:hover { background: #e9e9e9; }
+
+/* 12) Reduced Motion -------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* 13) Breakpoints: ≥768px --------------------------------------------------- */
+@media (min-width: 768px) {
+  .intro-title { font-size: 4rem; }
+  .hero-ctas { gap: 0; }
 }

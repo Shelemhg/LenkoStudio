@@ -1,246 +1,255 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="style.css" />
-        <link rel="icon" type="image/png" href="media/Logo.png">
-        <title>Lenko Studio</title>        
-    </head>
-    <body>
-        <audio
-            id="mySong" 
-            autoplay
-            loop>
-            <source src="media/audio.mp3" type="audio/mpeg">
-                Audio not supported by device.
-        </audio>
+<!doctype html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8" />
+			<meta name="viewport" content="width=device-width, initial-scale=1" />
+			<link rel="icon" type="image/png" href="media/Logo.png" />
+			<title>Lenko Studio</title>
+			<link rel="preload" as="image" href="media/autum.jpg" />
+			<link rel="stylesheet" href="style.css" />
+			<meta name="description" content="Lenko Studio — Cinematic photo and video. Book a shoot, explore work, and discover Orana." />
+		</head>
+		<body class="stage-0">
+			<a id="skipIntro" class="skip-link" href="#main">Skip intro</a>
 
-        <script>
-            var song = document.getElementById("mySong");
-            
-            function Mute() { 
-                if(song.paused == true){
-                    song.play();
-                }else{
-                    song.pause();
-                }
-            }             
-        </script> 
+			<header class="site-header" role="banner">
+			<nav class="site-nav" aria-label="Primary">
+				<a class="brand" href="index.html" aria-current="page">Lenko Studio</a>
+				<ul class="nav-list">
+				<li><a href="portfolio.html">Portfolio</a></li>
+				<li><a href="services.html">Services</a></li>
+				<li><a href="case-studies.html">Case Studies</a></li>
+				<li><a href="pricing.html">Pricing</a></li>
+				<li><a href="about.html">About</a></li>
+				<li><a href="contact.html">Contact</a></li>
+				<li><a class="orana-link" href="orana.html" aria-label="For Creators — Orana">For Creators — Orana</a></li>
+				</ul>
+			</nav>
 
+			<button id="soundToggle" class="sound-toggle" aria-pressed="false" aria-label="Sound off">Sound Off</button>
+			</header>
+			<div id="blackOverlay" class="overlay-black" aria-hidden="true"></div>
 
-        <div class="outer-wrapper">
-            <div class="wrapper">
-                <!-- ___________________________________  S E C T I O N  1   ____________________________________-->
-                <section class="section-1 slide">
+			<main id="main" class="home" role="main">
+				<section class="hero" aria-label="Cinematic Intro">
+					<div class="video-wrap" aria-hidden="true">
+					<video id="bgVideo" muted playsinline loop preload="none" poster="media/autum.jpg"></video>
+					<div class="scrim"></div>
+					</div>
+					<div id="gridOverlay" class="grid-overlay" aria-hidden="true"></div>
 
+					<div class="hero-content">
+						<h1 id="introTitle" class="intro-title" tabindex="0">Lenko Studio</h1>
 
-                    <!-- _________________  M U T E    B U T T O N   ____________-->
-                    <div class="mute-wrapper">
-                        <button
-                            class="mute-btn"
-                            onclick="Mute()">
-                        </button>
-                    </div>
-                    <div class="section-wrapper section-1-wrapper">
-                        <div class="section-1-heading-wrapper">
-                            <h1 class="section-1-heading">
-                                Lenko Studio</h1>
-                        </div>
-                    </div>
-                </section>
-                    <!-- _________________________________________  S E C T I O N  2   ____________________________________-->
-                <section class="section-2 slide">
-                    <div 
-                        id="texture"
-                        onclick="Play()">
-                    </div>
-                    <div class="section-wrapper section-2-wrapper">
-                        
-                        <video
-                            loop
-                            muted
+						<div id="heroCtas" class="hero-ctas" aria-live="polite">
+							<a class="cta primary" href="contact.html" id="ctaBook">Book a Shoot</a>
+							<a class="cta" href="portfolio.html" id="ctaExplore">Explore Portfolio</a>
+							<a class="cta" href="orana.html" id="ctaOrana">For Creators — Orana</a>
+						</div>
+					</div>
+				</section>
+				<section aria-label="Orana Teaser" style="padding:20px 12px; max-width:960px; margin: 0 auto;">
+					<h2 style="font-size:1.25rem; margin: 0 0 12px;">For Creators — Orana</h2>
+					<div style="display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+					<div style="display:grid; gap:8px;">
+						<div style="height:28px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:8px; position:relative; overflow:hidden;">
+						<label style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:.9rem;">Evenings</label>
+						<span aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(90deg, var(--accent), #ff84b0); width:85%"></span>
+						</div>
+						<div style="height:28px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:8px; position:relative; overflow:hidden;">
+						<label style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:.9rem;">Mornings</label>
+						<span aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(90deg, var(--accent), #ff84b0); width:65%"></span>
+						</div>
+					</div>
+					</div>
+					<p class="muted" style="margin-top:10px;">Small insights to plan better posts.</p>
+					<p><a class="cta" href="orana.html">Visit Orana</a></p>
+				</section>
+				<a class="floating-cta" href="contact.html">Book a Shoot</a>
+			</main>
 
-                            id="myVideo"
-                            preload="auto"
-                            
-                        >
-                            <source 
-                                src="media/oceanvideo.mp4" 
-                                type="video/mp4">
-                        </video>
+			<footer class="site-footer" role="contentinfo">
+			<div class="footer-inner">
+				<p>© <span id="year"></span> Lenko Studio</p>
+				
+				<div class="social">
+				<a href="https://www.instagram.com/lenkostudio/" target="_blank" rel="noopener">Instagram</a>
+				<a href="https://www.facebook.com/LenkoStudio/" target="_blank" rel="noopener">Facebook</a>
+				</div>
+			</div>
+			</footer>
 
-                        <script>
-                            var video = document.getElementById("myVideo");
-                            function Play() { 
-                                video.play();
-                                song.play();
-                                document.getElementById('myVideo').style.cssText = 'filter:none; position: absolute; z-index: -1 ';
-                                document.getElementById('texture').style.cssText = 'filter:none; position: absolute; z-index: 0';
-                                document.getElementById('home-btns-wrapper').style.cssText = 'opacity: 1; position: absolute;';
-                                document.getElementById('img-click').style.cssText = 'opacity: 0;';
-                                
-                            }
-                        </script>
+			<audio id="ambientAudio" preload="none" loop>
+			<source src="media/audio.mp3" type="audio/mpeg" />
+			</audio>
 
+			<script>
+			(function () {
+				const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+				const saveData = !!(navigator.connection && navigator.connection.saveData);
+				const body = document.body;
+				const bgVideo = document.getElementById('bgVideo');
+				const title = document.getElementById('introTitle');
+				const ctas = document.getElementById('heroCtas');
+				const soundToggle = document.getElementById('soundToggle');
+				const ambient = document.getElementById('ambientAudio');
+				const blackOverlay = document.getElementById('blackOverlay');
 
-                        <div class="home-options-wrapper">
-                            <div id="home-btns-wrapper">
-                                <button class="btn1 home-btn">
-                                    Gallery
-                                </button>
-                                <button id="weddings-btn" class="home-btn">
-                                    Weddings
-                                </button>
-                                <button id="portraits-btn" class="home-btn">
-                                    About Us
-                                </button>
-                            </div>
-                        </div>
-                        <div id="click">
-                            <img id="img-click" src="media/click.gif" alt="click">
-                        </div>
-                        
-                    </div>
-                </section>
-                 <!-- ___________________________________  S E C T I O N  3  ____________________________________ -->
-                <section class="slide">
-                    <div class="section-3">
-                        <!-- _________________________________________  Portraits   ____________________________________-->   
-                        <div class="portraits-text-wrapper">
-                            <h2 class="portraits-heading">
-                                Portraits
-                            </h2>
-                            <p class="portraits-introduction">
-                                Social media has become your presentation card. 
-                                Either Facebook, Linked In, Instagram and many more, 
-                                your profile picture is more relevant than ever. 
-                                Transmit what you want and not what your phone can.
-                                Click bellow to know more:
-        
-            
-                            </p>
-                            <button class="portraits-btn button">Portraits</button>
-                        
-                        </div>
-                        <figure class="portraits-img-wrapper">
-                            <img src="media/portraits.jpg" alt="portrait model">
-                            <figcaption>
-                                <h2>
-                                    You.
-                                </h2>
-                                <p>
-                                    <br>
-                                    "Your greatest work: your most important creation is and will ever be you"
-                                    <br><br>
-                                    Lawrence E. Cobridge
-                                </p>
-                            </figcaption>
-                        </figure>
-                        <!-- _________________________________________  Weddings   ____________________________________-->
-                        <div class="weddings-text-wrapper">
-                            <h2 class="weddings-heading">
-                                Weddings
-                            </h2>
-                            <p class="weddings-introduction">
-                                "Perfect moments only happen once." Make sure they last forever 
-                                as you would like to relive them.
-            
-                            </p>
-                            <button class="weddings-btn button">Weddings</button>
-                        </div>
-                        <figure class="weddings-img-wrapper">
-                            <img src="media/weddings.jpg" alt="couple">
-                            <figcaption>
-                                <h2>
-                                    "Perfect moments only happen once." 
-                                </h2>
-                                <p>
-                                    <br>
-                                    Make sure they last forever 
-                                    as you would like to relive them.
-                                </p>
-                            </figcaption>
-                        </figure>
-                        <!-- _________________________________________  Projects   ____________________________________-->
-                        <div class="projects-text-wrapper">
-                            <h2 class="projects-heading">
-                                Projects
-                            </h2>
-                            <p class="projects-introduction">
-                                Either for your portfolio, your business or an idea you have, 
-                                bring them to life and present them to the world as you always intended.
-                            </p>
-                            <button class="projects-btn button">Projects</button>
-                            
-                        </div>
-                        <figure class="projects-img-wrapper">
-                            <img src="media/projects.jpg" alt="project model">
-                            <figcaption>
-                                <h2>
-                                    Color Shaped
-                                </h2>
-                                <p>
-                                    <br>
-                                    An abstract exploration of the femenine beauty. 
-                                    Intense colors and sharp edges enheance the natural beauty 
-                                    of the model.
-                                </p>
-                            </figcaption>
-                        </figure>
-                    </div>    
-                    
-                    
+				// Intro persistence across intra-site navigation (clears on refresh)
+				const INTRO_KEY = 'introDone';
+				const navEntry = (performance && typeof performance.getEntriesByType === 'function') ? performance.getEntriesByType('navigation')[0] : null;
+				let isReload = false;
+				if (navEntry && navEntry.type) {
+					isReload = navEntry.type === 'reload';
+				} else if (performance && performance.navigation) {
+					// Fallback for older browsers
+					isReload = performance.navigation.type === 1; // TYPE_RELOAD
+				}
+				if (isReload) {
+					try { sessionStorage.removeItem(INTRO_KEY); } catch (_) {}
+				}
 
+				let stage = 0; // 0 = black, 1 = B&W animating, 2 = color + CTAs
+				let completed = false;
+				let animTimer = null;
 
+				function track(name) {
+				if (window.plausible) {
+					try { window.plausible(name); } catch (e) {}
+				} else {
+					console.log('[analytics]', name);
+				}
+				}
 
+				function setStage(next, opts = {}) {
+				stage = next;
+				body.classList.remove('stage-0', 'stage-1', 'stage-2');
+				body.classList.add('stage-' + next);
+				if (next === 2) {
+					completed = true;
+					// Mark intro as completed for this tab's session
+					try { sessionStorage.setItem(INTRO_KEY, '1'); } catch (_) {}
+				}
+				}
 
+				function ensureVideoLoaded() {
+				if (!bgVideo || bgVideo.dataset.loaded) return;
+				const src = 'media/oceanvideo.mp4';
+				const source = document.createElement('source');
+				source.src = src;
+				source.type = 'video/mp4';
+				bgVideo.appendChild(source);
+				bgVideo.dataset.loaded = '1';
+				bgVideo.muted = true;
+				const playPromise = bgVideo.play();
+				if (playPromise && typeof playPromise.then === 'function') {
+					playPromise.catch(() => {});
+				}
+				}
 
+				function firstInteraction() {
+				if (completed) return;
+				if (stage === 0) {
+					track('intro_click');
+					setStage(1);
+					ensureVideoLoaded();
+					if (blackOverlay) blackOverlay.classList.add('is-hidden');
+					// Start audio on first explicit click
+					setSoundEnabled(true);
+					clearTimeout(animTimer);
+					animTimer = setTimeout(() => {
+					setStage(2);
+					track('intro_complete');
+					}, 1000);
+				} else if (stage === 1) {
+					clearTimeout(animTimer);
+					setStage(2);
+					track('intro_fast_forward');
+					if (blackOverlay) blackOverlay.classList.add('is-hidden');
+				}
+				}
 
-                    <!-- __________________________________________     F O O T E R   ______________________________________________-->
-                    <div class="footerh">
-                        <p class="name">
-                            &copy; 2020 Lenko Studio
-                        </p>
-                        <div class="social">
-                            <a 
-                                href="https://www.instagram.com/lenkostudio/" 
-                                target="_blank"
-                            >
-                            <img 
-                                class= "instagram-img"
-                                src="https://byui-cit.github.io/wdd130/images/icons/color/instagram.png" 
-                                alt="Instagram icon"
-                            />
-                            </a>
-                            <a 
-                                href="https://www.facebook.com/LenkoStudio/" 
-                                target="_blank">
-                                <img 
-                                    class= "facebook-img"
-                                    src="https://byui-cit.github.io/wdd130/images/icons/color/facebook.png" 
-                                    alt="Facebook icon"
-                                />
-                            </a>
-                            <a 
-                                href="https://obtainable-rowan-check.glitch.me/site-plan.html" 
-                                target="_blank">
-                                <img 
-                                    class= "source-img"
-                                    src="media/source.jpg" 
-                                    alt="source image"
-                                />
-                            </a>
-                        </div>
-                    </div>
-                </section>
+				title.addEventListener('click', firstInteraction);
+				title.addEventListener('keydown', (e) => {
+				if (e.key === 'Enter' || e.key === ' ') {
+					e.preventDefault();
+					firstInteraction();
+				}
+				});
+				document.addEventListener('click', (e) => {
+				if (!e.target.closest('.hero-ctas')) firstInteraction();
+				}, { capture: true });
 
-                
-            </div>
-        </div>
+				// If intro already completed in this tab, restore final state immediately
+				let introWasDone = false;
+				try { introWasDone = sessionStorage.getItem(INTRO_KEY) === '1'; } catch (_) {}
+				if (introWasDone) {
+					setStage(2);
+					if (blackOverlay) blackOverlay.classList.add('is-hidden');
+					ensureVideoLoaded();
+					track('intro_restore');
+				} else if (prefersReduced) {
+					setStage(2);
+					if (blackOverlay) blackOverlay.classList.add('is-hidden');
+				} else {
+				track('intro_load');
+				if (!saveData && 'requestIdleCallback' in window) {
+					window.requestIdleCallback(() => ensureVideoLoaded(), { timeout: 1500 });
+				}
+				}
 
+				const LS_KEY = 'soundEnabled';
+				function updateSoundButton(enabled) {
+				soundToggle.setAttribute('aria-pressed', String(!!enabled));
+				soundToggle.textContent = enabled ? 'Sound On' : 'Sound Off';
+				soundToggle.setAttribute('aria-label', enabled ? 'Sound on' : 'Sound off');
+				}
+				function fadeVolume(target, ms = 400) {
+				const start = ambient.volume;
+				const steps = Math.max(1, Math.floor(ms / 50));
+				let i = 0;
+				const t = setInterval(() => {
+					i++;
+					const v = start + (target - start) * (i / steps);
+					ambient.volume = Math.max(0, Math.min(1, v));
+					if (i >= steps) {
+					clearInterval(t);
+					if (target === 0) ambient.pause();
+					}
+				}, 50);
+				}
+				function setSoundEnabled(enabled) {
+				localStorage.setItem(LS_KEY, enabled ? '1' : '0');
+				updateSoundButton(enabled);
+				if (enabled) {
+					try { ambient.play(); } catch (_) {}
+					fadeVolume(1, 400);
+					track('sound_toggle_on');
+				} else {
+					fadeVolume(0, 400);
+					track('sound_toggle_off');
+				}
+				}
+				const persisted = localStorage.getItem(LS_KEY) === '1';
+				ambient.volume = 0;
+				// Never auto-enable audio. Always start Off; only explicit toggle turns it on.
+				updateSoundButton(false);
+				soundToggle.addEventListener('click', () => {
+				const enabled = soundToggle.getAttribute('aria-pressed') !== 'true';
+				setSoundEnabled(enabled);
+				});
 
-    
-        
-    </body>
-</html>
+				document.getElementById('ctaBook').addEventListener('click', () => track('cta_book'));
+				document.getElementById('ctaExplore').addEventListener('click', () => track('cta_explore_work'));
+				document.getElementById('ctaOrana').addEventListener('click', () => track('cta_orana'));
+
+				document.getElementById('skipIntro').addEventListener('click', () => { if (blackOverlay) blackOverlay.classList.add('is-hidden'); setStage(2); setSoundEnabled(true); });
+				const y = document.getElementById('year');
+				if (y) y.textContent = new Date().getFullYear();
+				// Signal that index manages audio/toggle to avoid double-binding
+				window.__audioControllerActive = true;
+			})();
+			</script>
+			<script src="app.js"></script>
+		</body>
+	</html>

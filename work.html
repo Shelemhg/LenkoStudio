@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="media/Logo.png" />
+    <title>Lenko Studio — Work</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+      .grid figure { margin: 0; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.12); }
+      .grid figcaption { padding: 8px 10px; font-size: .95rem; color: var(--muted); }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header" role="banner">
+      <nav class="site-nav" aria-label="Primary">
+        <a class="brand" href="index.html">Lenko Studio</a>
+        <ul class="nav-list">
+          <li><a href="work.html" aria-current="page">Work</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="case-studies.html">Case Studies</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a class="orana-link" href="orana.html">For Creators — Orana</a></li>
+        </ul>
+      </nav>
+      <button id="soundToggle" class="sound-toggle" aria-pressed="false" aria-label="Sound off">Sound Off</button>
+    </header>
+
+    <main id="main" class="page" role="main">
+      <h1>Work</h1>
+      <div class="grid">
+        <figure>
+          <img src="media/portraits.jpg" alt="Portrait sample" />
+          <figcaption>Portraits</figcaption>
+        </figure>
+        <figure>
+          <img src="media/weddings.jpg" alt="Wedding sample" />
+          <figcaption>Weddings</figcaption>
+        </figure>
+        <figure>
+          <img src="media/projects.jpg" alt="Project sample" />
+          <figcaption>Projects</figcaption>
+        </figure>
+      </div>
+      <section class="work-ctas" aria-label="Original Actions">
+        <button class="portraits-btn button">Portraits</button>
+        <button class="weddings-btn button">Weddings</button>
+        <button class="projects-btn button">Projects</button>
+      </section>
+      <a class="floating-cta" href="contact.html">Book a Shoot</a>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+      <div class="footer-inner">
+        <p>© <span id="year"></span> Lenko Studio</p>
+        <nav aria-label="Legal">
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+        </nav>
+        <div class="social">
+          <a href="https://www.instagram.com/lenkostudio/" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://www.facebook.com/LenkoStudio/" target="_blank" rel="noopener">Facebook</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear();</script>
+  </body>
+  </html>
+
