@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="media/Logo.png" />
+    <title>Orana — For Creators</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .insights { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+      .chart { display: grid; gap: 8px; }
+      .bar { height: 28px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; position: relative; overflow: hidden; }
+      .bar span { position: absolute; inset: 0; background: linear-gradient(90deg, var(--accent), #ff84b0); width: var(--w, 20%); }
+      .bar label { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); font-size: .9rem; }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header" role="banner">
+      <nav class="site-nav" aria-label="Primary">
+        <a class="brand" href="index.html">Lenko Studio</a>
+        <ul class="nav-list">
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="case-studies.html">Case Studies</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a class="orana-link" href="orana.html" aria-current="page">For Creators — Orana</a></li>
+        </ul>
+      </nav>
+      <button id="soundToggle" class="sound-toggle" aria-pressed="false" aria-label="Sound off">Sound Off</button>
+    </header>
+
+    <main id="main" class="page" role="main">
+      <h1>Orana</h1>
+      <section>
+        <h2>What It Does</h2>
+        <p>Orana helps creators optimize posting times, formats, and captions using lightweight insights. It focuses on non-sensitive, testable variables and operates in a research-friendly mode that emphasizes transparency and control.</p>
+      </section>
+      <section>
+        <h2>How Orana Treats Your Data</h2>
+        <ul>
+          <li>Data sources: your authorized connections (e.g., TikTok OAuth) or publicly available pages where permitted.</li>
+          <li>Privacy first: tokens are stored securely; you can disconnect at any time.</li>
+          <li>Research mode: any sensitive/suggestiveness metrics are used only for correlation analysis on adult-only datasets.</li>
+          <li>We share only de-identified or aggregated insights where possible.</li>
+        </ul>
+        <p>Read the <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms</a> for details.</p>
+      </section>
+      <section>
+        <h2>Sample Insights</h2>
+        <div class="insights">
+          <div class="chart" aria-label="Best posting times">
+            <div class="bar" style="--w: 65%"><label>Mornings</label><span aria-hidden="true"></span></div>
+            <div class="bar" style="--w: 85%"><label>Evenings</label><span aria-hidden="true"></span></div>
+            <div class="bar" style="--w: 45%"><label>Weekends</label><span aria-hidden="true"></span></div>
+          </div>
+          <div class="chart" aria-label="Format performance">
+            <div class="bar" style="--w: 90%"><label>Short Reels</label><span aria-hidden="true"></span></div>
+            <div class="bar" style="--w: 70%"><label>Carousels</label><span aria-hidden="true"></span></div>
+            <div class="bar" style="--w: 50%"><label>Photos</label><span aria-hidden="true"></span></div>
+          </div>
+        </div>
+      </section>
+      <section>
+        <h2>Pricing (coming soon)</h2>
+        <p class="muted">Simple tiers with generous free usage.</p>
+      </section>
+      <section>
+        <h2>Join Waitlist</h2>
+        <form id="waitlist" novalidate>
+          <label for="email">Email</label>
+          <input id="email" type="email" placeholder="you@example.com" required />
+          <button type="submit" class="btn">Join</button>
+        </form>
+      </section>
+      <a class="floating-cta" href="contact.html">Book a Shoot</a>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+      <div class="footer-inner">
+        <p>© <span id="year"></span> Lenko Studio</p>
+        <nav aria-label="Legal">
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+        </nav>
+        <div class="social">
+          <a href="https://www.instagram.com/lenkostudio/" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://www.facebook.com/LenkoStudio/" target="_blank" rel="noopener">Facebook</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (function(){
+        document.getElementById('waitlist').addEventListener('submit', (e)=>{
+          e.preventDefault();
+          const email = document.getElementById('email').value.trim();
+          if (!email) return alert('Please enter an email.');
+          alert('Thanks for joining the Orana waitlist!');
+        });
+        const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
+      })();
+    </script>
+    <script src="app.js"></script>
+  </body>
+  </html>

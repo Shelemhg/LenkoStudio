@@ -4,8 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/png" href="media/Logo.png" />
-    <title>Lenko Studio — About</title>
+    <title>Lenko Studio — Pricing</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+      .tiers { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+      .card { border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 16px; }
+      .price { font-size: 1.4rem; font-weight: 700; margin: 6px 0 10px; }
+    </style>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -16,8 +21,8 @@
           <li><a href="portfolio.html">Portfolio</a></li>
           <li><a href="services.html">Services</a></li>
           <li><a href="case-studies.html">Case Studies</a></li>
-          <li><a href="pricing.html">Pricing</a></li>
-          <li><a href="about.html" aria-current="page">About</a></li>
+          <li><a href="pricing.html" aria-current="page">Pricing</a></li>
+          <li><a href="about.html">About</a></li>
           <li><a href="contact.html">Contact</a></li>
           <li><a class="orana-link" href="orana.html">For Creators — Orana</a></li>
         </ul>
@@ -26,14 +31,33 @@
     </header>
 
     <main id="main" class="page" role="main">
-      <h1>About</h1>
-      <section>
-        <p>We craft cinematic photo and video experiences. Mobile-first, accessible, and uncompromising on quality.</p>
-      </section>
-      <section>
-        <h2>Approach</h2>
-        <p>Story first. We design for motion with reduced-motion fallbacks, honor audio preferences, and focus on clarity.</p>
-      </section>
+      <h1>Pricing</h1>
+      <div class="tiers">
+        <div class="card">
+          <h2>Portraits — Starter</h2>
+          <div class="price">MXN $3,800</div>
+          <ul>
+            <li>1 hour, 1 location</li>
+            <li>5 edited photos</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2>Portraits — Pro</h2>
+          <div class="price">MXN $7,500</div>
+          <ul>
+            <li>2 hours, 2 locations</li>
+            <li>12 edited photos</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2>Weddings — Essentials</h2>
+          <div class="price">From MXN $18,000</div>
+          <ul>
+            <li>Ceremony + portraits</li>
+            <li>Online gallery</li>
+          </ul>
+        </div>
+      </div>
       <a class="floating-cta" href="contact.html">Book a Shoot</a>
     </main>
 

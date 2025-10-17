@@ -5,8 +5,8 @@
 
 /* 1) Design Tokens ---------------------------------------------------------- */
 :root {
-  --bg: #0a0a0a;
-  --fg: #f7f7f7;
+  --bg: #ffffff;
+  --fg: #111111;
   --muted: #c7c7c7;
   --accent: #ff4d8f; /* Orana Pink tone */
   --cta-bg: rgba(0, 0, 0, 0.5);
@@ -53,7 +53,8 @@ button { font: inherit; color: inherit; }
   grid-template-columns: 1fr auto;
   align-items: center;
   padding: 10px 12px;
-  background: linear-gradient(180deg, rgba(0,0,0,0.7), rgba(0,0,0,0));
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0,0,0,0.12);
 }
 .site-nav { display: flex; align-items: center; gap: 12px; }
 .brand { font-weight: 700; letter-spacing: 0.03em; }
@@ -62,7 +63,7 @@ button { font: inherit; color: inherit; }
   display: flex; gap: 12px; overflow-x: auto;
 }
 .nav-list a { padding: 6px 8px; border-radius: 6px; white-space: nowrap; }
-.nav-list a:hover { background: rgba(255,255,255,0.06); text-decoration: none; }
+.nav-list a:hover { background: rgba(0,0,0,0.06); text-decoration: none; }
 .orana-link { color: var(--accent); font-weight: 600; }
 
 .sound-toggle {
@@ -92,10 +93,12 @@ button { font: inherit; color: inherit; }
 /* 5.1) Hero Title ----------------------------------------------------------- */
 .intro-title { /* title must be above everything */
   position: relative; z-index: 210;
-  font-size: 3rem; font-weight: 300; letter-spacing: 0.08em; text-align: center; cursor: pointer;
-  transition: transform 300ms ease, opacity 300ms ease;
+  font-size: 3rem; font-weight: 200; letter-spacing: 0.08em; text-align: center; cursor: pointer;
+  color: #ffffff;
+  text-shadow: 0 0 0px rgba(255,255,255,0.85), 0 0 20px rgba(255,255,255,0.55);
+  transition: transform 300ms ease, opacity 300ms ease, text-shadow 300ms ease;
 }
-.intro-title:hover { transform: scale(1.06); text-shadow: 0 0 24px rgba(255,255,255,0.2); }
+.intro-title:hover { transform: scale(1.06); text-shadow: 0 0 16px rgba(255,255,255,0.95), 0 0 30px rgba(255,255,255,0.7); }
 @media (hover: none) {
   .intro-title { animation: pulse 4s infinite ease-in-out; }
   @keyframes pulse { 0%,100%{ transform: scale(1) } 50%{ transform: scale(1.04) } }
@@ -118,50 +121,12 @@ button { font: inherit; color: inherit; }
   margin-top: -8vh;
   opacity: 1;
 }
-<<<<<<< ours
-/* Original index buttons (portraits / weddings / projects) */
-.hero-ctas .button {
-  color: #fff;
-  border: none;
-  position: relative;
-  height: 3.5rem;
-  font-size: clamp(1.3rem, 6vw, 2rem);
-  cursor: pointer;
-  transition: 1000ms ease all;
-  outline: none;
-  padding: 1rem;
-  width: 100vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  letter-spacing: 0.3rem;
-  background: transparent;
-  border-radius: 0;
-  text-shadow: 0 0 5px #fff, 0 0 7px #fff, 0 0 13px #000, 0 0 25px #000;
-}
-.hero-ctas .button:hover {
-  background: rgba(0, 0, 0, 0.4);
-  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
-}
-.hero-ctas .button:before, .hero-ctas .button:after {
-  content: '';
-  position: absolute;
-  left: 0;
-  height: 2px;
-  width: 0;
-  background: #fff;
-  transition: width 400ms ease;
-}
-.hero-ctas .button:before { top: 0; }
-.hero-ctas .button:after { bottom: 0; }
-.hero-ctas .button:hover:before, .hero-ctas .button:hover:after { width: 100%; right: 0; }
-=======
 .cta { display: block; text-align: center; padding: 18px 16px; border-radius: 12px; font-size: 1.0625rem; }
 /* Hero CTA overrides to mimic original style */
 .hero-ctas .cta {
-  background: transparent; border: none; color: rgba(255,255,255,0.85);
+  background: transparent; border: none; color: rgba(255,255,255,0.9);
   display: flex; justify-content: center; align-items: center;
-  width: 100%; min-height: 56px;
+  width: 100%; min-height: 76px; /* taller buttons */
   letter-spacing: 0.3rem; font-size: clamp(1.25rem, 6vw, 2rem); font-weight: 300;
   border-radius: 0; /* remove roundness */
   /* Stronger default glow for visibility */
@@ -179,8 +144,7 @@ button { font: inherit; color: inherit; }
   text-shadow: 0 0 12px rgba(255,255,255,0.95), 0 0 24px rgba(255,255,255,0.75), 0 0 36px rgba(255,255,255,0.5);
   text-decoration: none;
 }
-.hero-ctas .cta.primary { color: rgba(255,255,255,0.85); }
->>>>>>> theirs
+.hero-ctas .cta.primary { color: rgba(255,255,255,0.9); }
 
 /* 7) Floating CTA ----------------------------------------------------------- */
 .floating-cta {
@@ -208,7 +172,7 @@ body.stage-2 .hero-ctas { opacity: 1; transform: translate(-50%, 0); }
 body.stage-2 .intro-title { opacity: 1; pointer-events: auto; }
 
 /* 9) Footer ----------------------------------------------------------------- */
-.site-footer { border-top: 1px solid rgba(255,255,255,0.12); margin-top: 24px; }
+.site-footer { border-top: 1px solid rgba(0,0,0,0.12); margin-top: 24px; }
 .footer-inner {
   padding: 20px 12px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;
 }
@@ -267,3 +231,179 @@ button[type="submit"]:hover, .btn:hover { background: #e9e9e9; }
   .intro-title { font-size: 4rem; }
   .hero-ctas { gap: 0; }
 }
+
+/* _________________________ Mobile BUTTONS _____________________________________________ */
+@media (max-width: 999px) {
+  .work-ctas .button {
+    color:#fff;
+    border:none;
+    position:relative;
+    height:3rem;
+    font-size:1.2em;
+    cursor:pointer;
+    transition:800ms ease all;
+    outline:none;
+    padding: 1rem;
+  }
+  .work-ctas .button:hover {
+    background:#fff;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  }
+  .work-ctas .button:before,.work-ctas .button:after{
+    content:'';
+    position:absolute;
+    top:0;
+    right:0;
+    height:2px;
+    width:0;
+    transition:400ms ease all;
+  }
+  .work-ctas .button:after{
+    right:inherit;
+    top:inherit;
+    left:0;
+    bottom:0;
+  }
+  .work-ctas .button:hover:before,.work-ctas .button:hover:after{
+    width:100%;
+    transition:800ms ease all;
+  }
+  .work-ctas .button:active{
+    color:#fff;
+  }
+
+  /* Weddings button (mobile) */
+  .work-ctas .weddings-btn {
+    background:#D0253C;
+  }
+  .work-ctas .weddings-btn:hover{
+    color:#D0253C;
+  }
+  .work-ctas .weddings-btn:before,.work-ctas .weddings-btn:after{
+    background: #D0253C;
+  }
+  .work-ctas .weddings-btn:active{
+    background:#D0253C;
+  }
+
+  /* Portraits button (mobile) */
+  .work-ctas .portraits-btn {
+    background:#2f2a50;
+  }
+  .work-ctas .portraits-btn:hover{
+    color:#2f2a50;
+  }
+  .work-ctas .portraits-btn:before,.work-ctas .portraits-btn:after{
+    background: #2f2a50;
+  }
+  .work-ctas .portraits-btn:active{
+    background:#2f2a50;
+  }
+
+  /* Projects button (mobile) */
+  .work-ctas .projects-btn {
+    background:#f4572A;
+  }
+  .work-ctas .projects-btn:hover{
+    color:#f4572A;
+  }
+  .work-ctas .projects-btn:before,.work-ctas .projects-btn:after{
+    background: #f4572A;
+  }
+  .work-ctas .projects-btn:active{
+    background:#f4572A;
+  }
+}
+
+/* _________________________ Desktop BUTTONS _____________________________________________ */
+@media (min-width: 1000px) {
+  .work-ctas .button {
+    color:#fff;
+    border:none;
+    position:relative;
+    height:60px;
+    font-size:1.6em;
+    padding:0 2em;
+    cursor:pointer;
+    transition:800ms ease all;
+    outline:none;
+  }
+  .work-ctas .button:hover {
+    background:#fff;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  }
+  .work-ctas .button:before,.work-ctas .button:after{
+    content:'';
+    position:absolute;
+    top:0;
+    right:0;
+    height:2px;
+    width:0;
+    transition:400ms ease all;
+  }
+  .work-ctas .button:after{
+    right:inherit;
+    top:inherit;
+    left:0;
+    bottom:0;
+  }
+  .work-ctas .button:hover:before,.work-ctas .button:hover:after{
+    width:100%;
+    transition:800ms ease all;
+  }
+  .work-ctas .button:active{
+    color:#fff;
+  }
+
+  /* Weddings button (desktop) */
+  .work-ctas .weddings-btn {
+    background:#D0253C;
+  }
+  .work-ctas .weddings-btn:hover{
+    color:#D0253C;
+  }
+  .work-ctas .weddings-btn:before,.work-ctas .weddings-btn:after{
+    background: #D0253C;
+  }
+  .work-ctas .weddings-btn:active{
+    background:#D0253C;
+  }
+
+  /* Portraits button (desktop) */
+  .work-ctas .portraits-btn {
+    background:#2f2a50;
+  }
+  .work-ctas .portraits-btn:hover{
+    color:#2f2a50;
+  }
+  .work-ctas .portraits-btn:before,.work-ctas .portraits-btn:after{
+    background: #2f2a50;
+  }
+  .work-ctas .portraits-btn:active{
+    background:#2f2a50;
+  }
+
+  /* Projects button (desktop) */
+  .work-ctas .projects-btn {
+    background:#f4572A;
+  }
+  .work-ctas .projects-btn:hover{
+    color:#f4572A;
+  }
+  .work-ctas .projects-btn:before,.work-ctas .projects-btn:after{
+    background: #f4572A;
+  }
+  .work-ctas .projects-btn:active{
+    background:#f4572A;
+  }
+}
+
+/* Work page buttons — visibility boost (equal glow + thicker lines) */
+.work-ctas .button:before,
+.work-ctas .button:after { height: 3px; }
+.work-ctas .weddings-btn:before,
+.work-ctas .weddings-btn:after { box-shadow: 0 0 8px #D0253C; }
+.work-ctas .portraits-btn:before,
+.work-ctas .portraits-btn:after { background: #6c63a8; box-shadow: 0 0 8px #6c63a8; }
+.work-ctas .projects-btn:before,
+.work-ctas .projects-btn:after { box-shadow: 0 0 8px #f4572A; }
