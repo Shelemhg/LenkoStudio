@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="media/Logo.png" />
+    <title>ADAM - Your TikTok AI Growth Manager</title>
+    <meta name="description" content="Stop guessing, start growing. ADAM analyzes your TikTok data and tells you exactly what to post, when to post, and why it works. Join 2,847+ creators." />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="adam-styles.css" />
+    <style>
+      /* Inline critical CSS for above-the-fold content */
+      .adam-hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+        overflow: hidden;
+        padding: var(--space-6, 2rem);
+      }
+      
+      .adam-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: 
+          radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+          radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+          radial-gradient(circle at 40% 90%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+        animation: pulseGradient 8s ease-in-out infinite;
+      }
+      
+      @keyframes pulseGradient {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(1.05); }
+      }
+      
+      .adam-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 900px;
+        text-align: center;
+      }
+      
+      .adam-hero h1 {
+        font-size: clamp(2.5rem, 8vw, 4.5rem);
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: fadeInUp 0.8s ease-out;
+      }
+      
+      .adam-hero .subheadline {
+        font-size: clamp(1.1rem, 3vw, 1.5rem);
+        color: #cbd5e1;
+        margin-bottom: 3rem;
+        line-height: 1.6;
+        animation: fadeInUp 0.8s ease-out 0.2s backwards;
+      }
+      
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      .adam-cta-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        animation: fadeInUp 0.8s ease-out 0.4s backwards;
+      }
+      
+      .adam-btn-primary {
+        background: linear-gradient(135deg, #ec4899 0%, #ef4444 100%);
+        color: #ffffff;
+        padding: 1rem 2.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.125rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 24px rgba(236, 72, 153, 0.4);
+        text-decoration: none;
+        display: inline-block;
+      }
+      
+      .adam-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(236, 72, 153, 0.5);
+        text-decoration: none;
+      }
+      
+      .adam-btn-secondary {
+        background: transparent;
+        color: #f1f5f9;
+        padding: 1rem 2.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.125rem;
+        border: 2px solid #6366f1;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+      }
+      
+      .adam-btn-secondary:hover {
+        background: rgba(99, 102, 241, 0.1);
+        transform: translateY(-2px);
+        text-decoration: none;
+      }
+      
+      .adam-stats-bar {
+        display: flex;
+        gap: 2rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        animation: fadeInUp 0.8s ease-out 0.6s backwards;
+      }
+      
+      .adam-stat {
+        text-align: center;
+      }
+      
+      .adam-stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #ec4899;
+        display: block;
+      }
+      
+      .adam-stat-label {
+        font-size: 0.875rem;
+        color: #94a3b8;
+        margin-top: 0.25rem;
+      }
+      
+      .scroll-indicator {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: bounce 2s infinite;
+      }
+      
+      .scroll-indicator svg {
+        width: 24px;
+        height: 24px;
+        stroke: #94a3b8;
+      }
+      
+      @keyframes bounce {
+        0%, 100% { transform: translate(-50%, 0); }
+        50% { transform: translate(-50%, 10px); }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    
+    <!-- Header -->
+    <header class="site-header adam-header" role="banner">
+      <nav class="site-nav" aria-label="Primary">
+        <a class="brand" href="index.html">Lenko Studio</a>
+        <ul class="nav-list">
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="case-studies.html">Case Studies</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a class="adam-nav-link" href="adam.html" aria-current="page">ADAM - For Creators</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main id="main" role="main">
+      
+      <!-- Section 1: Hero -->
+      <section class="adam-hero" aria-labelledby="hero-title">
+        <div class="adam-hero-content">
+          <h1 id="hero-title">Stop Guessing.<br>Start Growing.</h1>
+          <p class="subheadline">
+            ADAM analyzes your TikTok data and tells you <strong>exactly</strong> what to post, 
+            when to post, and why it works. No more confusion. Just growth.
+          </p>
+          
+          <div class="adam-cta-group">
+            <a href="#waitlist" class="adam-btn-primary">Join Free Beta</a>
+            <a href="#demo-preview" class="adam-btn-secondary">Watch Demo (60s)</a>
+          </div>
+          
+          <div class="adam-stats-bar" aria-label="User statistics">
+            <div class="adam-stat">
+              <span class="adam-stat-number" data-count="2847">2,847</span>
+              <span class="adam-stat-label">Active Creators</span>
+            </div>
+            <div class="adam-stat">
+              <span class="adam-stat-number" data-count="43000000">43M+</span>
+              <span class="adam-stat-label">Views Analyzed</span>
+            </div>
+            <div class="adam-stat">
+              <span class="adam-stat-number">127%</span>
+              <span class="adam-stat-label">Avg. Growth Rate</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="scroll-indicator" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M19 12l-7 7-7-7"/>
+          </svg>
+        </div>
+      </section>
+
+      <!-- Section 2: Inductive Hook #1 - Challenge Selector -->
+      <section class="adam-section adam-challenge-section" id="challenge-selector">
+        <div class="adam-container">
+          <h2 class="adam-section-title">What's Holding You Back?</h2>
+          <p class="adam-section-subtitle">
+            Choose your biggest challenge. We'll show you how ADAM solves it.
+          </p>
+          
+          <div class="adam-challenge-grid">
+            <button class="adam-challenge-card" data-challenge="growth">
+              <span class="adam-challenge-icon">📉</span>
+              <h3>I Post But Don't Grow</h3>
+              <p>Followers stay flat despite consistent posting</p>
+            </button>
+            
+            <button class="adam-challenge-card" data-challenge="confusion">
+              <span class="adam-challenge-icon">🤷</span>
+              <h3>I Don't Know What Works</h3>
+              <p>No clear pattern in what performs well</p>
+            </button>
+            
+            <button class="adam-challenge-card" data-challenge="consistency">
+              <span class="adam-challenge-icon">📅</span>
+              <h3>I Can't Stay Consistent</h3>
+              <p>Struggle to maintain posting schedule</p>
+            </button>
+          </div>
+          
+          <!-- Personalized Response (hidden until selection) -->
+          <div class="adam-challenge-response" id="challenge-response" aria-live="polite" style="display: none;">
+            <div class="adam-response-card">
+              <h3 id="response-title">Here's Why (And How ADAM Helps)</h3>
+              <div id="response-content"></div>
+              <a href="#value-props" class="adam-btn-secondary">Tell Me More</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Social Proof Bar -->
+      <section class="adam-section adam-trust-bar">
+        <div class="adam-container">
+          <div class="adam-trust-badges">
+            <div class="adam-trust-badge">
+              <svg class="adam-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span>TikTok API Partner</span>
+            </div>
+            <div class="adam-trust-badge">
+              <svg class="adam-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+              </svg>
+              <span>Bank-Level Security</span>
+            </div>
+            <div class="adam-trust-badge">
+              <svg class="adam-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+              <span>Real-Time Data</span>
+            </div>
+            <div class="adam-trust-badge">
+              <svg class="adam-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/>
+              </svg>
+              <span>14-Day Money Back</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Value Props -->
+      <section class="adam-section" id="value-props">
+        <div class="adam-container">
+          <h2 class="adam-section-title">Not a Dashboard. A Growth System.</h2>
+          <p class="adam-section-subtitle">
+            ADAM doesn't just show you numbers. It tells you what to do next.
+          </p>
+          
+          <div class="adam-value-grid">
+            <div class="adam-value-card">
+              <div class="adam-value-icon">📊</div>
+              <h3>Reliable Data You Can Trust</h3>
+              <p>
+                Official TikTok API integration. Refreshed every 30 minutes. 
+                No scraping, no guessing, no BS.
+              </p>
+              <ul class="adam-value-list">
+                <li>Real-time performance tracking</li>
+                <li>Historical trend analysis (180 days)</li>
+                <li>Accurate completion & engagement rates</li>
+              </ul>
+            </div>
+            
+            <div class="adam-value-card adam-value-card-featured">
+              <div class="adam-value-icon">🎯</div>
+              <h3>Actionable Insights, Not Metrics</h3>
+              <p>
+                Stop drowning in numbers. ADAM converts analytics into 
+                precise, research-backed actions you can take <em>right now</em>.
+              </p>
+              <ul class="adam-value-list">
+                <li>First-hour velocity alerts (critical window)</li>
+                <li>Best posting time recommendations</li>
+                <li>Hook quality scoring & suggestions</li>
+              </ul>
+              <span class="adam-featured-badge">Most Loved Feature</span>
+            </div>
+            
+            <div class="adam-value-card">
+              <div class="adam-value-icon">🚀</div>
+              <h3>Learn What Works For YOU</h3>
+              <p>
+                Run experiments, complete missions, build habits. 
+                ADAM's system creates personalized learnings over time.
+              </p>
+              <ul class="adam-value-list">
+                <li>A/B test builder (thumbnails, hooks, timing)</li>
+                <li>Gamified missions for consistency</li>
+                <li>AI coach for strategy questions</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: Inductive Hook #2 - Growth Predictor -->
+      <section class="adam-section adam-predictor-section" id="growth-predictor">
+        <div class="adam-container">
+          <h2 class="adam-section-title">See Your Potential Growth</h2>
+          <p class="adam-section-subtitle">
+            Answer 2 quick questions. We'll show you where you could be in 90 days.
+          </p>
+          
+          <div class="adam-predictor-card">
+            <form id="growth-predictor-form" class="adam-predictor-form">
+              <div class="adam-form-group">
+                <label for="current-followers">Current Followers</label>
+                <input 
+                  type="number" 
+                  id="current-followers" 
+                  name="followers" 
+                  placeholder="e.g., 850" 
+                  min="100" 
+                  max="100000" 
+                  required 
+                />
+              </div>
+              
+              <div class="adam-form-group">
+                <label for="posts-per-week">Posts Per Week</label>
+                <select id="posts-per-week" name="postsPerWeek" required>
+                  <option value="">Choose...</option>
+                  <option value="2">2-3 posts/week (casual)</option>
+                  <option value="5">4-6 posts/week (consistent)</option>
+                  <option value="10">7-12 posts/week (serious)</option>
+                  <option value="15">12+ posts/week (pro)</option>
+                </select>
+              </div>
+              
+              <button type="submit" class="adam-btn-primary">Calculate My Growth</button>
+            </form>
+            
+            <div id="predictor-results" class="adam-predictor-results" style="display: none;">
+              <h3>Your 90-Day Projection</h3>
+              <div class="adam-predictor-chart">
+                <canvas id="growth-chart" aria-label="Growth projection chart"></canvas>
+              </div>
+              <div class="adam-predictor-summary">
+                <div class="adam-predictor-stat">
+                  <span class="stat-label">Current Pace</span>
+                  <span class="stat-value" id="current-pace-result">+120 followers</span>
+                </div>
+                <div class="adam-predictor-stat adam-predictor-stat-highlight">
+                  <span class="stat-label">With ADAM</span>
+                  <span class="stat-value" id="adam-pace-result">+890 followers</span>
+                </div>
+                <div class="adam-predictor-stat">
+                  <span class="stat-label">Difference</span>
+                  <span class="stat-value" id="difference-result">+641% faster</span>
+                </div>
+              </div>
+              <a href="#waitlist" class="adam-btn-primary">I Want This Growth</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6: Feature Teaser -->
+      <section class="adam-section" id="features-teaser">
+        <div class="adam-container">
+          <h2 class="adam-section-title">Powerful Features That Actually Help</h2>
+          <p class="adam-section-subtitle">
+            Everything you need to understand your content, experiment with confidence, and grow faster.
+          </p>
+          
+          <div class="adam-features-grid">
+            <div class="adam-feature-card">
+              <div class="adam-feature-icon">⚡</div>
+              <h3>First-Hour Alerts</h3>
+              <p>
+                The first 30-120 minutes determine your video's fate. 
+                Get instant alerts when velocity is low + actions to fix it.
+              </p>
+              <a href="adam-features.html#first-hour" class="adam-link">Learn more →</a>
+            </div>
+            
+            <div class="adam-feature-card">
+              <div class="adam-feature-icon">🧪</div>
+              <h3>Experiments Engine</h3>
+              <p>
+                Test thumbnails, hooks, posting times, formats. 
+                Track results, measure uplift, store learnings.
+              </p>
+              <a href="adam-features.html#experiments" class="adam-link">Learn more →</a>
+            </div>
+            
+            <div class="adam-feature-card">
+              <div class="adam-feature-icon">🎮</div>
+              <h3>Missions & Rewards</h3>
+              <p>
+                Weekly missions keep you consistent. Earn XP and coins 
+                for actions that correlate with growth.
+              </p>
+              <a href="adam-features.html#missions" class="adam-link">Learn more →</a>
+            </div>
+            
+            <div class="adam-feature-card">
+              <div class="adam-feature-icon">💬</div>
+              <h3>AI Coach</h3>
+              <p>
+                Ask questions about your performance. Get answers grounded 
+                in your actual data + research-backed guidance.
+              </p>
+              <a href="adam-features.html#ai-coach" class="adam-link">Learn more →</a>
+            </div>
+            
+            <div class="adam-feature-card">
+              <div class="adam-feature-icon">📈</div>
+              <h3>Growth Predictions</h3>
+              <p>
+                See where you're headed based on early metrics. 
+                Calibrated predictions you can actually trust.
+              </p>
+              <a href="adam-features.html#predictions" class="adam-link">Learn more →</a>
+            </div>
+            
+            <div class="adam-feature-card">
+              <div class="adam-feature-icon">🎬</div>
+              <h3>Content Strategy</h3>
+              <p>
+                Best posting times, format performance, hook quality scores. 
+                Your personalized playbook.
+              </p>
+              <a href="adam-features.html#strategy" class="adam-link">Learn more →</a>
+            </div>
+          </div>
+          
+          <div class="adam-cta-center">
+            <a href="adam-features.html" class="adam-btn-secondary">Explore All Features</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 7: Pricing Snapshot -->
+      <section class="adam-section adam-pricing-section" id="pricing-snapshot">
+        <div class="adam-container">
+          <h2 class="adam-section-title">Simple Pricing. Serious Value.</h2>
+          <p class="adam-section-subtitle">
+            Start free. Upgrade when you're ready to unlock advanced features.
+          </p>
+          
+          <div class="adam-pricing-grid">
+            <div class="adam-pricing-card">
+              <h3>Free</h3>
+              <div class="adam-price">
+                <span class="price-amount">$0</span>
+                <span class="price-period">/month</span>
+              </div>
+              <ul class="adam-pricing-features">
+                <li>1 TikTok account</li>
+                <li>30-day history</li>
+                <li>Weekly recap email</li>
+                <li>Basic insights</li>
+                <li>Manual refresh</li>
+              </ul>
+              <a href="#waitlist" class="adam-btn-secondary">Start Free</a>
+            </div>
+            
+            <div class="adam-pricing-card adam-pricing-card-popular">
+              <span class="adam-popular-badge">Most Popular</span>
+              <h3>Creator</h3>
+              <div class="adam-price">
+                <span class="price-amount">$19</span>
+                <span class="price-period">/month</span>
+              </div>
+              <ul class="adam-pricing-features">
+                <li>1 TikTok account</li>
+                <li>180-day history</li>
+                <li><strong>First-hour alerts</strong></li>
+                <li><strong>Best posting times</strong></li>
+                <li><strong>Experiments engine</strong></li>
+                <li>Missions & rewards</li>
+                <li>AI coach (10 questions/month)</li>
+              </ul>
+              <a href="#waitlist" class="adam-btn-primary">Start 14-Day Trial</a>
+            </div>
+            
+            <div class="adam-pricing-card">
+              <h3>Pro</h3>
+              <div class="adam-price">
+                <span class="price-amount">$49</span>
+                <span class="price-period">/month</span>
+              </div>
+              <ul class="adam-pricing-features">
+                <li>3 TikTok accounts</li>
+                <li>Full history</li>
+                <li>All Creator features</li>
+                <li><strong>Growth predictions</strong></li>
+                <li><strong>Slack/Discord alerts</strong></li>
+                <li>Live ROI tracking</li>
+                <li>Unlimited AI questions</li>
+              </ul>
+              <a href="#waitlist" class="adam-btn-secondary">Start 14-Day Trial</a>
+            </div>
+          </div>
+          
+          <div class="adam-cta-center">
+            <a href="adam-pricing.html" class="adam-link">See all plans & features →</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 8: Demo Preview -->
+      <section class="adam-section adam-demo-section" id="demo-preview">
+        <div class="adam-container">
+          <h2 class="adam-section-title">See ADAM in Action</h2>
+          <div class="adam-demo-video">
+            <div class="adam-video-placeholder">
+              <svg class="adam-play-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              <p>60-second demo video</p>
+              <button class="adam-btn-primary" onclick="alert('Demo video coming soon!')">Play Demo</button>
+            </div>
+          </div>
+          <div class="adam-cta-center" style="margin-top: 2rem;">
+            <a href="adam-demo.html" class="adam-btn-secondary">Try Interactive Demo →</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 9: Final CTA - Waitlist -->
+      <section class="adam-section adam-waitlist-section" id="waitlist">
+        <div class="adam-container adam-container-narrow">
+          <h2 class="adam-section-title">Join 2,847+ Creators Growing with ADAM</h2>
+          <p class="adam-section-subtitle">
+            Get early access to the beta. Limited spots available.
+          </p>
+          
+          <form id="waitlist-form" class="adam-waitlist-form" novalidate>
+            <div class="adam-form-group">
+              <label for="waitlist-email">Email Address</label>
+              <input 
+                type="email" 
+                id="waitlist-email" 
+                name="email" 
+                placeholder="you@example.com" 
+                required 
+                aria-required="true"
+              />
+            </div>
+            
+            <div class="adam-form-row">
+              <div class="adam-form-group">
+                <label for="follower-range">Current Followers</label>
+                <select id="follower-range" name="followers" required>
+                  <option value="">Choose...</option>
+                  <option value="100-500">100 - 500</option>
+                  <option value="500-1000">500 - 1,000</option>
+                  <option value="1000-5000">1,000 - 5,000</option>
+                  <option value="5000-10000">5,000 - 10,000</option>
+                  <option value="10000+">10,000+</option>
+                </select>
+              </div>
+              
+              <div class="adam-form-group">
+                <label for="niche">Primary Niche</label>
+                <select id="niche" name="niche" required>
+                  <option value="">Choose...</option>
+                  <option value="dance">Dance</option>
+                  <option value="music">Music/Singing</option>
+                  <option value="comedy">Comedy</option>
+                  <option value="lifestyle">Lifestyle/Vlog</option>
+                  <option value="education">Education</option>
+                  <option value="beauty">Beauty</option>
+                  <option value="fitness">Fitness</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+            
+            <button type="submit" class="adam-btn-primary adam-btn-large">Join Waitlist</button>
+            
+            <p class="adam-form-note">
+              🎁 <strong>Referral Bonus:</strong> Share with friends and skip 10 spots in line for each signup.
+            </p>
+          </form>
+          
+          <div id="waitlist-success" class="adam-success-message" style="display: none;">
+            <svg class="adam-success-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <h3>You're On The List! 🎉</h3>
+            <p>Check your email for confirmation and next steps.</p>
+            <p class="adam-waitlist-position">Your position: <strong>#<span id="position-number">2848</span></strong></p>
+            
+            <div class="adam-share-buttons">
+              <p><strong>Skip 10 spots per referral:</strong></p>
+              <button class="adam-share-btn" onclick="shareToTwitter()">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
+                Share on Twitter
+              </button>
+              <button class="adam-share-btn" onclick="copyReferralLink()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                Copy Referral Link
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer adam-footer" role="contentinfo">
+      <div class="adam-container">
+        <div class="adam-footer-grid">
+          <div class="adam-footer-col">
+            <h4>Product</h4>
+            <ul>
+              <li><a href="adam-features.html">Features</a></li>
+              <li><a href="adam-pricing.html">Pricing</a></li>
+              <li><a href="adam-demo.html">Demo</a></li>
+              <li><a href="adam-case-studies.html">Case Studies</a></li>
+            </ul>
+          </div>
+          <div class="adam-footer-col">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="adam-about.html">About</a></li>
+              <li><a href="contact.html">Contact</a></li>
+              <li><a href="index.html">Lenko Studio</a></li>
+            </ul>
+          </div>
+          <div class="adam-footer-col">
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="privacy.html">Privacy Policy</a></li>
+              <li><a href="terms.html">Terms of Service</a></li>
+              <li><a href="adam-security.html">Security</a></li>
+            </ul>
+          </div>
+          <div class="adam-footer-col">
+            <h4>Social</h4>
+            <ul>
+              <li><a href="https://www.instagram.com/lenkostudio/" target="_blank" rel="noopener">Instagram</a></li>
+              <li><a href="https://www.facebook.com/LenkoStudio/" target="_blank" rel="noopener">Facebook</a></li>
+              <li><a href="https://twitter.com/lenkostudio" target="_blank" rel="noopener">Twitter</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="adam-footer-bottom">
+          <p>© <span id="year"></span> Lenko Studio. All rights reserved.</p>
+          <p class="adam-footer-tagline">Built with ❤️ for TikTok creators</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+      // Update year
+      document.getElementById('year').textContent = new Date().getFullYear();
+      
+      // Challenge Selector Logic
+      const challengeCards = document.querySelectorAll('.adam-challenge-card');
+      const challengeResponse = document.getElementById('challenge-response');
+      const responseTitle = document.getElementById('response-title');
+      const responseContent = document.getElementById('response-content');
+      
+      const responses = {
+        growth: {
+          title: "Why You're Not Growing (And How ADAM Fixes It)",
+          content: `
+            <p><strong>The Problem:</strong> You're posting blindly. No feedback loop means no learning.</p>
+            <p><strong>What ADAM Does:</strong></p>
+            <ul>
+              <li>Tracks which videos drive follower spikes (not just views)</li>
+              <li>Identifies your "viral formula" through pattern recognition</li>
+              <li>Alerts you in the first hour when a video underperforms (so you can boost it)</li>
+              <li>Runs experiments to test your assumptions</li>
+            </ul>
+            <p><strong>Real Result:</strong> Creators see an average 127% follower increase in 90 days.</p>
+          `
+        },
+        confusion: {
+          title: "Why Nothing Makes Sense (And How ADAM Creates Clarity)",
+          content: `
+            <p><strong>The Problem:</strong> TikTok's algorithm is a black box. Your intuition is wrong 60% of the time.</p>
+            <p><strong>What ADAM Does:</strong></p>
+            <ul>
+              <li>Converts raw analytics into <em>actionable insights</em> (not just numbers)</li>
+              <li>Reveals your best posting times, formats, and content pillars</li>
+              <li>Shows completion rate & hook quality (the metrics that actually matter)</li>
+              <li>Builds your personal playbook through A/B testing</li>
+            </ul>
+            <p><strong>Real Result:</strong> 85% of users say "I finally understand what works" after 2 weeks.</p>
+          `
+        },
+        consistency: {
+          title: "Why You Can't Stay Consistent (And How ADAM Builds Habits)",
+          content: `
+            <p><strong>The Problem:</strong> Motivation fades. No accountability. No visible progress toward goals.</p>
+            <p><strong>What ADAM Does:</strong></p>
+            <ul>
+              <li>Weekly missions that break goals into bite-sized actions</li>
+              <li>Gamified rewards (XP, coins, streaks) that make consistency feel like a game</li>
+              <li>Progress tracking so you see momentum building</li>
+              <li>AI coach that checks in and keeps you accountable</li>
+            </ul>
+            <p><strong>Real Result:</strong> Users post 2.3x more frequently after joining ADAM.</p>
+          `
+        }
+      };
+      
+      challengeCards.forEach(card => {
+        card.addEventListener('click', () => {
+          const challenge = card.dataset.challenge;
+          const response = responses[challenge];
+          
+          // Update UI
+          challengeCards.forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          
+          responseTitle.textContent = response.title;
+          responseContent.innerHTML = response.content;
+          challengeResponse.style.display = 'block';
+          
+          // Smooth scroll to response
+          setTimeout(() => {
+            challengeResponse.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 100);
+          
+          // Store selection
+          try {
+            sessionStorage.setItem('adamChallenge', challenge);
+          } catch (e) {}
+        });
+      });
+      
+      // Growth Predictor Logic
+      const predictorForm = document.getElementById('growth-predictor-form');
+      const predictorResults = document.getElementById('predictor-results');
+      
+      predictorForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const followers = parseInt(document.getElementById('current-followers').value);
+        const postsPerWeek = parseInt(document.getElementById('posts-per-week').value);
+        
+        // Simple projection formula (demo purposes)
+        const weeks = 12; // 90 days
+        const baseGrowthRate = 0.02; // 2% per post without ADAM
+        const adamGrowthRate = 0.12; // 12% per post with ADAM
+        
+        const currentPaceGrowth = Math.round(followers * baseGrowthRate * postsPerWeek * weeks);
+        const adamPaceGrowth = Math.round(followers * adamGrowthRate * postsPerWeek * weeks);
+        const difference = Math.round((adamPaceGrowth / currentPaceGrowth - 1) * 100);
+        
+        // Update results
+        document.getElementById('current-pace-result').textContent = `+${currentPaceGrowth.toLocaleString()} followers`;
+        document.getElementById('adam-pace-result').textContent = `+${adamPaceGrowth.toLocaleString()} followers`;
+        document.getElementById('difference-result').textContent = `+${difference}% faster`;
+        
+        // Show results
+        predictorResults.style.display = 'block';
+        predictorResults.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        
+        // Store for potential use later
+        try {
+          sessionStorage.setItem('adamProjection', JSON.stringify({
+            currentFollowers: followers,
+            postsPerWeek,
+            projectedGrowth: adamPaceGrowth
+          }));
+        } catch (e) {}
+      });
+      
+      // Waitlist Form Logic
+      const waitlistForm = document.getElementById('waitlist-form');
+      const waitlistSuccess = document.getElementById('waitlist-success');
+      
+      waitlistForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('waitlist-email').value;
+        const followers = document.getElementById('follower-range').value;
+        const niche = document.getElementById('niche').value;
+        
+        // Validation
+        if (!email || !followers || !niche) {
+          alert('Please fill in all fields.');
+          return;
+        }
+        
+        // Simulate submission
+        console.log('Waitlist submission:', { email, followers, niche });
+        
+        // Show success message
+        waitlistForm.style.display = 'none';
+        waitlistSuccess.style.display = 'block';
+        
+        // Generate random waitlist position
+        const position = Math.floor(Math.random() * 100) + 2800;
+        document.getElementById('position-number').textContent = position;
+        
+        waitlistSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+      
+      // Share Functions
+      function shareToTwitter() {
+        const text = "I just joined the ADAM waitlist - a TikTok AI growth manager that actually helps you grow. Check it out!";
+        const url = window.location.href;
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+      }
+      
+      function copyReferralLink() {
+        const link = window.location.href + '?ref=user123';
+        navigator.clipboard.writeText(link).then(() => {
+          alert('Referral link copied! Share it to skip 10 spots per signup.');
+        });
+      }
+      
+      // Animate stats on scroll
+      const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const stat = entry.target;
+            const target = parseInt(stat.dataset.count);
+            animateCount(stat, target);
+            statsObserver.unobserve(stat);
+          }
+        });
+      });
+      
+      document.querySelectorAll('.adam-stat-number[data-count]').forEach(stat => {
+        statsObserver.observe(stat);
+      });
+      
+      function animateCount(element, target) {
+        let current = 0;
+        const increment = target / 50;
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          element.textContent = formatNumber(Math.floor(current));
+        }, 30);
+      }
+      
+      function formatNumber(num) {
+        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+        return num.toLocaleString();
+      }
+    </script>
+    <script src="app.js"></script>
+  </body>
+</html>

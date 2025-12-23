@@ -8,7 +8,7 @@
   --bg: #ffffff;
   --fg: #111111;
   --muted: #c7c7c7;
-  --accent: #ff4d8f; /* Orana Pink tone */
+  --accent: #ff4d8f; /* ADAM accent tone */
   --cta-bg: rgba(0, 0, 0, 0.5);
   --cta-bg-hover: rgba(255, 255, 255, 0.12);
   --focus: #ffffff;
@@ -64,7 +64,7 @@ button { font: inherit; color: inherit; }
 }
 .nav-list a { padding: 6px 8px; border-radius: 6px; white-space: nowrap; }
 .nav-list a:hover { background: rgba(0,0,0,0.06); text-decoration: none; }
-.orana-link { color: var(--accent); font-weight: 600; }
+.adam-link, .orana-link { color: var(--accent); font-weight: 600; }
 
 .sound-toggle {
   justify-self: end;
