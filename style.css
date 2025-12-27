@@ -64,7 +64,7 @@ button { font: inherit; color: inherit; }
 }
 .nav-list a { padding: 6px 8px; border-radius: 6px; white-space: nowrap; }
 .nav-list a:hover { background: rgba(0,0,0,0.06); text-decoration: none; }
-.adam-link, .orana-link { color: var(--accent); font-weight: 600; }
+.adam-link { color: var(--accent); font-weight: 600; }
 
 .sound-toggle {
   justify-self: end;
