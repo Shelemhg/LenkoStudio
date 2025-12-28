@@ -10,6 +10,51 @@
   function sameOrigin(href){ try { const u = new URL(href, location.href); return u.origin === location.origin; } catch { return false; } }
   function isHash(href){ try { const u = new URL(href, location.href); return u.hash && (u.pathname === location.pathname) && !u.search; } catch { return false; } }
 
+  // Mobile menu toggle
+  function initMobileMenu() {
+    const toggle = $('.menu-toggle');
+    const nav = $('.site-nav');
+    const overlay = $('.menu-overlay');
+    
+    if (!toggle || !nav) return;
+    
+    function closeMenu() {
+      toggle.setAttribute('aria-expanded', 'false');
+      nav.classList.remove('is-open');
+      if (overlay) overlay.classList.remove('is-visible');
+      document.body.style.overflow = '';
+    }
+    
+    function openMenu() {
+      toggle.setAttribute('aria-expanded', 'true');
+      nav.classList.add('is-open');
+      if (overlay) overlay.classList.add('is-visible');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    toggle.addEventListener('click', () => {
+      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+      if (isOpen) closeMenu();
+      else openMenu();
+    });
+    
+    if (overlay) {
+      overlay.addEventListener('click', closeMenu);
+    }
+    
+    // Close menu on link click
+    $all('.nav-list a', nav).forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+    
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        closeMenu();
+      }
+    });
+  }
+
   function ensureAudio(){
     let audio = document.getElementById(AUDIO_ID);
     if (!audio) {
@@ -210,6 +255,7 @@
   window.addEventListener('popstate', ()=>{ loadPage(location.href, true); });
 
   // Init
+  initMobileMenu();
   ensureAudio();
   bindAudioControls();
   initPageFeatures(document);

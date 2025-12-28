@@ -4,16 +4,26 @@
 			<meta charset="utf-8" />
 			<meta name="viewport" content="width=device-width, initial-scale=1" />
 			<link rel="icon" type="image/png" href="media/Logo.png" />
-			<title>Lenko Studio</title>
+		<title>Lenko Studio — Cinematic Photo & Video</title>
+		
+		<!-- Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
+		
 			<link rel="preload" as="image" href="media/autum.jpg" />
 			<link rel="stylesheet" href="style.css" />
 			<meta name="description" content="Lenko Studio — Cinematic photo and video. Book a shoot, explore work, and discover ADAM for creators." />
 		</head>
 		<body class="stage-0">
+			<div id="blackOverlay" class="overlay-black"></div>
 			<a id="skipIntro" class="skip-link" href="#main">Skip intro</a>
 
-			<header class="site-header" role="banner">
-			<nav class="site-nav" aria-label="Primary">
+			<header class="site-header" role="banner">		<button class="menu-toggle" aria-expanded="false" aria-label="Toggle menu">
+			<span></span>
+			<span></span>
+			<span></span>
+		</button>			<nav class="site-nav" aria-label="Primary">
 				<a class="brand" href="index.html" aria-current="page">Lenko Studio</a>
 				<ul class="nav-list">
 				<li><a href="portfolio.html">Portfolio</a></li>
@@ -28,7 +38,7 @@
 
 			<button id="soundToggle" class="sound-toggle" aria-pressed="false" aria-label="Sound off">Sound Off</button>
 			</header>
-			<div id="blackOverlay" class="overlay-black" aria-hidden="true"></div>
+		<div class="menu-overlay" aria-hidden="true"></div>
 
 			<main id="main" class="home" role="main">
 				<section class="hero" aria-label="Cinematic Intro">
@@ -95,8 +105,13 @@
 				const ambient = document.getElementById('ambientAudio');
 				const blackOverlay = document.getElementById('blackOverlay');
 
-				// Intro persistence across intra-site navigation (clears on refresh)
+				const LS_KEY = 'soundEnabled';
 				const INTRO_KEY = 'introDone';
+				
+				// Check if sound was previously disabled
+				const soundWasDisabled = localStorage.getItem(LS_KEY) === '0';
+				
+				// Intro persistence across intra-site navigation (clears on refresh)
 				const navEntry = (performance && typeof performance.getEntriesByType === 'function') ? performance.getEntriesByType('navigation')[0] : null;
 				let isReload = false;
 				if (navEntry && navEntry.type) {
@@ -179,11 +194,17 @@
 				// If intro already completed in this tab, restore final state immediately
 				let introWasDone = false;
 				try { introWasDone = sessionStorage.getItem(INTRO_KEY) === '1'; } catch (_) {}
-				if (introWasDone) {
+				
+				// Skip intro entirely if sound was previously disabled OR if intro was already done
+				if (soundWasDisabled || introWasDone) {
 					setStage(2);
 					if (blackOverlay) blackOverlay.classList.add('is-hidden');
 					ensureVideoLoaded();
-					track('intro_restore');
+					if (soundWasDisabled) {
+						track('intro_skip_sound_off');
+					} else {
+						track('intro_restore');
+					}
 				} else if (prefersReduced) {
 					setStage(2);
 					if (blackOverlay) blackOverlay.classList.add('is-hidden');
@@ -194,7 +215,6 @@
 				}
 				}
 
-				const LS_KEY = 'soundEnabled';
 				function updateSoundButton(enabled) {
 				soundToggle.setAttribute('aria-pressed', String(!!enabled));
 				soundToggle.textContent = enabled ? 'Sound On' : 'Sound Off';
@@ -224,6 +244,12 @@
 				} else {
 					fadeVolume(0, 400);
 					track('sound_toggle_off');
+					// When sound is toggled off, advance to stage 2 (complete state)
+					if (stage < 2) {
+						setStage(2);
+						if (blackOverlay) blackOverlay.classList.add('is-hidden');
+						ensureVideoLoaded();
+					}
 				}
 				}
 				const persisted = localStorage.getItem(LS_KEY) === '1';

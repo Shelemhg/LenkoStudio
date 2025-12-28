@@ -4,7 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/png" href="media/Logo.png" />
-    <title>Lenko Studio — Work</title>
+    <title>Lenko Studio — Portfolio</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    
     <link rel="stylesheet" href="style.css" />
     <style>
       .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
@@ -15,6 +21,11 @@
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header" role="banner">
+      <button class="menu-toggle" aria-expanded="false" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <nav class="site-nav" aria-label="Primary">
         <a class="brand" href="index.html">Lenko Studio</a>
         <ul class="nav-list">
@@ -29,6 +40,7 @@
       </nav>
       <button id="soundToggle" class="sound-toggle" aria-pressed="false" aria-label="Sound off">Sound Off</button>
     </header>
+    <div class="menu-overlay" aria-hidden="true"></div>
 
     <main id="main" class="page" role="main">
       <h1>Portfolio</h1>
