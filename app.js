@@ -26,6 +26,15 @@
     return audio;
   }
 
+  function getSoundPreference(){
+    const saved = localStorage.getItem('soundEnabled');
+    return saved === null ? false : saved === 'true';
+  }
+
+  function setSoundPreference(enabled){
+    localStorage.setItem('soundEnabled', String(enabled));
+  }
+
   function updateSoundButton(enabled){
     const btn = document.getElementById(TOGGLE_ID);
     if (!btn) return;
@@ -52,11 +61,22 @@
     const btn = document.getElementById(TOGGLE_ID);
     if (!btn) return;
     const audio = ensureAudio();
-    audio.volume = 0;
-    updateSoundButton(false);
+    
+    // Load saved preference
+    const savedEnabled = getSoundPreference();
+    audio.volume = savedEnabled ? 1 : 0;
+    updateSoundButton(savedEnabled);
+    
+    // Auto-play if user previously enabled sound
+    if (savedEnabled) {
+      try { audio.play(); } catch(_){}
+    }
+    
     btn.addEventListener('click', ()=>{
       const enable = btn.getAttribute('aria-pressed') !== 'true';
       updateSoundButton(enable);
+      setSoundPreference(enable);
+      
       if (enable) {
         try { audio.play(); } catch(_){}
         fadeVolume(audio, 1, 400);

@@ -231,10 +231,15 @@
 				}
 				}
 				const persisted = localStorage.getItem(LS_KEY) === '1';
-				ambient.volume = 0;
-				// Never auto-enable audio. Always start Off; only explicit toggle turns it on.
-				updateSoundButton(false);
-				soundToggle.addEventListener('click', () => {
+			ambient.volume = persisted ? 1 : 0;
+			// Load saved preference
+			updateSoundButton(persisted);
+			
+			// Auto-play if user previously enabled sound
+			if (persisted) {
+				try { ambient.play(); } catch(_){}
+			}
+			
 				const enabled = soundToggle.getAttribute('aria-pressed') !== 'true';
 				setSoundEnabled(enabled);
 				});
