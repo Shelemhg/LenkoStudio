@@ -154,15 +154,11 @@
 					setStage(1);
 					ensureVideoLoaded();
 					if (blackOverlay) blackOverlay.classList.add('is-hidden');
-					// Start audio on first explicit click
+				// Start audio on first explicit click - only if user hasn't previously muted
+				const wasMuted = localStorage.getItem(LS_KEY) === '0';
+				if (!wasMuted) {
 					setSoundEnabled(true);
-					clearTimeout(animTimer);
-					animTimer = setTimeout(() => {
-					setStage(2);
-					track('intro_complete');
-					}, 1000);
-				} else if (stage === 1) {
-					clearTimeout(animTimer);
+				}
 					setStage(2);
 					track('intro_fast_forward');
 					if (blackOverlay) blackOverlay.classList.add('is-hidden');
@@ -231,14 +227,9 @@
 				}
 				}
 				const persisted = localStorage.getItem(LS_KEY) === '1';
-			ambient.volume = persisted ? 1 : 0;
+			ambient.volume = 0;
 			// Load saved preference
 			updateSoundButton(persisted);
-			
-			// Auto-play if user previously enabled sound
-			if (persisted) {
-				try { ambient.play(); } catch(_){}
-			}
 			
 			soundToggle.addEventListener('click', () => {
 				const enabled = soundToggle.getAttribute('aria-pressed') !== 'true';
