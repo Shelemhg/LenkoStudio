@@ -240,9 +240,10 @@
 				try { ambient.play(); } catch(_){}
 			}
 			
+			soundToggle.addEventListener('click', () => {
 				const enabled = soundToggle.getAttribute('aria-pressed') !== 'true';
 				setSoundEnabled(enabled);
-				});
+			});
 
 				document.getElementById('ctaBook').addEventListener('click', () => track('cta_book'));
 				document.getElementById('ctaExplore').addEventListener('click', () => track('cta_explore_work'));
