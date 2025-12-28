@@ -1,0 +1,5 @@
+# Route /adam/* to adam Pages deployment with proxy (200 status)
+/adam/* https://adam-8lo.pages.dev/:splat 200
+
+# Fallback for /adam without trailing slash
+/adam https://adam-8lo.pages.dev/ 200
