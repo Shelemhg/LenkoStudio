@@ -6,80 +6,126 @@
     <link rel="icon" type="image/png" href="media/Logo.png" />
     <title>Lenko Studio — Portfolio</title>
     
+    <!-- DNS Prefetch for external image source -->
+    <link rel="dns-prefetch" href="https://picsum.photos" />
+    <link rel="preconnect" href="https://picsum.photos" crossorigin />
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
     
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="style.css" />
-    <style>
-      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
-      .grid figure { margin: 0; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.12); }
-      .grid figcaption { padding: 8px 10px; font-size: .95rem; color: var(--muted); }
-    </style>
+    <link rel="stylesheet" href="css/portfolio.css" />
+    <link rel="stylesheet" href="css/sphere-gallery.css" />
+    
+    <!-- Preload LCP image for faster loading -->
+    <link rel="preload" as="image" href="https://picsum.photos/1200/1600?random=1" fetchpriority="high" />
+    
+    <!-- Web Components (deferred to not block render) -->
+    <script src="js/components.js" defer></script>
   </head>
   <body>
-    <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-header" role="banner">
-      <button class="menu-toggle" aria-expanded="false" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <nav class="site-nav" aria-label="Primary">
-        <a class="brand" href="index.html">Lenko Studio</a>
-        <ul class="nav-list">
-          <li><a href="portfolio.html" aria-current="page">Portfolio</a></li>
-          <li><a href="services.html">Services</a></li>
-          <li><a href="case-studies.html">Case Studies</a></li>
-          <li><a href="pricing.html">Pricing</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="contact.html">Contact</a></li>
-          <li><a class="adam-link" href="https://adam.lenkostudio.com">For Creators — ADAM</a></li>
-        </ul>
-      </nav>
-      <button id="soundToggle" class="sound-toggle" aria-pressed="false" aria-label="Sound off">Sound Off</button>
-    </header>
-    <div class="menu-overlay" aria-hidden="true"></div>
+    <!-- Reusable Header Component -->
+    <site-header current="portfolio"></site-header>
 
-    <main id="main" class="page" role="main">
-      <h1>Portfolio</h1>
-      <div class="grid">
-        <figure>
-          <img src="media/portraits.jpg" alt="Portrait sample" />
-          <figcaption>Portraits</figcaption>
-        </figure>
-        <figure>
-          <img src="media/weddings.jpg" alt="Wedding sample" />
-          <figcaption>Weddings</figcaption>
-        </figure>
-        <figure>
-          <img src="media/projects.jpg" alt="Project sample" />
-          <figcaption>Projects</figcaption>
-        </figure>
-      </div>
-      <section class="work-ctas" aria-label="Original Actions">
-        <button class="portraits-btn button">Portraits</button>
-        <button class="weddings-btn button">Weddings</button>
-        <button class="projects-btn button">Projects</button>
-      </section>
-      <a class="floating-cta" href="contact.html">Book a Shoot</a>
+    <main id="main" class="portfolio-container" role="main">
+      <!-- Portfolio Item 1 - Valkiria -->
+      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/valkiria" data-count="13">
+        <div class="portfolio-item__image-wrapper">
+          <img class="portfolio-item__image" src="media/portfolio/valkiria/1.jpg" alt="Valkiria" width="1200" height="1600" fetchpriority="high">
+        </div>
+        <div class="portfolio-item__title">
+          <h2 class="portfolio-item__heading">Valkiria</h2>
+          <p class="portfolio-item__description">High Fashion • 2022</p>
+        </div>
+      </article>
+
+      <!-- Portfolio Item 2 - Blue Shade -->
+      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/blue-shade" data-count="7">
+        <div class="portfolio-item__image-wrapper">
+          <img class="portfolio-item__image" src="media/portfolio/blue-shade/1.jpg" alt="Blue Shade" loading="lazy" width="1200" height="1600">
+        </div>
+        <div class="portfolio-item__title">
+          <h2 class="portfolio-item__heading">Blue Shade</h2>
+          <p class="portfolio-item__description">Editorial Portrait • 2022</p>
+        </div>
+      </article>
+
+      <!-- Portfolio Item 3 - Carol -->
+      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/carol" data-count="9">
+        <div class="portfolio-item__image-wrapper">
+          <img class="portfolio-item__image" src="media/portfolio/carol/1.jpg" alt="Carol" loading="lazy" width="1200" height="1600">
+        </div>
+        <div class="portfolio-item__title">
+          <h2 class="portfolio-item__heading">Carol</h2>
+          <p class="portfolio-item__description">Portrait Photography • 2023</p>
+        </div>
+      </article>
+
+      <!-- Portfolio Item 5 - Cate -->
+      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/cate" data-count="8">
+        <div class="portfolio-item__image-wrapper">
+          <img class="portfolio-item__image" src="media/portfolio/cate/1.jpg" alt="Cate" loading="lazy" width="1200" height="1600">
+        </div>
+        <div class="portfolio-item__title">
+          <h2 class="portfolio-item__heading">Cate</h2>
+          <p class="portfolio-item__description">Portrait Photography • 2023</p>
+        </div>
+      </article>
+
+      <!-- Portfolio Item 6 - Catrinas -->
+      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/catrinas" data-count="11">
+        <div class="portfolio-item__image-wrapper">
+          <img class="portfolio-item__image" src="media/portfolio/catrinas/1.jpg" alt="Catrinas" loading="lazy" width="1200" height="1600">
+        </div>
+        <div class="portfolio-item__title">
+          <h2 class="portfolio-item__heading">Catrinas</h2>
+          <p class="portfolio-item__description">Artistic Photography • 2021</p>
+        </div>
+      </article>
+
+      <!-- Portfolio Item 7 - Lucia -->
+      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/lucia" data-count="8">
+        <div class="portfolio-item__image-wrapper">
+          <img class="portfolio-item__image" src="media/portfolio/lucia/1.jpg" alt="Lucia" loading="lazy" width="1200" height="1600">
+        </div>
+        <div class="portfolio-item__title">
+          <h2 class="portfolio-item__heading">Lucia</h2>
+          <p class="portfolio-item__description">Portrait Photography • 2023</p>
+        </div>
+      </article>
+
+      <!-- Portfolio Item 8 - Majo -->
+      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/majo" data-count="10">
+        <div class="portfolio-item__image-wrapper">
+          <img class="portfolio-item__image" src="media/portfolio/majo/1.jpg" alt="Majo" loading="lazy" width="1200" height="1600">
+        </div>
+        <div class="portfolio-item__title">
+          <h2 class="portfolio-item__heading">Majo</h2>
+          <p class="portfolio-item__description">Editorial Photography • 2023</p>
+        </div>
+      </article>
+
+      <!-- Portfolio Item 9 - Sharon -->
+      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/sharon" data-count="10">
+        <div class="portfolio-item__image-wrapper">
+          <img class="portfolio-item__image" src="media/portfolio/sharon/1.jpg" alt="Sharon" loading="lazy" width="1200" height="1600">
+        </div>
+        <div class="portfolio-item__title">
+          <h2 class="portfolio-item__heading">Sharon</h2>
+          <p class="portfolio-item__description">Portrait Photography • 2023</p>
+        </div>
+      </article>
     </main>
 
-    <footer class="site-footer" role="contentinfo">
-      <div class="footer-inner">
-        <p>© <span id="year"></span> Lenko Studio</p>
-        
-        <div class="social">
-          <a href="https://www.instagram.com/lenkostudio/" target="_blank" rel="noopener">Instagram</a>
-          <a href="https://www.facebook.com/LenkoStudio/" target="_blank" rel="noopener">Facebook</a>
-        </div>
-      </div>
-    </footer>
+    <!-- Reusable Footer Component -->
+    <site-footer></site-footer>
 
-    <script>const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear();</script>
+    <!-- Scripts -->
     <script src="app.js"></script>
+    <script src="js/portfolio.js"></script>
+    <script src="js/sphere-gallery.js"></script>
   </body>
-  </html>
-
-
+</html>

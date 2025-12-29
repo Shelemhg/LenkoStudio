@@ -1,0 +1,190 @@
+/**
+ * Portfolio Page Styles
+ * Following BEM (Block Element Modifier) methodology
+ * Organized by: Base → Layout → Components → Utilities
+ */
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+body {
+  background: #ffffff;
+  color: #0a0a0a;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ============================================
+   HEADER OVERRIDES
+   ============================================ */
+.site-header {
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.brand,
+.nav-list a {
+  color: #0a0a0a;
+}
+
+.nav-list a:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.nav-list a[aria-current="page"] {
+  background: rgba(0, 0, 0, 0.08);
+  color: #3b82f6;
+}
+
+.sound-toggle {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #0a0a0a;
+}
+
+.sound-toggle:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.menu-toggle span {
+  background: #0a0a0a;
+}
+
+/* ============================================
+   PORTFOLIO CONTAINER (Block)
+   ============================================ */
+.portfolio-container {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* ============================================
+   PORTFOLIO ITEM (Block)
+   Component structure: .portfolio-item
+   ============================================ */
+.portfolio-item {
+  position: relative;
+  width: 100%;
+  height: 75vh;
+  min-height: 500px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  padding: 0;
+  margin: 0 auto 120px auto;
+}
+
+/* Portfolio Item - Image Wrapper (Element) */
+.portfolio-item__image-wrapper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Portfolio Item - Image (Element) */
+.portfolio-item__image {
+  width: 100%;
+  height: 120%; /* Extra height for parallax effect */
+  object-fit: cover;
+  object-position: top;
+  transition: transform 0.1s ease-out;
+  will-change: transform;
+}
+
+/* Portfolio Item - Title Section (Element) */
+.portfolio-item__title {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  padding: 20px 20px;
+  background: #fff;;
+}
+
+/* Portfolio Item - Heading (Element) */
+.portfolio-item__heading {
+  font-family: 'Inter', Georgia, serif;
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  font-weight: 600;
+  margin: 0;
+  color: #0a0a0a;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+/* Portfolio Item - Description (Element) */
+.portfolio-item__description {
+  margin: 8px 0 0;
+  color: #666;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+/* ============================================
+   FOOTER OVERRIDES
+   ============================================ */
+.site-footer {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  color: #0a0a0a;
+}
+
+.site-footer a {
+  color: #0a0a0a;
+}
+
+.site-footer a:hover {
+  color: #3b82f6;
+}
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS
+   Mobile-first approach with progressive enhancement
+   ============================================ */
+
+/* Mobile: < 768px (default styles above) */
+@media (max-width: 767px) {
+  .portfolio-item {
+    width: 100%;
+    margin-bottom: 80px;
+  }
+}
+
+/* Tablet: 768px - 1199px */
+@media (min-width: 768px) and (max-width: 1199px) {
+  /* .portfolio-item {
+    width: 100%;
+    height: 70vh;
+    margin-bottom: 100px;
+  } */
+
+}
+
+/* Desktop: ≥ 1024px */
+@media (min-width: 1024px) {
+  .portfolio-item {
+    max-width: 80%;
+  }
+
+  .portfolio-item--portrait {
+    height: 110vh; /* 110% of viewport height */
+    width: calc(110vh * 3 / 4); /* Calculate width based on 3:4 aspect ratio */
+    max-width: 100%; /* Reset max-width constraint */
+    aspect-ratio: 3/4;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .portfolio-item__image {
+    transition: none;
+  }
+}

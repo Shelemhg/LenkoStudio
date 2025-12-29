@@ -1,0 +1,132 @@
+/* ============================================
+   SPHERE GALLERY MODAL
+   ============================================ */
+.sphere-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 750px; /* Increased from 600px to compensate for larger radius (300->375) */
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.sphere-modal.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sphere-close-btn {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 2001;
+  transition: background 0.2s;
+}
+
+.sphere-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.sphere-instruction {
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+.sphere-scene {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+}
+
+.sphere {
+  position: relative;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  /* Rotation is handled by JS */
+}
+
+.sphere-item {
+  position: absolute;
+  /* SUPERSAMPLING: Double the size for high-DPI rendering */
+  width: 360px;  /* Visual target: 180px */
+  height: 520px; /* Visual target: 260px */
+  left: -180px;  /* Center: -width/2 */
+  top: -260px;   /* Center: -height/2 */
+  background: #000;
+  border: 4px solid rgba(255, 255, 255, 0.1); /* Scaled border */
+  border-radius: 8px; /* Scaled radius */
+  overflow: hidden;
+  cursor: pointer;
+  backface-visibility: hidden; /* Hide back of images for cleaner look */
+  transition: border-color 0.2s; /* Removed transform transition to avoid conflict with JS animation */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* Scaled shadow */
+  /* Removed will-change: transform to prevent low-res rasterization */
+}
+
+.sphere-item__overlay {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  /* Removed transition for performance as JS updates it every frame */
+  will-change: opacity;
+  z-index: 10;
+}
+
+.sphere-item:hover {
+  border-color: #fff;
+  z-index: 100; /* Bring to front on hover */
+}
+
+.sphere-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none; /* Prevent image drag */
+}
+
+/* Mobile adjustments for sphere */
+@media (max-width: 768px) {
+  .sphere-modal {
+    perspective: 500px; /* Relaxed perspective to reduce distortion */
+  }
+  
+  .sphere-item {
+    /* Reduced base size so perspective scaling makes front item correct size */
+    /* SUPERSAMPLING: Double the mobile target (130x195 -> 260x390) */
+    width: 260px;
+    height: 390px;
+    left: -130px;
+    top: -195px;
+  }
+}

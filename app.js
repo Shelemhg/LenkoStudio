@@ -254,9 +254,23 @@
 
   window.addEventListener('popstate', ()=>{ loadPage(location.href, true); });
 
-  // Init
-  initMobileMenu();
-  ensureAudio();
-  bindAudioControls();
-  initPageFeatures(document);
+  // Init - wait for custom elements to be defined
+  if (customElements.get('site-header')) {
+    // Web components are being used, wait for them to render
+    customElements.whenDefined('site-header').then(() => {
+      // Give the component a moment to inject its HTML
+      setTimeout(() => {
+        initMobileMenu();
+        ensureAudio();
+        bindAudioControls();
+        initPageFeatures(document);
+      }, 0);
+    });
+  } else {
+    // Traditional HTML, init immediately
+    initMobileMenu();
+    ensureAudio();
+    bindAudioControls();
+    initPageFeatures(document);
+  }
 })();

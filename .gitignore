@@ -1,0 +1,4 @@
+.venv
+media/portfolio_backup/
+__pycache__/
+*.pyc
