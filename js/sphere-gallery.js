@@ -274,11 +274,18 @@ window.SphereGallery = (() => {
       images.push(`${folder}/${i}.jpg`);
     }
     
+    // Check if we are re-opening the same content
+    // If so, we want to preserve the rotation state
+    const isSameContent = currentPreparedFolder === folder;
+    
     // Ensure sphere is prepared (in case hover didn't happen or was interrupted)
     prepareSphereContent(images, folder);
 
-    // Reset rotation
-    currentMatrix = [1, 0, 0, 0, 1, 0, 0, 0, 1];
+    // Reset rotation ONLY if content changed
+    if (!isSameContent) {
+        currentMatrix = [1, 0, 0, 0, 1, 0, 0, 0, 1];
+    }
+    
     velocityX = 0;
     velocityY = 0;
     sphere.style.transform = `none`;
