@@ -3,7 +3,7 @@
  * Handles the interactive 3D sphere modal for portfolio sessions
  */
 
-const SphereGallery = (() => {
+window.SphereGallery = (() => {
   // DOM Elements
   let modal, container, sphere;
   let activePortfolioItem = null;

@@ -127,5 +127,10 @@
     <script src="app.js"></script>
     <script src="js/portfolio.js"></script>
     <script src="js/sphere-gallery.js"></script>
+    <script>
+      // Initialize page-specific scripts immediately
+      if (window.PortfolioParallax) window.PortfolioParallax.init();
+      if (window.SphereGallery) window.SphereGallery.init();
+    </script>
   </body>
 </html>

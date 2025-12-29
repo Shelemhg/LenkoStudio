@@ -6,7 +6,7 @@
 // ============================================
 // MODULE: Parallax Controller
 // ============================================
-const PortfolioParallax = (() => {
+window.PortfolioParallax = (() => {
   // Private variables
   let portfolioItems = [];
   let ticking = false;
