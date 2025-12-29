@@ -203,6 +203,23 @@
       const html = await res.text();
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
+      
+      // 1. Handle Stylesheets (CSS)
+      // Bring over any new <link rel="stylesheet"> tags
+      const newLinks = Array.from(doc.head ? doc.head.querySelectorAll('link[rel="stylesheet"]') : []);
+      newLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (!href) return;
+        // Check if already exists
+        const exists = Array.from(document.head.querySelectorAll('link[rel="stylesheet"]')).some(l => l.getAttribute('href') === href);
+        if (!exists) {
+          const newLink = document.createElement('link');
+          newLink.rel = 'stylesheet';
+          newLink.href = href;
+          document.head.appendChild(newLink);
+        }
+      });
+
       // Bring over any inline <style> from the new head (page-specific CSS)
       const newStyles = Array.from(doc.head ? doc.head.querySelectorAll('style') : []);
       newStyles.forEach(ns => {
@@ -215,6 +232,8 @@
           document.head.appendChild(s);
         }
       });
+
+      // 2. Replace Content
       const newMain = doc.querySelector('#main');
       if (!newMain) { location.href = url; return; }
       const curMain = document.getElementById('main');
@@ -222,6 +241,36 @@
       curMain.replaceWith(newMain);
       document.title = doc.title || document.title;
       updateAriaCurrent(url);
+      
+      // 3. Handle Scripts (JS)
+      // Execute any new scripts found in the body (or head if needed, but usually body for page-specifics)
+      // We focus on scripts that are NOT app.js (which is global)
+      const newScripts = Array.from(doc.querySelectorAll('script'));
+      for (const script of newScripts) {
+          const src = script.getAttribute('src');
+          // Skip app.js and components.js as they are global
+          if (src && (src.includes('app.js') || src.includes('components.js'))) continue;
+          
+          if (src) {
+              // External script: Check if already loaded
+              const exists = Array.from(document.querySelectorAll('script')).some(s => s.getAttribute('src') === src);
+              if (!exists) {
+                  const newScript = document.createElement('script');
+                  newScript.src = src;
+                  // If it was deferred/async, keep that? Usually for page-specific logic we want it to run now.
+                  // But let's just append it.
+                  document.body.appendChild(newScript);
+              }
+          } else {
+              // Inline script: Execute it
+              // Be careful with re-executing global logic. 
+              // For now, we assume inline scripts in body are page-specific init code.
+              const newScript = document.createElement('script');
+              newScript.textContent = script.textContent;
+              document.body.appendChild(newScript);
+          }
+      }
+
       if (!replaceState) history.pushState({}, '', url);
       window.scrollTo(0,0);
       // If navigating to Home, ensure final stage and load video immediately
