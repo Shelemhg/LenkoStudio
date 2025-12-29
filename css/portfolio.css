@@ -69,7 +69,7 @@ html {
   position: relative;
   width: 100%;
   height: 75vh;
-  min-height: 500px;
+  min-height: 700px;
   overflow: hidden;
   display: flex;
   align-items: flex-end;
@@ -87,7 +87,7 @@ html {
 /* Portfolio Item - Image (Element) */
 .portfolio-item__image {
   width: 100%;
-  height: 120%; /* Extra height for parallax effect */
+  height: 100%; /* Extra height for parallax effect */
   object-fit: cover;
   object-position: top;
   transition: transform 0.1s ease-out;
@@ -149,6 +149,13 @@ html {
   .portfolio-item {
     width: 100%;
     margin-bottom: 80px;
+  }
+
+  /* Adjust dimensions to respect aspect ratio while maximizing size */
+  .portfolio-item--portrait {
+    height: auto;
+    max-height: 100vh;
+    /* aspect-ratio: 3/4; */
   }
 }
 

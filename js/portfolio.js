@@ -42,8 +42,8 @@ const PortfolioParallax = (() => {
       const progress = (windowHeight - rect.top) / (windowHeight + rect.height);
 
       // Calculate parallax translation
-      // Range: 0% to -30% (reveals the entire extra 30% height)
-      const translateY = progress * -30;
+      // Range: 0% to -10% (matches the 110% height in CSS)
+      const translateY = progress * -10;
 
       image.style.transform = `translateY(${translateY}%)`;
     });
