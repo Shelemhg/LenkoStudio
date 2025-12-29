@@ -12,34 +12,45 @@
 
   // Mobile menu toggle
   function initMobileMenu() {
+    // Re-query elements as they might have changed (e.g. web component hydration)
     const toggle = $('.menu-toggle');
     const nav = $('.site-nav');
     const overlay = $('.menu-overlay');
     
     if (!toggle || !nav) return;
     
+    // Remove old listeners to prevent duplicates if re-initializing
+    const newToggle = toggle.cloneNode(true);
+    toggle.parentNode.replaceChild(newToggle, toggle);
+    
+    // Re-bind to new element
+    const activeToggle = newToggle;
+    
     function closeMenu() {
-      toggle.setAttribute('aria-expanded', 'false');
+      activeToggle.setAttribute('aria-expanded', 'false');
       nav.classList.remove('is-open');
       if (overlay) overlay.classList.remove('is-visible');
       document.body.style.overflow = '';
     }
     
     function openMenu() {
-      toggle.setAttribute('aria-expanded', 'true');
+      activeToggle.setAttribute('aria-expanded', 'true');
       nav.classList.add('is-open');
       if (overlay) overlay.classList.add('is-visible');
       document.body.style.overflow = 'hidden';
     }
     
-    toggle.addEventListener('click', () => {
-      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+    activeToggle.addEventListener('click', () => {
+      const isOpen = activeToggle.getAttribute('aria-expanded') === 'true';
       if (isOpen) closeMenu();
       else openMenu();
     });
     
     if (overlay) {
-      overlay.addEventListener('click', closeMenu);
+      // Clone overlay to remove old listeners too
+      const newOverlay = overlay.cloneNode(true);
+      overlay.parentNode.replaceChild(newOverlay, overlay);
+      newOverlay.addEventListener('click', closeMenu);
     }
     
     // Close menu on link click
@@ -49,7 +60,7 @@
     
     // Close on escape key
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+      if (e.key === 'Escape' && activeToggle.getAttribute('aria-expanded') === 'true') {
         closeMenu();
       }
     });
@@ -243,33 +254,47 @@
       updateAriaCurrent(url);
       
       // 3. Handle Scripts (JS)
-      // Execute any new scripts found in the body (or head if needed, but usually body for page-specifics)
-      // We focus on scripts that are NOT app.js (which is global)
+      // Execute any new scripts found in the body
+      // We need to execute them sequentially to ensure dependencies (like sphere-gallery.js) are loaded before inline scripts use them
       const newScripts = Array.from(doc.querySelectorAll('script'));
-      for (const script of newScripts) {
+      
+      const loadScript = (index) => {
+          if (index >= newScripts.length) return;
+          
+          const script = newScripts[index];
           const src = script.getAttribute('src');
+          
           // Skip app.js and components.js as they are global
-          if (src && (src.includes('app.js') || src.includes('components.js'))) continue;
+          if (src && (src.includes('app.js') || src.includes('components.js'))) {
+              loadScript(index + 1);
+              return;
+          }
           
           if (src) {
-              // External script: Check if already loaded
+              // External script
+              // Check if already loaded
               const exists = Array.from(document.querySelectorAll('script')).some(s => s.getAttribute('src') === src);
               if (!exists) {
                   const newScript = document.createElement('script');
                   newScript.src = src;
-                  // If it was deferred/async, keep that? Usually for page-specific logic we want it to run now.
-                  // But let's just append it.
+                  newScript.onload = () => loadScript(index + 1);
+                  newScript.onerror = () => loadScript(index + 1);
                   document.body.appendChild(newScript);
+              } else {
+                  // Already loaded, move to next
+                  loadScript(index + 1);
               }
           } else {
-              // Inline script: Execute it
-              // Be careful with re-executing global logic. 
-              // For now, we assume inline scripts in body are page-specific init code.
+              // Inline script
               const newScript = document.createElement('script');
               newScript.textContent = script.textContent;
               document.body.appendChild(newScript);
+              loadScript(index + 1);
           }
-      }
+      };
+      
+      // Start loading scripts
+      loadScript(0);
 
       if (!replaceState) history.pushState({}, '', url);
       window.scrollTo(0,0);
@@ -313,6 +338,10 @@
         ensureAudio();
         bindAudioControls();
         initPageFeatures(document);
+        
+        // Re-init page specific scripts if they exist (e.g. after hard reload)
+        if (window.PortfolioParallax) window.PortfolioParallax.init();
+        if (window.SphereGallery) window.SphereGallery.init();
       }, 0);
     });
   } else {
