@@ -83,7 +83,7 @@ window.SphereGallery = (() => {
         item.style.visibility = 'hidden'; 
         item.style.display = 'block';
         item.innerHTML = `
-            <img src="" alt="" decoding="async" loading="eager">
+            <img src="" alt="" decoding="async" loading="eager" draggable="false">
             <div class="sphere-item__overlay"></div>
         `;
         
