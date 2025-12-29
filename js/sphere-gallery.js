@@ -461,8 +461,8 @@ const SphereGallery = (() => {
     }
 
     // Safety: Clamp delta to prevent massive jumps (e.g. if browser hiccups or focus changes)
-    // 100px per frame is a very fast flick, anything more is likely an error
-    if (Math.abs(deltaX) > 100 || Math.abs(deltaY) > 100) {
+    // Increased to 300px to allow fast swipes, but prevent "teleportation"
+    if (Math.abs(deltaX) > 300 || Math.abs(deltaY) > 300) {
         startX = x;
         startY = y;
         return;
@@ -471,15 +471,11 @@ const SphereGallery = (() => {
     // Update velocity based on drag
     // Calculate sensitivity to match 1:1 movement (Arc Length formula: s = r * theta)
     // theta (rad) = s / r  ->  theta (deg) = (s / r) * (180 / PI)
-    // Reduced factor (0.5) to make it feel heavier/less sensitive as requested
     // Safety: Ensure currentRadius is valid
     const safeRadius = currentRadius || 500;
-    let sensitivity = (180 / (Math.PI * safeRadius)) * 0.5;
+    let sensitivity = (180 / (Math.PI * safeRadius));
     
-    // Further reduce sensitivity for touch devices (mobile)
-    if (e.type.includes('touch')) {
-        sensitivity *= 0.6; 
-    }
+    // Removed reduction factors to make drag feel 1:1 and responsive
     
     // Calculate rotation for this specific move event
     const dRotY = deltaX * sensitivity;
