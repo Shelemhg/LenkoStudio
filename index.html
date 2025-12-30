@@ -199,9 +199,10 @@
 				function updateSoundButton(enabled) {
 					const btn = document.getElementById('soundToggle');
 					if (!btn) return;
+					const label = enabled ? 'Sound On' : 'Sound Off';
+					btn.textContent = label;
 					btn.setAttribute('aria-pressed', String(!!enabled));
-					btn.textContent = enabled ? 'Sound On' : 'Sound Off';
-					btn.setAttribute('aria-label', enabled ? 'Sound on' : 'Sound off');
+					btn.setAttribute('aria-label', label);
 				}
 				function fadeVolume(target, ms = 400) {
 				const start = ambient.volume;
@@ -238,14 +239,16 @@
 				const saved = localStorage.getItem(LS_KEY);
 				const persisted = saved === null || saved === 'true';
 			ambient.volume = 0;
-			// Load saved preference
-			// Retry initializing button state if element not yet available
+			
+			// Robust button initialization
 			function initSoundButton() {
 				const btn = document.getElementById('soundToggle');
 				if (btn) {
 					updateSoundButton(persisted);
+					// Ensure we don't have duplicate listeners if this runs multiple times
+					btn.onclick = null; 
 				} else {
-					setTimeout(initSoundButton, 50);
+					requestAnimationFrame(initSoundButton);
 				}
 			}
 			initSoundButton();
@@ -254,6 +257,8 @@
 			document.addEventListener('click', (e) => {
 				const btn = e.target.closest('#soundToggle');
 				if (btn) {
+					e.preventDefault(); // Prevent any default button behavior
+					e.stopPropagation(); // Stop bubbling
 					const enabled = btn.getAttribute('aria-pressed') !== 'true';
 					setSoundEnabled(enabled);
 				}
