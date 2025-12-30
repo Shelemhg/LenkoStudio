@@ -82,7 +82,7 @@
 				const bgVideo = document.getElementById('bgVideo');
 				const title = document.getElementById('introTitle');
 				const ctas = document.getElementById('heroCtas');
-				const soundToggle = document.getElementById('soundToggle');
+				// const soundToggle = document.getElementById('soundToggle'); // Use lazy lookup
 				const ambient = document.getElementById('ambientAudio');
 				const blackOverlay = document.getElementById('blackOverlay');
 
@@ -197,9 +197,11 @@
 				}
 
 				function updateSoundButton(enabled) {
-				soundToggle.setAttribute('aria-pressed', String(!!enabled));
-				soundToggle.textContent = enabled ? 'Sound On' : 'Sound Off';
-				soundToggle.setAttribute('aria-label', enabled ? 'Sound on' : 'Sound off');
+					const btn = document.getElementById('soundToggle');
+					if (!btn) return;
+					btn.setAttribute('aria-pressed', String(!!enabled));
+					btn.textContent = enabled ? 'Sound On' : 'Sound Off';
+					btn.setAttribute('aria-label', enabled ? 'Sound on' : 'Sound off');
 				}
 				function fadeVolume(target, ms = 400) {
 				const start = ambient.volume;
@@ -236,11 +238,24 @@
 				const persisted = localStorage.getItem(LS_KEY) === '1';
 			ambient.volume = 0;
 			// Load saved preference
-			updateSoundButton(persisted);
+			// Retry initializing button state if element not yet available
+			function initSoundButton() {
+				const btn = document.getElementById('soundToggle');
+				if (btn) {
+					updateSoundButton(persisted);
+				} else {
+					setTimeout(initSoundButton, 50);
+				}
+			}
+			initSoundButton();
 			
-			soundToggle.addEventListener('click', () => {
-				const enabled = soundToggle.getAttribute('aria-pressed') !== 'true';
-				setSoundEnabled(enabled);
+			// Use delegation for robustness
+			document.addEventListener('click', (e) => {
+				const btn = e.target.closest('#soundToggle');
+				if (btn) {
+					const enabled = btn.getAttribute('aria-pressed') !== 'true';
+					setSoundEnabled(enabled);
+				}
 			});
 
 				document.getElementById('ctaBook').addEventListener('click', () => track('cta_book'));
