@@ -22,9 +22,9 @@ class SiteHeader extends HTMLElement {
           <a class="brand" href="index.html"${currentPage === 'home' ? ' aria-current="page"' : ''}>Lenko Studio</a>
           <ul class="nav-list">
             <li><a href="portfolio.html"${currentPage === 'portfolio' ? ' aria-current="page"' : ''}>Portfolio</a></li>
-            <li><a href="services.html"${currentPage === 'services' ? ' aria-current="page"' : ''}>Services</a></li>
+            <!-- <li><a href="services.html"${currentPage === 'services' ? ' aria-current="page"' : ''}>Services</a></li> -->
             <li><a href="case-studies.html"${currentPage === 'case-studies' ? ' aria-current="page"' : ''}>Case Studies</a></li>
-            <li><a href="pricing.html"${currentPage === 'pricing' ? ' aria-current="page"' : ''}>Pricing</a></li>
+            <!-- <li><a href="pricing.html"${currentPage === 'pricing' ? ' aria-current="page"' : ''}>Pricing</a></li> -->
             <li><a href="about.html"${currentPage === 'about' ? ' aria-current="page"' : ''}>About</a></li>
             <li><a href="contact.html"${currentPage === 'contact' ? ' aria-current="page"' : ''}>Contact</a></li>
             <li><a class="adam-link" href="https://adam.lenkostudio.com">For Creators — ADAM</a></li>

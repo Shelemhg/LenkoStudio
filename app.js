@@ -158,6 +158,22 @@
       const html = await res.text();
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
+      
+      // 1. Handle Stylesheets (<link rel="stylesheet">)
+      // We need to load new stylesheets that aren't already in the current document
+      const newLinks = Array.from(doc.querySelectorAll('link[rel="stylesheet"]'));
+      const currentLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(l => l.href);
+      
+      newLinks.forEach(link => {
+        if (!currentLinks.includes(link.href)) {
+            const newLink = document.createElement('link');
+            newLink.rel = 'stylesheet';
+            newLink.href = link.href;
+            document.head.appendChild(newLink);
+        }
+      });
+
+      // 2. Handle Inline Styles (<style>)
       // Bring over any inline <style> from the new head (page-specific CSS)
       const newStyles = Array.from(doc.head ? doc.head.querySelectorAll('style') : []);
       newStyles.forEach(ns => {
@@ -170,6 +186,8 @@
           document.head.appendChild(s);
         }
       });
+
+      // 3. Swap Content
       const newMain = doc.querySelector('#main');
       if (!newMain) { location.href = url; return; }
       const curMain = document.getElementById('main');
@@ -177,8 +195,51 @@
       curMain.replaceWith(newMain);
       document.title = doc.title || document.title;
       updateAriaCurrent(url);
+      
       if (!replaceState) history.pushState({}, '', url);
       window.scrollTo(0,0);
+      
+      // 4. Handle Scripts
+      // We need to load external scripts and execute inline scripts
+      // This is crucial for portfolio.js and sphere-gallery.js
+      const newScripts = Array.from(doc.querySelectorAll('script'));
+      const currentScripts = Array.from(document.querySelectorAll('script')).map(s => s.src);
+      
+      for (const script of newScripts) {
+          // Skip if it's the main app.js or already loaded
+          if (script.src && currentScripts.includes(script.src)) continue;
+          if (script.src && script.src.includes('app.js')) continue;
+          
+          if (script.src) {
+              // External script: Load it sequentially
+              await new Promise((resolve, reject) => {
+                  const s = document.createElement('script');
+                  s.src = script.src;
+                  s.onload = resolve;
+                  s.onerror = resolve; // Continue even if fails
+                  document.body.appendChild(s);
+              });
+          } else {
+              // Inline script: Execute it
+              // We wrap in a try-catch to prevent one error stopping everything
+              try {
+                  // Use indirect eval to execute in global scope
+                  (0, eval)(script.textContent);
+              } catch (e) {
+                  console.error('Script execution error:', e);
+              }
+          }
+      }
+
+      // 5. Re-initialize Global Modules
+      // Explicitly check for known modules if they weren't triggered by inline scripts
+      if (window.PortfolioParallax && typeof window.PortfolioParallax.init === 'function') {
+          window.PortfolioParallax.init();
+      }
+      if (window.SphereGallery && typeof window.SphereGallery.init === 'function') {
+          window.SphereGallery.init();
+      }
+
       // If navigating to Home, ensure final stage and load video immediately
       const u = new URL(url, location.href);
       const toHome = /(?:^|\/)index\.html$/.test(u.pathname) || u.pathname === '/' || u.pathname === '';
@@ -187,10 +248,12 @@
         ensureHeroVideoLoaded();
         try { sessionStorage.setItem(INTRO_KEY,'1'); } catch(_){}
       }
+      
       initPageFeatures(document);
       // Keep audio available across navigation
       ensureAudio();
     } catch (e) {
+      console.error('PJAX Error:', e);
       // Fallback to hard navigation
       location.href = url;
     }
