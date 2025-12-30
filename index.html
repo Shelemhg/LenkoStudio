@@ -90,7 +90,7 @@
 				const INTRO_KEY = 'introDone';
 				
 				// Check if sound was previously disabled
-				const soundWasDisabled = localStorage.getItem(LS_KEY) === '0';
+				const soundWasDisabled = localStorage.getItem(LS_KEY) === 'false';
 				
 				// Intro persistence across intra-site navigation (clears on refresh)
 				const navEntry = (performance && typeof performance.getEntriesByType === 'function') ? performance.getEntriesByType('navigation')[0] : null;
@@ -151,7 +151,7 @@
 					ensureVideoLoaded();
 					if (blackOverlay) blackOverlay.classList.add('is-hidden');
 				// Start audio on first explicit click - only if user hasn't previously muted
-				const wasMuted = localStorage.getItem(LS_KEY) === '0';
+				const wasMuted = localStorage.getItem(LS_KEY) === 'false';
 				if (!wasMuted) {
 					setSoundEnabled(true);
 				}
@@ -218,7 +218,7 @@
 				}, 50);
 				}
 				function setSoundEnabled(enabled) {
-				localStorage.setItem(LS_KEY, enabled ? '1' : '0');
+				localStorage.setItem(LS_KEY, enabled ? 'true' : 'false');
 				updateSoundButton(enabled);
 				if (enabled) {
 					try { ambient.play(); } catch (_) {}
@@ -235,7 +235,7 @@
 					}
 				}
 				}
-				const persisted = localStorage.getItem(LS_KEY) === '1';
+				const persisted = localStorage.getItem(LS_KEY) === 'true';
 			ambient.volume = 0;
 			// Load saved preference
 			// Retry initializing button state if element not yet available
