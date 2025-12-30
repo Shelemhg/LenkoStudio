@@ -240,35 +240,26 @@
 				const persisted = saved === null || saved === 'true';
 			ambient.volume = 0;
 			
-			// Robust button initialization
+			// Initialize button state and attach listener
 			function initSoundButton() {
 				const btn = document.getElementById('soundToggle');
 				if (btn) {
 					updateSoundButton(persisted);
-					// Ensure we don't have duplicate listeners if this runs multiple times
-					btn.onclick = null; 
+					btn.addEventListener('click', () => {
+						const enabled = btn.getAttribute('aria-pressed') !== 'true';
+						setSoundEnabled(enabled);
+					});
 				} else {
 					requestAnimationFrame(initSoundButton);
 				}
 			}
 			initSoundButton();
-			
-			// Use delegation for robustness
-			document.addEventListener('click', (e) => {
-				const btn = e.target.closest('#soundToggle');
-				if (btn) {
-					e.preventDefault(); // Prevent any default button behavior
-					e.stopPropagation(); // Stop bubbling
-					const enabled = btn.getAttribute('aria-pressed') !== 'true';
-					setSoundEnabled(enabled);
-				}
-			});
 
-				document.getElementById('ctaBook').addEventListener('click', () => track('cta_book'));
-				document.getElementById('ctaExplore').addEventListener('click', () => track('cta_explore_work'));
-				document.getElementById('ctaAdam').addEventListener('click', () => track('cta_adam'));
+				const ctaExplore = document.getElementById('ctaExplore');
+				if (ctaExplore) ctaExplore.addEventListener('click', () => track('cta_explore_work'));
 
-				document.getElementById('skipIntro').addEventListener('click', () => { if (blackOverlay) blackOverlay.classList.add('is-hidden'); setStage(2); setSoundEnabled(true); });
+				const skipIntro = document.getElementById('skipIntro');
+				if (skipIntro) skipIntro.addEventListener('click', () => { if (blackOverlay) blackOverlay.classList.add('is-hidden'); setStage(2); setSoundEnabled(true); });
 				const y = document.getElementById('year');
 				if (y) y.textContent = new Date().getFullYear();
 				// Signal that index manages audio/toggle to avoid double-binding
