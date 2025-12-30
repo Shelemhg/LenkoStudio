@@ -13,32 +13,13 @@
 		
 			<link rel="preload" as="image" href="media/autum.jpg" />
 			<link rel="stylesheet" href="style.css" />
+			<script src="js/components.js"></script>
 			<meta name="description" content="Lenko Studio — Cinematic photo and video. Book a shoot, explore work, and discover ADAM for creators." />
 		</head>
 		<body class="stage-0">
 			<div id="blackOverlay" class="overlay-black"></div>
 			<a id="skipIntro" class="skip-link" href="#main">Skip intro</a>
-
-			<header class="site-header" role="banner">		<button class="menu-toggle" aria-expanded="false" aria-label="Toggle menu">
-			<span></span>
-			<span></span>
-			<span></span>
-		</button>			<nav class="site-nav" aria-label="Primary">
-				<a class="brand" href="index.html" aria-current="page">Lenko Studio</a>
-				<ul class="nav-list">
-				<li><a href="portfolio.html">Portfolio</a></li>
-				<li><a href="services.html">Services</a></li>
-				<li><a href="case-studies.html">Case Studies</a></li>
-				<li><a href="pricing.html">Pricing</a></li>
-				<li><a href="about.html">About</a></li>
-				<li><a href="contact.html">Contact</a></li>
-				<li><a class="adam-link" href="https://adam.lenkostudio.com" aria-label="For Creators — ADAM">For Creators — ADAM</a></li>
-				</ul>
-			</nav>
-
-			<button id="soundToggle" class="sound-toggle" aria-pressed="false" aria-label="Sound off">Sound Off</button>
-			</header>
-		<div class="menu-overlay" aria-hidden="true"></div>
+			<site-header current="home"></site-header>
 
 			<main id="main" class="home" role="main">
 				<section class="hero" aria-label="Cinematic Intro">
@@ -52,9 +33,9 @@
 						<h1 id="introTitle" class="intro-title" tabindex="0">Lenko Studio</h1>
 
 						<div id="heroCtas" class="hero-ctas" aria-live="polite">
-							<a class="cta primary" href="contact.html" id="ctaBook">Book a Shoot</a>
 							<a class="cta" href="portfolio.html" id="ctaExplore">Explore Portfolio</a>
-							<a class="cta" href="https://adam.lenkostudio.com" id="ctaAdam">For Creators — ADAM</a>
+							<a class="cta" href="services.html" id="ctaServices">Services for Creators</a>
+							<a class="cta" href="https://adam.lenkostudio.com" id="ctaAdam">ADAM - AI For Creators</a>
 						</div>
 					</div>
 				</section>

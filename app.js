@@ -10,62 +10,6 @@
   function sameOrigin(href){ try { const u = new URL(href, location.href); return u.origin === location.origin; } catch { return false; } }
   function isHash(href){ try { const u = new URL(href, location.href); return u.hash && (u.pathname === location.pathname) && !u.search; } catch { return false; } }
 
-  // Mobile menu toggle
-  function initMobileMenu() {
-    // Re-query elements as they might have changed (e.g. web component hydration)
-    const toggle = $('.menu-toggle');
-    const nav = $('.site-nav');
-    const overlay = $('.menu-overlay');
-    
-    if (!toggle || !nav) return;
-    
-    // Remove old listeners to prevent duplicates if re-initializing
-    const newToggle = toggle.cloneNode(true);
-    toggle.parentNode.replaceChild(newToggle, toggle);
-    
-    // Re-bind to new element
-    const activeToggle = newToggle;
-    
-    function closeMenu() {
-      activeToggle.setAttribute('aria-expanded', 'false');
-      nav.classList.remove('is-open');
-      if (overlay) overlay.classList.remove('is-visible');
-      document.body.style.overflow = '';
-    }
-    
-    function openMenu() {
-      activeToggle.setAttribute('aria-expanded', 'true');
-      nav.classList.add('is-open');
-      if (overlay) overlay.classList.add('is-visible');
-      document.body.style.overflow = 'hidden';
-    }
-    
-    activeToggle.addEventListener('click', () => {
-      const isOpen = activeToggle.getAttribute('aria-expanded') === 'true';
-      if (isOpen) closeMenu();
-      else openMenu();
-    });
-    
-    if (overlay) {
-      // Clone overlay to remove old listeners too
-      const newOverlay = overlay.cloneNode(true);
-      overlay.parentNode.replaceChild(newOverlay, overlay);
-      newOverlay.addEventListener('click', closeMenu);
-    }
-    
-    // Close menu on link click
-    $all('.nav-list a', nav).forEach(link => {
-      link.addEventListener('click', closeMenu);
-    });
-    
-    // Close on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && activeToggle.getAttribute('aria-expanded') === 'true') {
-        closeMenu();
-      }
-    });
-  }
-
   function ensureAudio(){
     let audio = document.getElementById(AUDIO_ID);
     if (!audio) {
@@ -214,23 +158,6 @@
       const html = await res.text();
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
-      
-      // 1. Handle Stylesheets (CSS)
-      // Bring over any new <link rel="stylesheet"> tags
-      const newLinks = Array.from(doc.head ? doc.head.querySelectorAll('link[rel="stylesheet"]') : []);
-      newLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (!href) return;
-        // Check if already exists
-        const exists = Array.from(document.head.querySelectorAll('link[rel="stylesheet"]')).some(l => l.getAttribute('href') === href);
-        if (!exists) {
-          const newLink = document.createElement('link');
-          newLink.rel = 'stylesheet';
-          newLink.href = href;
-          document.head.appendChild(newLink);
-        }
-      });
-
       // Bring over any inline <style> from the new head (page-specific CSS)
       const newStyles = Array.from(doc.head ? doc.head.querySelectorAll('style') : []);
       newStyles.forEach(ns => {
@@ -243,8 +170,6 @@
           document.head.appendChild(s);
         }
       });
-
-      // 2. Replace Content
       const newMain = doc.querySelector('#main');
       if (!newMain) { location.href = url; return; }
       const curMain = document.getElementById('main');
@@ -252,50 +177,6 @@
       curMain.replaceWith(newMain);
       document.title = doc.title || document.title;
       updateAriaCurrent(url);
-      
-      // 3. Handle Scripts (JS)
-      // Execute any new scripts found in the body
-      // We need to execute them sequentially to ensure dependencies (like sphere-gallery.js) are loaded before inline scripts use them
-      const newScripts = Array.from(doc.querySelectorAll('script'));
-      
-      const loadScript = (index) => {
-          if (index >= newScripts.length) return;
-          
-          const script = newScripts[index];
-          const src = script.getAttribute('src');
-          
-          // Skip app.js and components.js as they are global
-          if (src && (src.includes('app.js') || src.includes('components.js'))) {
-              loadScript(index + 1);
-              return;
-          }
-          
-          if (src) {
-              // External script
-              // Check if already loaded
-              const exists = Array.from(document.querySelectorAll('script')).some(s => s.getAttribute('src') === src);
-              if (!exists) {
-                  const newScript = document.createElement('script');
-                  newScript.src = src;
-                  newScript.onload = () => loadScript(index + 1);
-                  newScript.onerror = () => loadScript(index + 1);
-                  document.body.appendChild(newScript);
-              } else {
-                  // Already loaded, move to next
-                  loadScript(index + 1);
-              }
-          } else {
-              // Inline script
-              const newScript = document.createElement('script');
-              newScript.textContent = script.textContent;
-              document.body.appendChild(newScript);
-              loadScript(index + 1);
-          }
-      };
-      
-      // Start loading scripts
-      loadScript(0);
-
       if (!replaceState) history.pushState({}, '', url);
       window.scrollTo(0,0);
       // If navigating to Home, ensure final stage and load video immediately
@@ -328,27 +209,8 @@
 
   window.addEventListener('popstate', ()=>{ loadPage(location.href, true); });
 
-  // Init - wait for custom elements to be defined
-  if (customElements.get('site-header')) {
-    // Web components are being used, wait for them to render
-    customElements.whenDefined('site-header').then(() => {
-      // Give the component a moment to inject its HTML
-      setTimeout(() => {
-        initMobileMenu();
-        ensureAudio();
-        bindAudioControls();
-        initPageFeatures(document);
-        
-        // Re-init page specific scripts if they exist (e.g. after hard reload)
-        if (window.PortfolioParallax) window.PortfolioParallax.init();
-        if (window.SphereGallery) window.SphereGallery.init();
-      }, 0);
-    });
-  } else {
-    // Traditional HTML, init immediately
-    initMobileMenu();
-    ensureAudio();
-    bindAudioControls();
-    initPageFeatures(document);
-  }
+  // Init
+  ensureAudio();
+  bindAudioControls();
+  initPageFeatures(document);
 })();
