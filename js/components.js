@@ -9,6 +9,9 @@
 class SiteHeader extends HTMLElement {
   connectedCallback() {
     const currentPage = this.getAttribute('current') || '';
+    const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+    const soundLabel = soundEnabled ? 'Sound On' : 'Sound Off';
+    const soundPressed = soundEnabled ? 'true' : 'false';
     
     this.innerHTML = `
       <a class="skip-link" href="#main">Skip to content</a>
@@ -30,7 +33,7 @@ class SiteHeader extends HTMLElement {
             <!-- <li><a class="adam-link" href="https://adam.lenkostudio.com">For Creators — ADAM</a></li> -->
           </ul>
         </nav>
-        <button id="soundToggle" class="sound-toggle" aria-pressed="false" aria-label="Sound off">Sound Off</button>
+        <button id="soundToggle" class="sound-toggle" aria-pressed="${soundPressed}" aria-label="${soundLabel}">${soundLabel}</button>
       </header>
       <div class="menu-overlay" aria-hidden="true"></div>
     `;
