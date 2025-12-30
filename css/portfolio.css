@@ -189,7 +189,12 @@ html {
     max-width: 100%; /* Reset max-width constraint */
     aspect-ratio: 2/3;
   }
-}
+  .portfolio-item--landscape {
+    height: 80vh; /* Slightly shorter to fit width */
+    width: calc(80vh * 3 / 2); /* 3:2 aspect ratio */
+    max-width: 90vw; /* Ensure it doesn't overflow width */
+    aspect-ratio: 3/2;
+  }}
 
 /* ============================================
    ACCESSIBILITY

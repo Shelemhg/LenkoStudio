@@ -81,8 +81,30 @@ window.PortfolioParallax = (() => {
 
     // Calculate initial state
     updateParallax();
+    
+    // Auto-detect orientation for all portfolio images
+    portfolioItems.forEach(item => {
+        const img = item.querySelector('.portfolio-item__image');
+        if (img) {
+            if (img.complete) {
+                checkOrientation(img, item);
+            } else {
+                img.onload = () => checkOrientation(img, item);
+            }
+        }
+    });
 
     console.log(`Portfolio parallax initialized for ${portfolioItems.length} items`);
+  }
+
+  function checkOrientation(img, itemContainer) {
+      if (img.naturalWidth > img.naturalHeight) {
+          itemContainer.classList.add('portfolio-item--landscape');
+          itemContainer.classList.remove('portfolio-item--portrait');
+      } else {
+          itemContainer.classList.add('portfolio-item--portrait');
+          itemContainer.classList.remove('portfolio-item--landscape');
+      }
   }
 
   /**

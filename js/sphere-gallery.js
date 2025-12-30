@@ -203,6 +203,24 @@ window.SphereGallery = (() => {
         if (!img.src.endsWith(src)) {
             img.src = src;
             img.alt = `Session image ${i+1}`;
+            
+            // Reset classes
+            element.classList.remove('sphere-item--landscape');
+            
+            // Check orientation when loaded
+            img.onload = () => {
+                if (img.naturalWidth > img.naturalHeight) {
+                    element.classList.add('sphere-item--landscape');
+                }
+            };
+        } else {
+            // If src didn't change, we still need to ensure class is correct
+            // (e.g. if it was reused from a different orientation)
+            if (img.naturalWidth > img.naturalHeight) {
+                element.classList.add('sphere-item--landscape');
+            } else {
+                element.classList.remove('sphere-item--landscape');
+            }
         }
         
         // Show item using visibility

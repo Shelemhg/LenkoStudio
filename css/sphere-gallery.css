@@ -94,6 +94,13 @@
   /* Removed will-change: transform to prevent low-res rasterization */
 }
 
+.sphere-item.sphere-item--landscape {
+  width: 520px;  /* Swap width/height */
+  height: 360px;
+  left: -260px;  /* Center: -width/2 */
+  top: -180px;   /* Center: -height/2 */
+}
+
 .sphere-item img {
   width: 100%;
   height: 100%;
