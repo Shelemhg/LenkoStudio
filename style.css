@@ -24,7 +24,7 @@
   --focus: #ff4d8f;
   
   /* Header */
-  --header-bg: rgba(10, 10, 10, 0.8);
+  --header-bg: rgba(10, 10, 10, 0.2);
   --header-border: rgba(255, 255, 255, 0.06);
   
   /* Buttons */
@@ -56,7 +56,10 @@
 }
 
 /* 2) Base / Reset ----------------------------------------------------------- */
-* { box-sizing: border-box; }
+* { 
+  box-sizing: border-box; 
+  -webkit-tap-highlight-color: transparent;
+}
 html, body { height: 100%; }
 body {
   margin: 0;
@@ -97,6 +100,8 @@ button { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
 
 /* 4) Header / Navigation ---------------------------------------------------- */
+site-header, site-footer { display: contents; }
+
 .site-header {
   position: sticky;
   top: 0;

@@ -68,13 +68,16 @@ html {
 .portfolio-item {
   position: relative;
   width: 100%;
-  height: 75vh;
-  min-height: 700px;
+  height: 95vh;
+  min-height: 500px;
   overflow: hidden;
   display: flex;
   align-items: flex-end;
   padding: 0;
   margin: 0 auto 120px auto;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
 }
 
 /* Portfolio Item - Image Wrapper (Element) */
@@ -87,11 +90,16 @@ html {
 /* Portfolio Item - Image (Element) */
 .portfolio-item__image {
   width: 100%;
-  height:90%; /* Extra height for parallax effect */
+  height:100%; /* Extra height for parallax effect */
   object-fit: cover;
-  object-position: top;
+  object-position: center;
   transition: transform 0.1s ease-out;
   will-change: transform;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: none; /* Prevent dragging and right-click context menu on image itself */
 }
 
 /* Portfolio Item - Title Section (Element) */
@@ -153,8 +161,8 @@ html {
 
   /* Adjust dimensions to respect aspect ratio while maximizing size */
   .portfolio-item--portrait {
-    height: auto;
-    max-height: 100vh;
+    height: 95vh;
+    max-height: 95vh;
     /* aspect-ratio: 3/4; */
   }
 }
@@ -177,9 +185,9 @@ html {
 
   .portfolio-item--portrait {
     height: 110vh; /* 110% of viewport height */
-    width: calc(110vh * 3 / 4); /* Calculate width based on 3:4 aspect ratio */
+    width: calc(100vh * 3 / 4); /* Calculate width based on 3:4 aspect ratio */
     max-width: 100%; /* Reset max-width constraint */
-    aspect-ratio: 3/4;
+    aspect-ratio: 2/3;
   }
 }
 
