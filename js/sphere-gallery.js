@@ -418,6 +418,7 @@ window.SphereGallery = (() => {
   // --- Interaction Logic ---
   
   let isTouchInteraction = false;
+  let isFirstMove = false;
 
   function handleDragStart(e) {
     // Don't start drag if clicking close button
@@ -433,6 +434,9 @@ window.SphereGallery = (() => {
 
     isDragging = true;
     hasDragged = false; // Reset drag flag
+    isFirstMove = true; // Flag to sync coordinates on first move
+    
+    // We still capture startX/Y here for fallback, but isFirstMove will override it
     startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
     startY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
     
@@ -458,6 +462,14 @@ window.SphereGallery = (() => {
 
     const x = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
     const y = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+
+    // Sync coordinates on first move to prevent jumps
+    if (isFirstMove) {
+        isFirstMove = false;
+        startX = x;
+        startY = y;
+        return;
+    }
 
     const deltaX = x - startX;
     const deltaY = y - startY;
