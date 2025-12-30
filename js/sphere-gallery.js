@@ -35,6 +35,7 @@ window.SphereGallery = (() => {
   const MAX_POOL_SIZE = 30; // Max items to reuse
   let itemPool = []; // Pool of sphere items
   let currentPreparedFolder = null; // Track currently prepared folder
+  let lastOpenedFolder = null; // Track last opened folder to handle rotation resets correctly
   
   // Cache for preloaded images
   const preloadedFolders = new Set();
@@ -275,8 +276,10 @@ window.SphereGallery = (() => {
     }
     
     // Check if we are re-opening the same content
-    // If so, we want to preserve the rotation state
-    const isSameContent = currentPreparedFolder === folder;
+    // We check against lastOpenedFolder, NOT currentPreparedFolder
+    // because currentPreparedFolder might have been updated by a hover/touch event just before click
+    const isSameContent = lastOpenedFolder === folder;
+    lastOpenedFolder = folder;
     
     // Ensure sphere is prepared (in case hover didn't happen or was interrupted)
     prepareSphereContent(images, folder);
