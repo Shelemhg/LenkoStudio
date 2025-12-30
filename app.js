@@ -28,7 +28,7 @@
 
   function getSoundPreference(){
     const saved = localStorage.getItem('soundEnabled');
-    return saved === null ? false : saved === 'true';
+    return saved === null ? true : saved === 'true';
   }
 
   function setSoundPreference(enabled){

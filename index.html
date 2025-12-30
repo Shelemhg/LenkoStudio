@@ -235,7 +235,8 @@
 					}
 				}
 				}
-				const persisted = localStorage.getItem(LS_KEY) === 'true';
+				const saved = localStorage.getItem(LS_KEY);
+				const persisted = saved === null || saved === 'true';
 			ambient.volume = 0;
 			// Load saved preference
 			// Retry initializing button state if element not yet available
