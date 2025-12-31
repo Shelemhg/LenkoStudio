@@ -241,12 +241,17 @@ site-header, site-footer { display: contents; }
   .nav-list {
     flex-direction: column;
     width: 100%;
-    gap: var(--space-sm);
+    gap: var(--space-lg);
   }
   .nav-list a {
     width: 100%;
-    padding: var(--space-md);
-    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: var(--space-lg) var(--space-lg);
+    font-size: 1.25rem;
+    line-height: 1.2;
+    min-height: 64px;
   }
   /* Overlay when menu is open */
   .menu-overlay {
