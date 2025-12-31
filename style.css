@@ -99,6 +99,19 @@ button { font: inherit; color: inherit; }
 .skip-link:focus { transform: translateY(0); outline: 2px solid var(--focus); }
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
 
+/* Visually hidden text (screen-reader only) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* 4) Header / Navigation ---------------------------------------------------- */
 site-header, site-footer { display: contents; }
 
@@ -695,6 +708,13 @@ button[type="submit"], .btn {
   cursor: pointer;
   font-weight: 600;
   transition: all 0.2s ease;
+}
+
+/* Inline form feedback (replaces disruptive alerts) */
+.form-status {
+  margin: var(--space-sm) 0 0;
+  color: var(--fg-muted);
+  min-height: 1.2em;
 }
 button[type="submit"]:hover, .btn:hover { 
   background: var(--accent-hover);

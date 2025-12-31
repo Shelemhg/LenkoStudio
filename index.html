@@ -12,12 +12,13 @@
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
 		
 			<link rel="stylesheet" href="style.css?v=20251230a" />
-			<script src="js/components.js?v=20251230a"></script>
+			<script src="js/components.js?v=20251230a" defer></script>
 			<meta name="description" content="Lenko Studio — Cinematic photo and video. Book a shoot, explore work, and discover ADAM for creators." />
 		</head>
 		<body class="stage-0">
 			<div id="blackOverlay" class="overlay-black"></div>
 			<a id="skipIntro" class="skip-link" href="#main">Skip intro</a>
+			<a class="skip-link" href="#main">Skip to content</a>
 			<site-header current="home"></site-header>
 
 			<main id="main" class="home" role="main">
@@ -54,176 +55,10 @@
 			<source src="media/audio.mp3" type="audio/mpeg" />
 			</audio>
 
-			<script>
-			(function () {
-				const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-				const body = document.body;
-				const bgVideo = document.getElementById('bgVideo');
-				const title = document.getElementById('introTitle');
-				const ctas = document.getElementById('heroCtas');
-				const ambient = document.getElementById('ambientAudio');
-				const blackOverlay = document.getElementById('blackOverlay');
+			<!-- Home-only behavior (intro + video lazy-load). -->
+			<script src="js/home.js?v=20251230a" defer></script>
 
-				const LS_KEY = 'soundEnabled';
-				
-				// Mobile detection
-				const isMobile = window.innerWidth <= 768;
-				
-				// Check if sound was previously disabled
-				const saved = localStorage.getItem(LS_KEY);
-				// On mobile, default to sound OFF unless user explicitly enabled it
-				// On desktop, default to sound ON unless user explicitly disabled it
-				const soundWasDisabled = isMobile ? (saved !== 'true') : (saved === 'false');
-				
-				let stage = 0; // 0 = black, 1 = B&W animating, 2 = color + CTAs
-				let completed = false;
-
-				function track(name) {
-					if (window.plausible) {
-						try { window.plausible(name); } catch (e) {}
-					} else {
-						console.log('[analytics]', name);
-					}
-				}
-
-				function setStage(next) {
-					stage = next;
-					body.classList.remove('stage-0', 'stage-1', 'stage-2');
-					body.classList.add('stage-' + next);
-					if (next === 2) {
-						completed = true;
-					}
-				}
-
-				function ensureVideoLoaded() {
-					if (!bgVideo || bgVideo.dataset.loaded) return;
-					const src = 'media/oceanvideo.mp4';
-					const source = document.createElement('source');
-					source.src = src;
-					source.type = 'video/mp4';
-					bgVideo.appendChild(source);
-					bgVideo.dataset.loaded = '1';
-					bgVideo.muted = true;
-					const playPromise = bgVideo.play();
-					if (playPromise && typeof playPromise.then === 'function') {
-						playPromise.catch(() => {});
-					}
-				}
-
-				function firstInteraction() {
-					if (completed) return;
-					if (stage === 0) {
-						track('intro_click');
-						setStage(2);
-						ensureVideoLoaded();
-						if (blackOverlay) blackOverlay.classList.add('is-hidden');
-						// Start audio on first explicit click - only if user hasn't previously muted
-						const wasMuted = localStorage.getItem(LS_KEY) === 'false';
-						if (!wasMuted) {
-							setSoundEnabled(true);
-						}
-					}
-				}
-
-				title.addEventListener('click', firstInteraction);
-				title.addEventListener('keydown', (e) => {
-					if (e.key === 'Enter' || e.key === ' ') {
-						e.preventDefault();
-						firstInteraction();
-					}
-				});
-				document.addEventListener('click', (e) => {
-					if (!e.target.closest('.hero-ctas')) firstInteraction();
-				}, { capture: true });
-
-				// Skip intro entirely ONLY if sound was previously disabled
-				if (soundWasDisabled) {
-					setStage(2);
-					if (blackOverlay) blackOverlay.classList.add('is-hidden');
-					ensureVideoLoaded();
-					track('intro_skip_sound_off');
-				} else if (prefersReduced) {
-					setStage(2);
-					if (blackOverlay) blackOverlay.classList.add('is-hidden');
-				} else {
-					track('intro_load');
-					if ('requestIdleCallback' in window) {
-						window.requestIdleCallback(() => ensureVideoLoaded(), { timeout: 1500 });
-					}
-				}
-
-				function updateSoundButton(enabled) {
-					const btn = document.getElementById('soundToggle');
-					if (!btn) return;
-					const label = enabled ? 'Sound On' : 'Sound Off';
-					btn.textContent = label;
-					btn.setAttribute('aria-pressed', String(!!enabled));
-					btn.setAttribute('aria-label', label);
-				}
-
-				function fadeVolume(target, ms = 400) {
-					const start = ambient.volume;
-					const steps = Math.max(1, Math.floor(ms / 50));
-					let i = 0;
-					const t = setInterval(() => {
-						i++;
-						const v = start + (target - start) * (i / steps);
-						ambient.volume = Math.max(0, Math.min(1, v));
-						if (i >= steps) {
-							clearInterval(t);
-							if (target === 0) ambient.pause();
-						}
-					}, 50);
-				}
-
-				function setSoundEnabled(enabled) {
-					localStorage.setItem(LS_KEY, enabled ? 'true' : 'false');
-					updateSoundButton(enabled);
-					if (enabled) {
-						try { ambient.play(); } catch (_) {}
-						fadeVolume(1, 400);
-						track('sound_toggle_on');
-					} else {
-						fadeVolume(0, 400);
-						track('sound_toggle_off');
-					}
-				}
-
-				const persisted = saved === null || saved === 'true';
-				ambient.volume = 0;
-				
-				// Initialize button state and attach listener
-				function initSoundButton() {
-					const btn = document.getElementById('soundToggle');
-					if (btn) {
-						updateSoundButton(persisted);
-						btn.addEventListener('click', () => {
-							const enabled = btn.getAttribute('aria-pressed') !== 'true';
-							setSoundEnabled(enabled);
-						});
-					} else {
-						requestAnimationFrame(initSoundButton);
-					}
-				}
-				initSoundButton();
-
-				const ctaExplore = document.getElementById('ctaExplore');
-				if (ctaExplore) ctaExplore.addEventListener('click', () => track('cta_explore_work'));
-
-				const skipIntro = document.getElementById('skipIntro');
-				if (skipIntro) skipIntro.addEventListener('click', () => { 
-					if (blackOverlay) blackOverlay.classList.add('is-hidden'); 
-					setStage(2); 
-					setSoundEnabled(true); 
-				});
-
-				const y = document.getElementById('year');
-				if (y) y.textContent = new Date().getFullYear();
-				
-				// Signal that index manages audio/toggle to avoid double-binding
-				window.__audioControllerActive = true;
-			})();
-			</script>
-			<script src="app.js?v=20251230a"></script>
+			<!-- Global site behavior (PJAX + audio + forms). -->
+			<script src="app.js?v=20251230a" defer></script>
 		</body>
 	</html>

@@ -6,10 +6,6 @@
     <link rel="icon" type="image/png" href="media/Logo.png" />
     <title>Lenko Studio — Portfolio</title>
     
-    <!-- DNS Prefetch for external image source -->
-    <link rel="dns-prefetch" href="https://picsum.photos" />
-    <link rel="preconnect" href="https://picsum.photos" crossorigin />
-    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,19 +16,18 @@
     <link rel="stylesheet" href="css/portfolio.css" />
     <link rel="stylesheet" href="css/sphere-gallery.css" />
     
-    <!-- Preload LCP image for faster loading -->
-    <link rel="preload" as="image" href="https://picsum.photos/1200/1600?random=1" fetchpriority="high" />
-    
     <!-- Web Components (deferred to not block render) -->
     <script src="js/components.js?v=20251230a" defer></script>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
     <!-- Reusable Header Component -->
     <site-header current="portfolio"></site-header>
 
     <main id="main" class="portfolio-container" role="main">
       <!-- Portfolio Item 1 - Fashion -->
-      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Fashion" data-count="11">
+      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Fashion" data-count="11" role="button" tabindex="0" aria-label="Open Fashion gallery">
         <div class="portfolio-item__image-wrapper">
           <img class="portfolio-item__image" src="media/portfolio/Fashion/1.jpg" alt="Fashion" width="1200" height="1600" fetchpriority="high">
         </div>
@@ -42,7 +37,7 @@
       </article>
 
       <!-- Portfolio Item 2 - Conceptual -->
-      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Conceptual" data-count="10">
+      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Conceptual" data-count="10" role="button" tabindex="0" aria-label="Open Conceptual gallery">
         <div class="portfolio-item__image-wrapper">
           <img class="portfolio-item__image" src="media/portfolio/Conceptual/1.jpg" alt="Conceptual" loading="lazy" width="1200" height="1600">
         </div>
@@ -52,7 +47,7 @@
       </article>
 
       <!-- Portfolio Item 3 - Beauty -->
-      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Beauty" data-count="10">
+      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Beauty" data-count="10" role="button" tabindex="0" aria-label="Open Beauty gallery">
         <div class="portfolio-item__image-wrapper">
           <img class="portfolio-item__image" src="media/portfolio/Beauty/1.jpg" alt="Beauty" loading="lazy" width="1200" height="1600">
         </div>
@@ -62,7 +57,7 @@
       </article>
 
       <!-- Portfolio Item 4 - Glamour -->
-      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Glamour" data-count="15">
+      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Glamour" data-count="15" role="button" tabindex="0" aria-label="Open Glamour gallery">
         <div class="portfolio-item__image-wrapper">
           <img class="portfolio-item__image" src="media/portfolio/Glamour/1.jpg" alt="Glamour" loading="lazy" width="1200" height="1600">
         </div>
@@ -72,7 +67,7 @@
       </article>
 
       <!-- Portfolio Item 5 - Editorial -->
-      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Editorial" data-count="6">
+      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Editorial" data-count="6" role="button" tabindex="0" aria-label="Open Editorial gallery">
         <div class="portfolio-item__image-wrapper">
           <img class="portfolio-item__image" src="media/portfolio/Editorial/1.jpg" alt="Editorial" loading="lazy" width="1200" height="1600">
         </div>
@@ -82,7 +77,7 @@
       </article>
 
       <!-- Portfolio Item 6 - Lingerie -->
-      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Lingerie" data-count="6">
+      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Lingerie" data-count="6" role="button" tabindex="0" aria-label="Open Lingerie gallery">
         <div class="portfolio-item__image-wrapper">
           <img class="portfolio-item__image" src="media/portfolio/Lingerie/1.jpg" alt="Lingerie" loading="lazy" width="1200" height="1600">
         </div>
@@ -96,13 +91,8 @@
     <site-footer></site-footer>
 
     <!-- Scripts -->
-    <script src="app.js?v=20251230a"></script>
+    <script src="app.js?v=20251230a" defer></script>
     <script src="js/portfolio.js"></script>
     <script src="js/sphere-gallery.js"></script>
-    <script>
-      // Initialize page-specific scripts immediately
-      if (window.PortfolioParallax) window.PortfolioParallax.init();
-      if (window.SphereGallery) window.SphereGallery.init();
-    </script>
   </body>
 </html>

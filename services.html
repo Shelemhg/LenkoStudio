@@ -12,9 +12,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
     
     <link rel="stylesheet" href="style.css?v=20251230a" />
-    <script src="js/components.js?v=20251230a"></script>
+    <script src="js/components.js?v=20251230a" defer></script>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <site-header current="services"></site-header>
 
     <main id="main" class="page" role="main">
@@ -61,6 +62,8 @@
           <label for="email2">Email (to receive your quote)</label>
           <input id="email2" type="email" placeholder="you@example.com" autocomplete="email" required />
 
+          <p id="estimateStatus2" class="form-status" role="status" aria-live="polite"></p>
+
           <button type="submit">Send My Quote</button>
         </form>
       </section>
@@ -70,22 +73,7 @@
 
     <site-footer></site-footer>
 
-    <script>
-      (function(){
-        const get = id => document.getElementById(id);
-        const hours = get('hours2'), locations = get('locations2'), deliverables = get('deliverables2');
-        const out = get('estimateText2');
-        const price = () => {
-          const h = Number(hours.value), l = Number(locations.value), d = Number(deliverables.value);
-          const base = 1200, hourly = 1500, perLoc = 800, perDel = 120;
-          return Math.round((base + h*hourly + Math.max(0,l-1)*perLoc + d*perDel)/50)*50;
-        };
-        const update = () => out.textContent = `Estimated: MXN $${price().toLocaleString('en-US')}`;
-        hours.addEventListener('input', update); locations.addEventListener('input', update); deliverables.addEventListener('input', update); update();
-        get('estimator2').addEventListener('submit', (e)=>{ e.preventDefault(); const email = get('email2').value.trim(); if(!email) return alert('Please enter an email.'); alert('Thanks! Your estimate has been recorded.'); });
-      })();
-    </script>
-    <script src="app.js?v=20251230a"></script>
+    <script src="app.js?v=20251230a" defer></script>
   </body>
   </html>
 

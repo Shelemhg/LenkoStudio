@@ -6,6 +6,7 @@
     <link rel="icon" type="image/png" href="media/Logo.png" />
     <title>Lenko Studio — Pricing</title>
     <link rel="stylesheet" href="style.css?v=20251230a" />
+    <script src="js/components.js?v=20251230a" defer></script>
     <style>
       .tiers { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
       .card { border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 16px; }
@@ -14,21 +15,7 @@
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-header" role="banner">
-      <nav class="site-nav" aria-label="Primary">
-        <a class="brand" href="index.html">Lenko Studio</a>
-        <ul class="nav-list">
-          <li><a href="portfolio.html">Portfolio</a></li>
-          <li><a href="services.html">Services</a></li>
-          <li><a href="case-studies.html">Case Studies</a></li>
-          <li><a href="pricing.html" aria-current="page">Pricing</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="contact.html">Contact</a></li>
-          <li><a class="adam-link" href="https://adam.lenkostudio.com">For Creators — ADAM</a></li>
-        </ul>
-      </nav>
-      <button id="soundToggle" class="sound-toggle" aria-pressed="false" aria-label="Sound off">Sound Off</button>
-    </header>
+    <site-header current="pricing"></site-header>
 
     <main id="main" class="page" role="main">
       <h1>Pricing</h1>
@@ -61,19 +48,9 @@
       <a class="floating-cta" href="contact.html">Book a Shoot</a>
     </main>
 
-    <footer class="site-footer" role="contentinfo">
-      <div class="footer-inner">
-        <p>© <span id="year"></span> Lenko Studio</p>
-        
-        <div class="social">
-          <a href="https://www.instagram.com/lenkostudio/" target="_blank" rel="noopener">Instagram</a>
-          <a href="https://www.facebook.com/LenkoStudio/" target="_blank" rel="noopener">Facebook</a>
-        </div>
-      </div>
-    </footer>
+    <site-footer></site-footer>
 
-    <script>const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear();</script>
-    <script src="app.js?v=20251230a"></script>
+    <script src="app.js?v=20251230a" defer></script>
   </body>
   </html>
 

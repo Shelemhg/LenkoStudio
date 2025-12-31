@@ -40,6 +40,8 @@
   cursor: pointer;
   z-index: 2001;
   transition: background 0.2s;
+  border: none;
+  padding: 0;
 }
 
 .sphere-close-btn:hover {

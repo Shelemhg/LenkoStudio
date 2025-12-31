@@ -6,24 +6,11 @@
     <link rel="icon" type="image/png" href="media/Logo.png" />
     <title>Lenko Studio — Contact</title>
     <link rel="stylesheet" href="style.css?v=20251230a" />
+    <script src="js/components.js?v=20251230a" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-header" role="banner">
-      <nav class="site-nav" aria-label="Primary">
-        <a class="brand" href="index.html">Lenko Studio</a>
-        <ul class="nav-list">
-          <li><a href="portfolio.html">Portfolio</a></li>
-          <li><a href="services.html">Services</a></li>
-          <li><a href="case-studies.html">Case Studies</a></li>
-          <li><a href="pricing.html">Pricing</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="contact.html" aria-current="page">Contact</a></li>
-          <li><a class="adam-link" href="https://adam.lenkostudio.com">For Creators — ADAM</a></li>
-        </ul>
-      </nav>
-      <button id="soundToggle" class="sound-toggle" aria-pressed="false" aria-label="Sound off">Sound Off</button>
-    </header>
+    <site-header current="contact"></site-header>
 
     <main id="main" class="page" role="main">
       <h1>Contact</h1>
@@ -39,6 +26,12 @@
 
         <button type="submit">Send</button>
         <button id="downloadSubmissions" type="button">Download Saved</button>
+
+        <p id="contactStatus" class="form-status" role="status" aria-live="polite"></p>
+
+        <p class="muted">
+          Note: submissions are saved locally on this device to enable “Download Saved”.
+        </p>
       </form>
       <section aria-labelledby="direct-contact" style="margin-top:20px">
         <h2 id="direct-contact">Direct Contact</h2>
@@ -57,67 +50,9 @@
       <a class="floating-cta" href="#contactForm">Book a Shoot</a>
     </main>
 
-    <footer class="site-footer" role="contentinfo">
-      <div class="footer-inner">
-        <p>© <span id="year"></span> Lenko Studio</p>
-        
-        <div class="social">
-          <a href="https://www.instagram.com/lenkostudio/" target="_blank" rel="noopener">Instagram</a>
-          <a href="https://www.facebook.com/LenkoStudio/" target="_blank" rel="noopener">Facebook</a>
-        </div>
-      </div>
-    </footer>
+    <site-footer></site-footer>
 
-    <script>
-      (function(){
-        const form = document.getElementById('contactForm');
-        form.setAttribute('data-managed','');
-        const dl = document.getElementById('downloadSubmissions');
-
-        function saveSubmission(obj){
-          try {
-            const key = 'contactSubmissions';
-            const arr = JSON.parse(localStorage.getItem(key) || '[]');
-            arr.push({ ...obj, ts: new Date().toISOString() });
-            localStorage.setItem(key, JSON.stringify(arr));
-          } catch(_) {}
-        }
-
-        function mailtoUrl(obj){
-          const to = 'support@lenkostudio.com';
-          const subject = encodeURIComponent(`Lenko Studio Contact: ${obj.name}`);
-          const body = encodeURIComponent(`Name: ${obj.name}\nEmail: ${obj.email}\nMessage:\n${obj.message || ''}`);
-          return `mailto:${to}?subject=${subject}&body=${body}`;
-        }
-
-        form.addEventListener('submit', (e)=>{
-          e.preventDefault();
-          const data = new FormData(form);
-          const obj = { name: data.get('name')?.toString().trim() || '', email: data.get('email')?.toString().trim() || '', message: data.get('message')?.toString().trim() || '' };
-          if (!obj.name || !obj.email) { alert('Please provide your name and email.'); return; }
-          saveSubmission(obj);
-          window.location.href = mailtoUrl(obj);
-          alert('Thanks! We prepared an email with your message. We also saved your submission locally on this device.');
-          form.reset();
-        });
-
-        dl.addEventListener('click', ()=>{
-          try {
-            const key = 'contactSubmissions';
-            const arr = JSON.parse(localStorage.getItem(key) || '[]');
-            const blob = new Blob([JSON.stringify(arr, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = 'lenko-contact-submissions.json';
-            document.body.appendChild(a); a.click(); a.remove();
-            URL.revokeObjectURL(url);
-          } catch(_) { alert('Nothing saved yet. Submit the form first.'); }
-        });
-
-        const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
-      })();
-    </script>
-    <script src="app.js?v=20251230a"></script>
+    <script src="app.js?v=20251230a" defer></script>
   </body>
   </html>
 

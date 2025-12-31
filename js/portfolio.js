@@ -1,140 +1,154 @@
 /**
  * Portfolio Page - Parallax Scroll Effect
- * Implements performant scroll-based parallax on portfolio images
+ *
+ * Notes:
+ * - This site uses PJAX navigation. That means the page can swap `#main`
+ *   without a full reload.
+ * - Therefore, this module must be idempotent and refreshable.
  */
 
 // ============================================
 // MODULE: Parallax Controller
 // ============================================
 window.PortfolioParallax = (() => {
-  // Private variables
-  let portfolioItems = [];
-  let ticking = false;
+    let portfolioItems = [];
+    let ticking = false;
+    let isBound = false;
+    let prefersReducedMotion = false;
 
   /**
    * Calculate and apply parallax effect for visible items
    * @private
    */
-  function updateParallax() {
-    const windowHeight = window.innerHeight;
+    function updateParallax() {
+        if (prefersReducedMotion) {
+            return;
+        }
 
-    portfolioItems.forEach(item => {
-      const rect = item.getBoundingClientRect();
-      const image = item.querySelector('.portfolio-item__image');
-      
-      if (!image) return;
+        const windowHeight = window.innerHeight;
 
-      // If item hasn't entered viewport yet (below screen), keep at top
-      if (rect.top >= windowHeight) {
-        image.style.transform = 'translateY(0%)';
-        return;
-      }
-      
-      // If item has completely left viewport (above screen), keep at final position
-      if (rect.bottom <= 0) {
-        image.style.transform = 'translateY(-30%)';
-        return;
-      }
+        portfolioItems.forEach((item) => {
+            const rect = item.getBoundingClientRect();
+            const image = item.querySelector('.portfolio-item__image');
 
-      // Item is in viewport - calculate parallax
-      // progress = 0 when item enters from bottom
-      // progress = 1 when item exits from top
-      const progress = (windowHeight - rect.top) / (windowHeight + rect.height);
+            if (!image) {
+                return;
+            }
 
-      // Calculate parallax translation
-      // Range: 0% to -10% (matches the 110% height in CSS)
-      const translateY = progress * -10;
+            if (rect.top >= windowHeight) {
+                image.style.transform = 'translateY(0%)';
+                return;
+            }
 
-      image.style.transform = `translateY(${translateY}%)`;
-    });
-  }
+            if (rect.bottom <= 0) {
+                image.style.transform = 'translateY(-30%)';
+                return;
+            }
+
+            const progress = (windowHeight - rect.top) / (windowHeight + rect.height);
+            const translateY = progress * -10;
+
+            image.style.transform = `translateY(${translateY}%)`;
+        });
+    }
 
   /**
    * Handle scroll events with requestAnimationFrame throttling
    * @private
    */
-  function handleScroll() {
-    if (!ticking) {
-      window.requestAnimationFrame(() => {
-        updateParallax();
-        ticking = false;
-      });
-      ticking = true;
+    function handleScroll() {
+        if (ticking) {
+            return;
+        }
+
+        window.requestAnimationFrame(() => {
+            updateParallax();
+            ticking = false;
+        });
+
+        ticking = true;
     }
-  }
 
   /**
    * Initialize parallax effect
    * @public
    */
-  function init() {
-    // Cache portfolio items
-    portfolioItems = Array.from(document.querySelectorAll('[data-parallax]'));
+    function refresh() {
+      prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (portfolioItems.length === 0) {
-      console.warn('No portfolio items found for parallax effect');
-      return;
+      portfolioItems = Array.from(document.querySelectorAll('[data-parallax]'));
+
+      // If the page has no parallax items, clean up and exit.
+      if (portfolioItems.length === 0) {
+        destroy();
+        return;
+      }
+
+      if (!isBound) {
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        isBound = true;
+      }
+
+      // Initial state.
+      updateParallax();
+
+      // Auto-detect orientation to select portrait/landscape sizing.
+      portfolioItems.forEach((item) => {
+        const img = item.querySelector('.portfolio-item__image');
+        if (!img) {
+          return;
+        }
+
+        if (img.complete) {
+          checkOrientation(img, item);
+          return;
+        }
+
+        img.onload = () => checkOrientation(img, item);
+      });
     }
 
-    // Attach scroll listener
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    function init() {
+      refresh();
+    }
 
-    // Calculate initial state
-    updateParallax();
-    
-    // Auto-detect orientation for all portfolio images
-    portfolioItems.forEach(item => {
-        const img = item.querySelector('.portfolio-item__image');
-        if (img) {
-            if (img.complete) {
-                checkOrientation(img, item);
-            } else {
-                img.onload = () => checkOrientation(img, item);
-            }
-        }
-    });
-
-    console.log(`Portfolio parallax initialized for ${portfolioItems.length} items`);
-  }
-
-  function checkOrientation(img, itemContainer) {
+    function checkOrientation(img, itemContainer) {
       if (img.naturalWidth > img.naturalHeight) {
-          itemContainer.classList.add('portfolio-item--landscape');
-          itemContainer.classList.remove('portfolio-item--portrait');
-      } else {
-          itemContainer.classList.add('portfolio-item--portrait');
-          itemContainer.classList.remove('portfolio-item--landscape');
+        itemContainer.classList.add('portfolio-item--landscape');
+        itemContainer.classList.remove('portfolio-item--portrait');
+        return;
       }
-  }
+
+      itemContainer.classList.add('portfolio-item--portrait');
+      itemContainer.classList.remove('portfolio-item--landscape');
+    }
 
   /**
    * Cleanup parallax effect (useful for SPA navigation)
    * @public
    */
-  function destroy() {
-    window.removeEventListener('scroll', handleScroll);
-    portfolioItems = [];
-    ticking = false;
-  }
+    function destroy() {
+        if (isBound) {
+            window.removeEventListener('scroll', handleScroll);
+        }
 
-  // Public API
-  return {
-    init,
-    destroy
-  };
+        isBound = false;
+        portfolioItems = [];
+        ticking = false;
+    }
+
+    return {
+        init,
+        refresh,
+        destroy
+    };
 })();
 
 // ============================================
 // INITIALIZATION
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
-  PortfolioParallax.init();
+    if (window.PortfolioParallax && typeof window.PortfolioParallax.init === 'function') {
+        window.PortfolioParallax.init();
+    }
 });
-
-// ============================================
-// UTILITY: Update Year in Footer
-// ============================================
-const yearElement = document.getElementById('year');
-if (yearElement) {
-  yearElement.textContent = new Date().getFullYear();
-}

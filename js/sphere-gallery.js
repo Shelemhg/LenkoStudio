@@ -5,8 +5,10 @@
 
 window.SphereGallery = (() => {
   // DOM Elements
-  let modal, container, sphere;
+  let modal, sphere;
   let activePortfolioItem = null;
+  let lastFocusedElement = null;
+  let initialized = false;
   
   // State
   let isDragging = false;
@@ -56,11 +58,26 @@ window.SphereGallery = (() => {
   }
 
   function init() {
+    // Idempotency: this module can be called multiple times under PJAX.
+    if (initialized) {
+      refresh();
+      return;
+    }
+    initialized = true;
+
     // Create Modal HTML if it doesn't exist
     if (!document.getElementById('sphere-modal')) {
       const modalHTML = `
-        <div id="sphere-modal" class="sphere-modal" aria-hidden="true">
-          <div class="sphere-close-btn">&times;</div>
+        <div
+          id="sphere-modal"
+          class="sphere-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-hidden="true"
+          aria-labelledby="sphere-title"
+        >
+          <h2 id="sphere-title" class="sr-only">Portfolio gallery</h2>
+          <button class="sphere-close-btn" type="button" aria-label="Close gallery">&times;</button>
           <div class="sphere-scene">
             <div class="sphere" id="gallery-sphere"></div>
           </div>
@@ -112,19 +129,6 @@ window.SphereGallery = (() => {
     // Event Listeners
     closeBtn.addEventListener('click', () => close());
     
-    // Aggressive Preload: Start loading gallery images in the background
-    // specifically targeting the heavy "Valkiria" folder first
-    setTimeout(() => {
-        const heavyItems = Array.from(document.querySelectorAll('.portfolio-item[data-folder]'))
-            .sort((a, b) => parseInt(b.dataset.count) - parseInt(a.dataset.count)); // Load largest first
-            
-        heavyItems.forEach(item => {
-            const folder = item.dataset.folder;
-            const count = parseInt(item.dataset.count, 10);
-            if (folder && count) preloadImages(folder, count);
-        });
-    }, 200);
-    
     // Drag Rotation Logic
     modal.addEventListener('mousedown', handleDragStart);
     document.addEventListener('mousemove', handleDragMove);
@@ -135,40 +139,94 @@ window.SphereGallery = (() => {
     document.addEventListener('touchmove', handleDragMove, { passive: false });
     document.addEventListener('touchend', handleDragEnd);
 
-    // Attach click listeners to portfolio items
-    document.querySelectorAll('.portfolio-item').forEach(item => {
-      // Preload and Prepare on hover
-      item.addEventListener('mouseenter', () => {
+    // Keyboard support for the modal dialog.
+    // - Escape closes
+    // - Tab is trapped inside
+    document.addEventListener('keydown', (event) => {
+      if (!modal || !modal.classList.contains('is-visible')) {
+        return;
+      }
+
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        close(true);
+        return;
+      }
+
+      if (event.key !== 'Tab') {
+        return;
+      }
+
+      // Minimal focus trap: keep focus on the close button.
+      const closeBtn = modal.querySelector('.sphere-close-btn');
+      if (!closeBtn) {
+        return;
+      }
+
+      event.preventDefault();
+      closeBtn.focus();
+    });
+
+    // Bind (or re-bind) portfolio items now and on every PJAX swap.
+    refresh();
+
+    // Animation loop is started in open()
+  }
+
+  /**
+   * Refresh bindings against the current DOM.
+   * This is required after PJAX replaces `#main`.
+   */
+  function refresh() {
+    // Portfolio items exist on the portfolio page only.
+    document.querySelectorAll('.portfolio-item[data-folder]').forEach((item) => {
+      if (item.dataset.sphereBound === 'true') {
+        return;
+      }
+
+      item.dataset.sphereBound = 'true';
+
+      // Preload a small subset on hover/focus for snappy open without saturating bandwidth.
+      const warmup = () => {
         const folder = item.dataset.folder;
         const count = parseInt(item.dataset.count, 10);
-        
-        // 1. Network Preload
-        if (folder && count) {
-            preloadImages(folder, count);
+
+        if (!folder || !count) {
+          return;
         }
-        
-        // 2. DOM Preparation (Hot Pool)
-        // Generate image list same as open()
-        let images = [];
-        if (folder && count) {
-            for (let i = 1; i <= count; i++) {
-                images.push(`${folder}/${i}.jpg`);
-            }
-            
-            // Speculatively populate the sphere
-            // Use a unique key for "prepared" state (folder)
-            prepareSphereContent(images, folder);
+
+        // Only warm up the first few assets; full set loads on demand.
+        const warmCount = Math.min(count, 6);
+        preloadImages(folder, warmCount);
+
+        // Speculatively prepare the sphere content using the warm subset.
+        const images = [];
+        for (let i = 1; i <= warmCount; i++) {
+          images.push(`${folder}/${i}.jpg`);
         }
-      });
+        prepareSphereContent(images, folder);
+      };
+
+      item.addEventListener('mouseenter', warmup);
+      item.addEventListener('focusin', warmup);
 
       item.addEventListener('click', (e) => {
-        // Don't trigger if clicking links or buttons inside
-        if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') return;
+        if (e.target && (e.target.tagName === 'A' || e.target.tagName === 'BUTTON')) {
+          return;
+        }
+
+        open(item);
+      });
+
+      item.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') {
+          return;
+        }
+
+        e.preventDefault();
         open(item);
       });
     });
-
-    // Animation loop is started in open()
   }
 
   function prepareSphereContent(images, key) {
@@ -271,6 +329,8 @@ window.SphereGallery = (() => {
   }
 
   function open(portfolioItem) {
+    lastFocusedElement = document.activeElement;
+
     // Cleanup any pending close operations or clones
     if (closeTimeout) {
         clearTimeout(closeTimeout);
@@ -333,6 +393,12 @@ window.SphereGallery = (() => {
             document.body.style.paddingRight = `${scrollbarWidth}px`;
         }
         document.body.style.overflow = 'hidden';
+
+        // Accessibility: move focus into the dialog.
+        const closeBtn = modal.querySelector('.sphere-close-btn');
+        if (closeBtn && typeof closeBtn.focus === 'function') {
+          closeBtn.focus();
+        }
     });
   }
 
@@ -350,6 +416,11 @@ window.SphereGallery = (() => {
         document.body.style.overflow = '';
         document.body.style.paddingRight = '';
         activePortfolioItem = null;
+
+      if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+        lastFocusedElement.focus();
+      }
+      lastFocusedElement = null;
     } else {
         // Wait for transition
         closeTimeout = setTimeout(() => {
@@ -357,6 +428,11 @@ window.SphereGallery = (() => {
             document.body.style.paddingRight = '';
             activePortfolioItem = null;
             closeTimeout = null;
+
+            if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+              lastFocusedElement.focus();
+            }
+            lastFocusedElement = null;
         }, 400);
     }
   }
@@ -364,11 +440,28 @@ window.SphereGallery = (() => {
   function selectImage(src, sphereItemElement) {
     if (!activePortfolioItem) return;
 
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     // 1. Capture start state
     const startRect = sphereItemElement.getBoundingClientRect();
     const itemToUpdate = activePortfolioItem; // Save reference
     const targetImg = itemToUpdate.querySelector('.portfolio-item__image');
     
+    // Reduced motion: do not animate. Just apply and close.
+    if (prefersReducedMotion) {
+      const targetImg = activePortfolioItem.querySelector('.portfolio-item__image');
+      if (targetImg) {
+        targetImg.src = src;
+        if (targetImg.hasAttribute('srcset')) {
+          targetImg.removeAttribute('srcset');
+        }
+      }
+
+      close(true);
+      activePortfolioItem.scrollIntoView({ behavior: 'auto', block: 'center' });
+      return;
+    }
+
     // 2. Create Clone
     const clone = document.createElement('div');
     activeClone = clone; // Store reference
@@ -672,7 +765,8 @@ window.SphereGallery = (() => {
 
   // Public API
   return {
-    init
+    init,
+    refresh
   };
 })();
 
