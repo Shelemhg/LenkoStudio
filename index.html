@@ -190,9 +190,7 @@
 					if (blackOverlay) blackOverlay.classList.add('is-hidden');
 				} else {
 				track('intro_load');
-				if (!saveData && 'requestIdleCallback' in window) {
-					window.requestIdleCallback(() => ensureVideoLoaded(), { timeout: 1500 });
-				}
+			if ('requestIdleCallback' in window) {
 				}
 
 				function updateSoundButton(enabled) {

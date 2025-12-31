@@ -144,10 +144,10 @@
   
   .sphere-item {
     /* Reduced base size so perspective scaling makes front item correct size */
-    /* SUPERSAMPLING: 3x the mobile target (130x195 -> 390x585) */
-    width: 390px;
-    height: 585px;
-    left: -195px;
-    top: -293px;
+    /* SUPERSAMPLING: 4.5x the mobile target (130x195 -> 585x878) */
+    width: 585px;
+    height: 878px;
+    left: -293px;
+    top: -439px;
   }
 }
