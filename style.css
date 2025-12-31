@@ -436,7 +436,7 @@ body.stage-2 .intro-title:hover {
   box-shadow: 0 12px 40px rgba(0,0,0,0.8);
 }
 
-/* Full-screen black overlay (fades on click) */
+/* Full-screen black overlay (fades on click) - DISABLED ON MOBILE */
 .overlay-black { 
   position: fixed; 
   inset: 0; 
@@ -444,6 +444,9 @@ body.stage-2 .intro-title:hover {
   z-index: 500; 
   opacity: 1; 
   transition: opacity 6s ease 1s;
+}
+@media (max-width: 768px) {
+  .overlay-black { display: none; }
 }
 .overlay-black.is-hidden { 
   opacity: 0; 
