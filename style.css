@@ -315,7 +315,7 @@ body.stage-2 #bgVideo {
 /* 5.1) Hero Title ----------------------------------------------------------- */
 .intro-title {
   position: relative; 
-  z-index: 210;
+  z-index: 510;
   font-size: 3rem; 
   font-weight: 200; 
   letter-spacing: 0.08em; 
@@ -438,7 +438,7 @@ body.stage-2 .intro-title:hover {
   position: fixed; 
   inset: 0; 
   background: #000; 
-  z-index: 50; 
+  z-index: 500; 
   opacity: 1; 
   transition: opacity 4s ease 1s;
 }
