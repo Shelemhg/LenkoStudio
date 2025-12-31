@@ -647,7 +647,7 @@ window.SphereGallery = (() => {
         // Base scale 0.25 (smaller back images for better depth perception). 
         // Add up to 0.35 extra scale for front items (0.25 to 0.6 range)
         // This creates a nice "focus" effect and fixes mobile sizing issues
-        let scale = 0.25 + (clampedZ * 0.35);
+        let scale = 0.15 + (clampedZ * 0.45);
 
         // Apply translation and scale
         item.element.style.transform = `translate3d(${x2.toFixed(2)}px, ${y2.toFixed(2)}px, ${z2.toFixed(2)}px) scale(${scale.toFixed(3)})`;
