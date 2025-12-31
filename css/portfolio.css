@@ -19,38 +19,8 @@ html {
 /* ============================================
    HEADER OVERRIDES
    ============================================ */
-.site-header {
-  background: rgba(255, 255, 255, 0.95);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.brand,
-.nav-list a {
-  color: #0a0a0a;
-}
-
-.nav-list a:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-.nav-list a[aria-current="page"] {
-  background: rgba(0, 0, 0, 0.08);
-  color: #3b82f6;
-}
-
-.sound-toggle {
-  background: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.1);
-  color: #0a0a0a;
-}
-
-.sound-toggle:hover {
-  background: rgba(0, 0, 0, 0.1);
-}
-
-.menu-toggle span {
-  background: #0a0a0a;
-}
+/* Intentionally no header overrides.
+   The site header is a shared component styled globally in style.css. */
 
 /* ============================================
    PORTFOLIO CONTAINER (Block)
