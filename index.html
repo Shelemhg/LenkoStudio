@@ -86,24 +86,11 @@
 				const blackOverlay = document.getElementById('blackOverlay');
 
 				const LS_KEY = 'soundEnabled';
-				const INTRO_KEY = 'introDone';
 				
 				// Check if sound was previously disabled
-				const soundWasDisabled = localStorage.getItem(LS_KEY) === 'false';
+				const saved = localStorage.getItem(LS_KEY);
+				const soundWasDisabled = saved === 'false';
 				
-				// Intro persistence across intra-site navigation (clears on refresh)
-				const navEntry = (performance && typeof performance.getEntriesByType === 'function') ? performance.getEntriesByType('navigation')[0] : null;
-				let isReload = false;
-				if (navEntry && navEntry.type) {
-					isReload = navEntry.type === 'reload';
-				} else if (performance && performance.navigation) {
-					// Fallback for older browsers
-					isReload = performance.navigation.type === 1; // TYPE_RELOAD
-				}
-				if (isReload) {
-					try { sessionStorage.removeItem(INTRO_KEY); } catch (_) {}
-				}
-
 				let stage = 0; // 0 = black, 1 = B&W animating, 2 = color + CTAs
 				let completed = false;
 				let animTimer = null;
@@ -122,8 +109,6 @@
 				body.classList.add('stage-' + next);
 				if (next === 2) {
 					completed = true;
-					// Mark intro as completed for this tab's session
-					try { sessionStorage.setItem(INTRO_KEY, '1'); } catch (_) {}
 				}
 				}
 
@@ -149,10 +134,16 @@
 					setStage(1);
 					ensureVideoLoaded();
 					if (blackOverlay) blackOverlay.classList.add('is-hidden');
-			// Start audio on first explicit click - only if sound is enabled (default or saved preference)
-			const saved = localStorage.getItem(LS_KEY);
-			const soundEnabled = saved === null || saved === 'true';
-			if (soundEnabled) {
+				// Start audio on first explicit click - only if user hasn't previously muted
+				const wasMuted = localStorage.getItem(LS_KEY) === 'false';
+				if (!wasMuted) {
+					setSoundEnabled(true);
+				}
+					setStage(2);
+					track('intro_fast_forward');
+					if (blackOverlay) blackOverlay.classList.add('is-hidden');
+				}
+				}
 
 				title.addEventListener('click', firstInteraction);
 				title.addEventListener('keydown', (e) => {
@@ -165,30 +156,20 @@
 				if (!e.target.closest('.hero-ctas')) firstInteraction();
 				}, { capture: true });
 
-				// If intro already completed in this tab, restore final state immediately
-				let introWasDone = false;
-				try { introWasDone = sessionStorage.getItem(INTRO_KEY) === '1'; } catch (_) {}
-				
-				// Skip intro entirely if sound was previously disabled OR if intro was already done
-				if (soundWasDisabled || introWasDone) {
-					setStage(2);
-					if (blackOverlay) blackOverlay.classList.add('is-hidden');
-					ensureVideoLoaded();
-					if (soundWasDisabled) {
-						track('intro_skip_sound_off');
-					} else {
-						track('intro_restore');
-					}
-				} else if (prefersReduced) {
-					setStage(2);
-					if (blackOverlay) blackOverlay.classList.add('is-hidden');
-				} else {
-				track('intro_load');
-			if ('requestIdleCallback' in window) {
-				}
-
-				function updateSoundButton(enabled) {
-					const btn = document.getElementById('soundToggle');
+			// Skip intro entirely ONLY if sound was previously disabled
+			if (soundWasDisabled) {
+				setStage(2);
+				if (blackOverlay) blackOverlay.classList.add('is-hidden');
+				ensureVideoLoaded();
+				track('intro_skip_sound_off');
+			} else if (prefersReduced) {
+				setStage(2);
+				if (blackOverlay) blackOverlay.classList.add('is-hidden');
+			} else {
+			track('intro_load');
+		if ('requestIdleCallback' in window) {
+			window.requestIdleCallback(() => ensureVideoLoaded(), { timeout: 1500 });
+		}
 					if (!btn) return;
 					const label = enabled ? 'Sound On' : 'Sound Off';
 					btn.textContent = label;
@@ -219,19 +200,13 @@
 				} else {
 					fadeVolume(0, 400);
 					track('sound_toggle_off');
-					// When sound is toggled off, advance to stage 2 (complete state)
-					if (stage < 2) {
-						setStage(2);
-						if (blackOverlay) blackOverlay.classList.add('is-hidden');
-						ensureVideoLoaded();
-					}
 				}
 				}
 				const saved = localStorage.getItem(LS_KEY);
 				const persisted = saved === null || saved === 'true';
 			ambient.volume = 0;
 			
-			// Initialize button state and attach listener (don't auto-play)
+			// Initialize button state and attach listener
 			function initSoundButton() {
 				const btn = document.getElementById('soundToggle');
 				if (btn) {

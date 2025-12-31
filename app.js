@@ -2,7 +2,6 @@
 (function(){
   const AUDIO_ID = 'ambientAudio';
   const TOGGLE_ID = 'soundToggle';
-  const INTRO_KEY = 'introDone';
 
   function $(sel, root=document){ return root.querySelector(sel); }
   function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
@@ -246,7 +245,6 @@
       if (toHome) {
         setBodyStage2();
         ensureHeroVideoLoaded();
-        try { sessionStorage.setItem(INTRO_KEY,'1'); } catch(_){}
       }
       
       initPageFeatures(document);
