@@ -12,6 +12,14 @@
 (function () {
     'use strict';
 
+    function storageGet(key) {
+        try {
+            return localStorage.getItem(key);
+        } catch {
+            return null;
+        }
+    }
+
     /**
      * Home pages are identified by `main.home`.
      * This prevents the controller from running on other pages after PJAX navigation.
@@ -72,14 +80,9 @@
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const { body, blackOverlay, bgVideo, title, skipIntro } = getElements(root);
 
-        // Preserve the previous UX intent:
-        // - Mobile: default sound is OFF unless the user explicitly enabled it.
-        //   In that case we skip the intro and show the page immediately.
-        // - Desktop: default sound is ON unless the user explicitly disabled it.
-        //   If they disabled it, we also skip the intro.
-        const saved = localStorage.getItem('soundEnabled');
-        const isMobile = window.innerWidth <= 768;
-        const soundWasDisabled = isMobile ? (saved !== 'true') : (saved === 'false');
+        // Simplified behavior:
+        // - Always show the cinematic intro on both mobile and desktop.
+        // - Only `prefers-reduced-motion` skips the intro.
 
         // Idempotency: do not bind twice.
         if (body && body.dataset.homeIntroBound === 'true') {
@@ -93,7 +96,7 @@
         setStage(body, blackOverlay, 0);
 
         // Reduced-motion users should not have to "play" the intro.
-        if (prefersReducedMotion || soundWasDisabled) {
+        if (prefersReducedMotion) {
             setStage(body, blackOverlay, 2);
             ensureVideoLoaded(bgVideo);
             return;
@@ -107,6 +110,14 @@
         }
 
         let completed = false;
+
+        // Keep handler references so we can remove them under PJAX.
+        const state = {
+            onTitleClick: null,
+            onTitleKeydown: null,
+            onRootClickCapture: null,
+            onSkipClick: null
+        };
 
         function completeIntro() {
             if (completed) {
@@ -127,44 +138,90 @@
         }
 
         if (title) {
-            title.addEventListener('click', completeIntro);
-            title.addEventListener('keydown', (event) => {
+            state.onTitleClick = completeIntro;
+            state.onTitleKeydown = (event) => {
                 if (event.key !== 'Enter' && event.key !== ' ') {
                     return;
                 }
 
                 event.preventDefault();
                 completeIntro();
-            });
+            };
+
+            title.addEventListener('click', state.onTitleClick);
+            title.addEventListener('keydown', state.onTitleKeydown);
         }
 
         // Clicking anywhere in the hero (except CTA buttons) should continue.
-        root.addEventListener(
-            'click',
-            (event) => {
+        state.onRootClickCapture = (event) => {
                 const clickedCTA = event.target && event.target.closest && event.target.closest('.hero-ctas');
                 if (clickedCTA) {
                     return;
                 }
 
                 completeIntro();
-            },
-            { capture: true }
-        );
+            };
+
+        root.addEventListener('click', state.onRootClickCapture, { capture: true });
 
         if (skipIntro) {
-            skipIntro.addEventListener('click', () => {
+            state.onSkipClick = () => {
                 completeIntro();
 
                 // Do NOT force-enable sound on skip.
                 // Users can turn it on via the header toggle if they want.
-            });
+            };
+
+            skipIntro.addEventListener('click', state.onSkipClick);
         }
+
+        // Expose destroy for PJAX.
+        window.HomeIntro._state = state;
     }
 
     // Public entry point for PJAX.
     window.HomeIntro = {
-        init: () => initHomeIntro(document)
+        init: () => initHomeIntro(document),
+        destroy: () => {
+            const root = document;
+            const body = root.body;
+            const title = root.getElementById('introTitle');
+            const skipIntro = root.getElementById('skipIntro');
+            const state = window.HomeIntro && window.HomeIntro._state;
+
+            try {
+                if (state && state.onRootClickCapture) {
+                    root.removeEventListener('click', state.onRootClickCapture, { capture: true });
+                }
+            } catch {
+                // ignore
+            }
+
+            try {
+                if (title && state && state.onTitleClick) {
+                    title.removeEventListener('click', state.onTitleClick);
+                }
+                if (title && state && state.onTitleKeydown) {
+                    title.removeEventListener('keydown', state.onTitleKeydown);
+                }
+            } catch {
+                // ignore
+            }
+
+            try {
+                if (skipIntro && state && state.onSkipClick) {
+                    skipIntro.removeEventListener('click', state.onSkipClick);
+                }
+            } catch {
+                // ignore
+            }
+
+            if (body) {
+                delete body.dataset.homeIntroBound;
+            }
+
+            delete window.HomeIntro._state;
+        }
     };
 
     // Initial page load.

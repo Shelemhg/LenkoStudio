@@ -9,6 +9,13 @@ window.SphereGallery = (() => {
   let activePortfolioItem = null;
   let lastFocusedElement = null;
   let initialized = false;
+
+  // Listener refs for cleanup under PJAX.
+  let onDocMouseMove = null;
+  let onDocMouseUp = null;
+  let onDocTouchMove = null;
+  let onDocTouchEnd = null;
+  let onDocKeyDown = null;
   
   // State
   let isDragging = false;
@@ -96,6 +103,8 @@ window.SphereGallery = (() => {
     for (let i = 0; i < MAX_POOL_SIZE; i++) {
         const item = document.createElement('div');
         item.className = 'sphere-item';
+      item.setAttribute('tabindex', '-1');
+      item.setAttribute('role', 'button');
         // OPTIMIZATION: Use visibility instead of display to keep layout stable
         // This prevents layout thrashing when showing/hiding items
         item.style.visibility = 'hidden'; 
@@ -112,7 +121,7 @@ window.SphereGallery = (() => {
             overlay: item.querySelector('.sphere-item__overlay')
         });
         
-        // Add click listener once
+        // Add click/keyboard listeners once
         item.addEventListener('click', (e) => {
              e.stopPropagation();
              if (!isDragging && !hasDragged) {
@@ -120,6 +129,20 @@ window.SphereGallery = (() => {
                  const currentSrc = item.querySelector('img').src;
                  if (currentSrc) selectImage(currentSrc, item);
              }
+        });
+
+        item.addEventListener('keydown', (e) => {
+          if (e.key !== 'Enter' && e.key !== ' ') {
+            return;
+          }
+
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (!isDragging && !hasDragged) {
+            const currentSrc = item.querySelector('img').src;
+            if (currentSrc) selectImage(currentSrc, item);
+          }
         });
         
         fragment.appendChild(item);
@@ -131,18 +154,22 @@ window.SphereGallery = (() => {
     
     // Drag Rotation Logic
     modal.addEventListener('mousedown', handleDragStart);
-    document.addEventListener('mousemove', handleDragMove);
-    document.addEventListener('mouseup', handleDragEnd);
+    onDocMouseMove = handleDragMove;
+    onDocMouseUp = handleDragEnd;
+    document.addEventListener('mousemove', onDocMouseMove);
+    document.addEventListener('mouseup', onDocMouseUp);
     
     // Touch support
     modal.addEventListener('touchstart', handleDragStart, { passive: false });
-    document.addEventListener('touchmove', handleDragMove, { passive: false });
-    document.addEventListener('touchend', handleDragEnd);
+    onDocTouchMove = handleDragMove;
+    onDocTouchEnd = handleDragEnd;
+    document.addEventListener('touchmove', onDocTouchMove, { passive: false });
+    document.addEventListener('touchend', onDocTouchEnd);
 
     // Keyboard support for the modal dialog.
     // - Escape closes
     // - Tab is trapped inside
-    document.addEventListener('keydown', (event) => {
+    onDocKeyDown = (event) => {
       if (!modal || !modal.classList.contains('is-visible')) {
         return;
       }
@@ -157,15 +184,37 @@ window.SphereGallery = (() => {
         return;
       }
 
-      // Minimal focus trap: keep focus on the close button.
-      const closeBtn = modal.querySelector('.sphere-close-btn');
-      if (!closeBtn) {
+      // Focus trap: cycle focus within the modal.
+      const focusables = Array.from(
+        modal.querySelectorAll('button, [href], [tabindex]:not([tabindex="-1"]), input, select, textarea')
+      ).filter((el) => {
+        const disabled = el.hasAttribute('disabled') || el.getAttribute('aria-disabled') === 'true';
+        return !disabled && el.offsetParent !== null;
+      });
+
+      if (focusables.length === 0) {
         return;
       }
 
-      event.preventDefault();
-      closeBtn.focus();
-    });
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+
+      if (event.shiftKey) {
+        if (active === first || !modal.contains(active)) {
+          event.preventDefault();
+          last.focus();
+        }
+        return;
+      }
+
+      if (active === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onDocKeyDown);
 
     // Bind (or re-bind) portfolio items now and on every PJAX swap.
     refresh();
@@ -283,6 +332,7 @@ window.SphereGallery = (() => {
         
         // Show item using visibility
         element.style.visibility = 'visible';
+        element.setAttribute('tabindex', '0');
         
         // Fibonacci Sphere Algorithm
         const phi = Math.acos(-1 + (2 * i) / images.length); 
@@ -325,6 +375,7 @@ window.SphereGallery = (() => {
       // Hide unused pool items
       for (let i = images.length; i < MAX_POOL_SIZE; i++) {
           itemPool[i].element.style.visibility = 'hidden';
+          itemPool[i].element.setAttribute('tabindex', '-1');
       }
   }
 
@@ -718,8 +769,8 @@ window.SphereGallery = (() => {
 
     // Stop if velocity is negligible AND not dragging
     if (!isDragging && Math.abs(velocityX) < 0.01 && Math.abs(velocityY) < 0.01) {
-        animationFrame = requestAnimationFrame(animate);
-        return;
+      animationFrame = null;
+      return;
     }
 
     // Update each item's position
@@ -764,9 +815,43 @@ window.SphereGallery = (() => {
   }
 
   // Public API
+  function destroy() {
+    try {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+      }
+    } catch {
+      // ignore
+    }
+
+    try {
+      if (onDocMouseMove) document.removeEventListener('mousemove', onDocMouseMove);
+      if (onDocMouseUp) document.removeEventListener('mouseup', onDocMouseUp);
+      if (onDocTouchMove) document.removeEventListener('touchmove', onDocTouchMove);
+      if (onDocTouchEnd) document.removeEventListener('touchend', onDocTouchEnd);
+      if (onDocKeyDown) document.removeEventListener('keydown', onDocKeyDown);
+    } catch {
+      // ignore
+    }
+
+    onDocMouseMove = null;
+    onDocMouseUp = null;
+    onDocTouchMove = null;
+    onDocTouchEnd = null;
+    onDocKeyDown = null;
+
+    activePortfolioItem = null;
+    lastFocusedElement = null;
+
+    // Allow re-init if the script is re-injected.
+    initialized = false;
+  }
+
   return {
     init,
-    refresh
+    refresh,
+    destroy
   };
 })();
 

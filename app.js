@@ -13,6 +13,25 @@
 (function () {
   'use strict';
 
+  const SITE_COPYRIGHT_YEAR = '2026';
+
+  function storageGet(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  function storageSet(key, value) {
+    try {
+      localStorage.setItem(key, value);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   const AUDIO_ID = 'ambientAudio';
   const TOGGLE_ID = 'soundToggle';
 
@@ -45,7 +64,7 @@
   // ---------------------------------------------------------------------
 
   function updateYear(root = document) {
-    const year = String(new Date().getFullYear());
+    const year = SITE_COPYRIGHT_YEAR;
     const yearEl = root.getElementById('year');
 
     if (yearEl) {
@@ -68,7 +87,7 @@
     }
 
     function getEnabled() {
-      const saved = localStorage.getItem('soundEnabled');
+      const saved = storageGet('soundEnabled');
 
       if (saved === null) {
         return getDefaultEnabled();
@@ -78,7 +97,7 @@
     }
 
     function setEnabledPreference(enabled) {
-      localStorage.setItem('soundEnabled', enabled ? 'true' : 'false');
+      storageSet('soundEnabled', enabled ? 'true' : 'false');
     }
 
     function ensureAudioElement() {
@@ -295,9 +314,21 @@
       if (!value) {
         setFormStatus(root, config.statusId, 'Please enter an email address.');
         if (email) {
+          email.setAttribute('aria-invalid', 'true');
           email.focus();
         }
         return;
+      }
+
+      if (email && email.validity && !email.validity.valid) {
+        setFormStatus(root, config.statusId, 'Please enter a valid email address.');
+        email.setAttribute('aria-invalid', 'true');
+        email.focus();
+        return;
+      }
+
+      if (email) {
+        email.removeAttribute('aria-invalid');
       }
 
       setFormStatus(root, config.statusId, 'Thanks! Your estimate has been recorded.');
@@ -329,9 +360,9 @@
     function saveSubmission(obj) {
       try {
         const key = 'contactSubmissions';
-        const existing = JSON.parse(localStorage.getItem(key) || '[]');
+        const existing = JSON.parse(storageGet(key) || '[]');
         existing.push({ ...obj, ts: new Date().toISOString() });
-        localStorage.setItem(key, JSON.stringify(existing));
+        storageSet(key, JSON.stringify(existing));
       } catch {
         // If storage fails (disabled/quota), we still allow mailto.
       }
@@ -361,21 +392,33 @@
         return;
       }
 
+      const emailEl = root.getElementById('email');
+      if (emailEl && emailEl.validity && !emailEl.validity.valid) {
+        setStatus('Please enter a valid email address.');
+        emailEl.setAttribute('aria-invalid', 'true');
+        emailEl.focus();
+        return;
+      }
+
+      if (emailEl) {
+        emailEl.removeAttribute('aria-invalid');
+      }
+
       saveSubmission(obj);
       setStatus('Opening your email client…');
 
       // Keep the existing intended behavior (mailto workflow).
       window.location.href = makeMailtoUrl(obj);
 
-      // Reset the form after we trigger the mail client.
-      form.reset();
+      // Do not auto-reset: if the user has no mail client configured,
+      // resetting would lose their message.
     });
 
     if (downloadButton) {
       downloadButton.addEventListener('click', () => {
         try {
           const key = 'contactSubmissions';
-          const arr = JSON.parse(localStorage.getItem(key) || '[]');
+          const arr = JSON.parse(storageGet(key) || '[]');
 
           if (!Array.isArray(arr) || arr.length === 0) {
             setStatus('Nothing saved yet. Submit the form first.');
@@ -399,6 +442,36 @@
           setStatus('Unable to download submissions on this device.');
         }
       });
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // PJAX Lifecycle Cleanup
+  // ---------------------------------------------------------------------
+
+  function cleanupPageFeatures() {
+    try {
+      if (window.HomeIntro && typeof window.HomeIntro.destroy === 'function') {
+        window.HomeIntro.destroy();
+      }
+    } catch {
+      // ignore
+    }
+
+    try {
+      if (window.SphereGallery && typeof window.SphereGallery.destroy === 'function') {
+        window.SphereGallery.destroy();
+      }
+    } catch {
+      // ignore
+    }
+
+    try {
+      if (window.PortfolioParallax && typeof window.PortfolioParallax.destroy === 'function') {
+        window.PortfolioParallax.destroy();
+      }
+    } catch {
+      // ignore
     }
   }
 
@@ -480,6 +553,9 @@
 
   async function loadPage(url, replaceState) {
     try {
+      // Tear down page-specific listeners before we swap DOM or scripts.
+      cleanupPageFeatures();
+
       const res = await fetch(url, { credentials: 'same-origin' });
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`);

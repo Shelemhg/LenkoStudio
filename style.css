@@ -113,7 +113,8 @@ button { font: inherit; color: inherit; }
 }
 
 /* 4) Header / Navigation ---------------------------------------------------- */
-site-header, site-footer { display: contents; }
+/* Avoid `display: contents` for better assistive-tech compatibility. */
+site-header, site-footer { display: block; }
 
 .site-header {
   position: sticky;
@@ -492,16 +493,14 @@ body.stage-2 .intro-title:hover {
   opacity: 1; 
   transition: opacity 6s ease 1s;
 }
-@media (max-width: 768px) {
-  .overlay-black { display: none; }
-}
 .overlay-black.is-hidden { 
   opacity: 0; 
   pointer-events: none;
 }
 
 /* 8) Intro Stages (state machine styling) ---------------------------------- */
-body.stage-0 .hero-ctas { pointer-events: none; }
+/* Stage 0/1 should not block navigation CTAs (avoid double-click friction). */
+body.stage-0 .hero-ctas { pointer-events: auto; }
 body.stage-0 .intro-title { 
   position: relative; 
   top: 0; 
@@ -515,7 +514,7 @@ body.stage-0 .intro-title {
   to { opacity: 1; transform: scale(1); } 
 }
 
-body.stage-1 .hero-ctas { pointer-events: none; }
+body.stage-1 .hero-ctas { pointer-events: auto; }
 
 body.stage-2 .hero-ctas { 
   pointer-events: auto;
@@ -721,6 +720,37 @@ button[type="submit"]:hover, .btn:hover {
   border-color: var(--accent-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
+}
+
+/* 14) Page-specific utility classes --------------------------------------- */
+.direct-contact {
+  margin-top: 20px;
+}
+
+.whatsapp-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Pricing page layout (moved from inline <style>) */
+.tiers {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  background: var(--bg-card);
+}
+
+.price {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 6px 0 10px;
 }
 
 /* 12) Reduced Motion -------------------------------------------------------- */

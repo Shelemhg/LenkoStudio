@@ -8,6 +8,8 @@
  */
 
 class SiteHeader extends HTMLElement {
+    static _escapeBound = false;
+
     connectedCallback() {
         const currentPage = this.getAttribute('current') || '';
 
@@ -16,13 +18,13 @@ class SiteHeader extends HTMLElement {
 
         this.innerHTML = `
             <header class="site-header" role="banner">
-                <button class="menu-toggle" type="button" aria-expanded="false" aria-label="Toggle menu">
+                <button class="menu-toggle" type="button" aria-expanded="false" aria-label="Toggle menu" aria-controls="primaryNav">
                     <span></span>
                     <span></span>
                     <span></span>
                 </button>
 
-                <nav class="site-nav" aria-label="Primary">
+                <nav id="primaryNav" class="site-nav" aria-label="Primary" aria-hidden="false">
                     <a class="brand" href="index.html"${currentPage === 'home' ? ' aria-current="page"' : ''}>Lenko Studio</a>
 
                     <ul class="nav-list">
@@ -53,19 +55,81 @@ class SiteHeader extends HTMLElement {
                 return;
             }
 
-            const closeMenu = () => {
+            const getFocusableLinks = () => Array.from(nav.querySelectorAll('a'));
+
+            function setNavFocusable(enabled) {
+                const links = getFocusableLinks();
+
+                links.forEach((a) => {
+                    if (enabled) {
+                        const prev = a.getAttribute('data-prev-tabindex');
+                        if (prev !== null) {
+                            a.setAttribute('tabindex', prev);
+                            a.removeAttribute('data-prev-tabindex');
+                        } else {
+                            a.removeAttribute('tabindex');
+                        }
+                        return;
+                    }
+
+                    // Disable tab stops when menu is closed (especially important on mobile)
+                    const current = a.getAttribute('tabindex');
+                    if (current !== null) {
+                        a.setAttribute('data-prev-tabindex', current);
+                    }
+                    a.setAttribute('tabindex', '-1');
+                });
+
+                // Prefer `inert` when available.
+                try {
+                    if (!enabled) {
+                        nav.setAttribute('inert', '');
+                    } else {
+                        nav.removeAttribute('inert');
+                    }
+                } catch {
+                    // inert not supported; tabindex handling above still helps.
+                }
+            }
+
+            const closeMenu = (restoreFocus = true) => {
                 nav.classList.remove('is-open');
+                nav.setAttribute('aria-hidden', 'true');
                 overlay.classList.remove('is-visible');
+                overlay.setAttribute('aria-hidden', 'true');
                 menuToggle.setAttribute('aria-expanded', 'false');
                 document.body.style.overflow = '';
+
+                setNavFocusable(false);
+
+                if (restoreFocus) {
+                    try {
+                        menuToggle.focus();
+                    } catch {
+                        // ignore
+                    }
+                }
             };
 
             const openMenu = () => {
                 nav.classList.add('is-open');
+                nav.setAttribute('aria-hidden', 'false');
                 overlay.classList.add('is-visible');
+                overlay.setAttribute('aria-hidden', 'false');
                 menuToggle.setAttribute('aria-expanded', 'true');
                 document.body.style.overflow = 'hidden';
+
+                setNavFocusable(true);
+
+                // Move focus to first link for keyboard users.
+                const first = getFocusableLinks()[0];
+                if (first && typeof first.focus === 'function') {
+                    first.focus();
+                }
             };
+
+            // Ensure correct initial state.
+            closeMenu(false);
 
             menuToggle.addEventListener('click', () => {
                 const isOpen = nav.classList.contains('is-open');
@@ -85,16 +149,40 @@ class SiteHeader extends HTMLElement {
             });
 
             // Accessibility: let users close the menu with Escape.
-            document.addEventListener('keydown', (event) => {
-                if (event.key !== 'Escape') {
-                    return;
-                }
+            // Guard so we don't bind multiple times if the component re-renders.
+            if (!SiteHeader._escapeBound) {
+                SiteHeader._escapeBound = true;
+                document.addEventListener('keydown', (event) => {
+                    if (event.key !== 'Escape') {
+                        return;
+                    }
 
-                if (nav.classList.contains('is-open')) {
-                    closeMenu();
-                    menuToggle.focus();
-                }
-            });
+                    const activeNav = document.querySelector('.site-nav.is-open');
+                    const activeToggle = document.querySelector('.menu-toggle[aria-expanded="true"]');
+                    const activeOverlay = document.querySelector('.menu-overlay.is-visible');
+
+                    if (activeNav && activeToggle) {
+                        activeNav.classList.remove('is-open');
+                        activeNav.setAttribute('aria-hidden', 'true');
+                        if (activeOverlay) {
+                            activeOverlay.classList.remove('is-visible');
+                            activeOverlay.setAttribute('aria-hidden', 'true');
+                        }
+
+                        activeToggle.setAttribute('aria-expanded', 'false');
+                        document.body.style.overflow = '';
+
+                        // Also disable tab stops.
+                        activeNav.querySelectorAll('a').forEach((a) => a.setAttribute('tabindex', '-1'));
+
+                        try {
+                            activeToggle.focus();
+                        } catch {
+                            // ignore
+                        }
+                    }
+                });
+            }
         });
     }
 }
