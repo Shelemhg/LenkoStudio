@@ -105,7 +105,7 @@ site-header, site-footer { display: contents; }
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 300;
+  z-index: 100;
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
@@ -175,7 +175,7 @@ site-header, site-footer { display: contents; }
   border: none;
   padding: var(--space-sm);
   cursor: pointer;
-  z-index: 101;
+  z-index: 1001;
 }
 .menu-toggle span {
   display: block;
@@ -213,7 +213,7 @@ site-header, site-footer { display: contents; }
     background: var(--bg-elevated);
     padding: var(--space-3xl) var(--space-lg);
     transition: left 0.3s ease;
-    z-index: 99;
+    z-index: 1000;
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-2xl);
@@ -241,7 +241,7 @@ site-header, site-footer { display: contents; }
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
-    z-index: 98;
+    z-index: 900;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
@@ -315,7 +315,7 @@ body.stage-2 #bgVideo {
 /* 5.1) Hero Title ----------------------------------------------------------- */
 .intro-title {
   position: relative; 
-  z-index: 510;
+  z-index: 150;
   font-size: 3rem; 
   font-weight: 200; 
   letter-spacing: 0.08em; 
@@ -441,7 +441,7 @@ body.stage-2 .intro-title:hover {
   position: fixed; 
   inset: 0; 
   background: #000; 
-  z-index: 500; 
+  z-index: 200; 
   opacity: 1; 
   transition: opacity 6s ease 1s;
 }
