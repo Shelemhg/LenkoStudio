@@ -132,11 +132,21 @@
 				}, { capture: true });
 
 				// Skip intro entirely ONLY if sound was previously disabled
+				// On mobile, add small delay to ensure CSS is fully loaded
+				const isMobile = window.innerWidth <= 768;
 				if (soundWasDisabled) {
-					setStage(2);
-					if (blackOverlay) blackOverlay.classList.add('is-hidden');
-					ensureVideoLoaded();
-					track('intro_skip_sound_off');
+					const skipIntro = () => {
+						setStage(2);
+						if (blackOverlay) blackOverlay.classList.add('is-hidden');
+						ensureVideoLoaded();
+						track('intro_skip_sound_off');
+					};
+					// On mobile, wait for CSS to paint before skipping
+					if (isMobile) {
+						setTimeout(skipIntro, 100);
+					} else {
+						skipIntro();
+					}
 				} else if (prefersReduced) {
 					setStage(2);
 					if (blackOverlay) blackOverlay.classList.add('is-hidden');
