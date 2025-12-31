@@ -489,6 +489,14 @@
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
 
+      // Allow pages to explicitly opt out of PJAX.
+      // This is useful for demos/experiments that intentionally rely on inline scripts/handlers.
+      const pjaxMeta = doc.querySelector('meta[name="pjax" i]');
+      if (pjaxMeta && String(pjaxMeta.getAttribute('content') || '').trim().toLowerCase() === 'off') {
+        window.location.href = url;
+        return;
+      }
+
       // 1) Stylesheets: add missing, remove previously injected ones that are no longer needed.
       // Preserve important attributes (media/crossorigin/etc).
       const nextLinks = Array.from(doc.querySelectorAll('link[rel="stylesheet"]'));
