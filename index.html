@@ -237,7 +237,7 @@
 				const persisted = saved === null || saved === 'true';
 			ambient.volume = 0;
 			
-			// Initialize button state and attach listener
+			// Initialize button state and attach listener (don't auto-play)
 			function initSoundButton() {
 				const btn = document.getElementById('soundToggle');
 				if (btn) {
