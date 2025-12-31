@@ -159,26 +159,41 @@
       const doc = parser.parseFromString(html, 'text/html');
       
       // 1. Handle Stylesheets (<link rel="stylesheet">)
-      // We need to load new stylesheets that aren't already in the current document
-      const newLinks = Array.from(doc.querySelectorAll('link[rel="stylesheet"]'));
-      const currentLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(l => l.href);
-      
-      newLinks.forEach(link => {
-        if (!currentLinks.includes(link.href)) {
-            const newLink = document.createElement('link');
-            newLink.rel = 'stylesheet';
-            newLink.href = link.href;
-            document.head.appendChild(newLink);
+      // PJAX previously only *added* stylesheets; it never removed them.
+      // This caused page-specific CSS (e.g. css/portfolio.css) to "stick" and override header/nav colors.
+      const newLinkEls = Array.from(doc.querySelectorAll('link[rel="stylesheet"]'));
+      const requiredHrefs = new Set(
+        newLinkEls
+          .map(l => l.getAttribute('href'))
+          .filter(Boolean)
+          .map(href => new URL(href, url).href)
+      );
+
+      // Remove any stylesheets we previously injected that are not required by the next page.
+      Array.from(document.querySelectorAll('link[rel="stylesheet"][data-pjax-added]')).forEach(l => {
+        if (!requiredHrefs.has(l.href)) l.remove();
+      });
+
+      // Add missing required stylesheets for the next page.
+      const currentHrefs = new Set(Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(l => l.href));
+      requiredHrefs.forEach(href => {
+        if (!currentHrefs.has(href)) {
+          const newLink = document.createElement('link');
+          newLink.rel = 'stylesheet';
+          newLink.href = href;
+          newLink.setAttribute('data-pjax-added', '');
+          document.head.appendChild(newLink);
         }
       });
 
       // 2. Handle Inline Styles (<style>)
       // Bring over any inline <style> from the new head (page-specific CSS)
+      // Remove old inline page styles to avoid accumulation across navigation.
+      Array.from(document.head.querySelectorAll('style[data-pjax-style]')).forEach(s => s.remove());
       const newStyles = Array.from(doc.head ? doc.head.querySelectorAll('style') : []);
       newStyles.forEach(ns => {
         const text = ns.textContent || '';
-        const exists = Array.from(document.head.querySelectorAll('style[data-pjax-style]')).some(s => s.textContent === text);
-        if (!exists && text.trim()) {
+        if (text.trim()) {
           const s = document.createElement('style');
           s.setAttribute('data-pjax-style','');
           s.textContent = text;
