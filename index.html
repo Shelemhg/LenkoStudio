@@ -66,9 +66,14 @@
 
 				const LS_KEY = 'soundEnabled';
 				
+				// Mobile detection
+				const isMobile = window.innerWidth <= 768;
+				
 				// Check if sound was previously disabled
 				const saved = localStorage.getItem(LS_KEY);
-				const soundWasDisabled = saved === 'false';
+				// On mobile, default to sound OFF unless user explicitly enabled it
+				// On desktop, default to sound ON unless user explicitly disabled it
+				const soundWasDisabled = isMobile ? (saved !== 'true') : (saved === 'false');
 				
 				let stage = 0; // 0 = black, 1 = B&W animating, 2 = color + CTAs
 				let completed = false;
