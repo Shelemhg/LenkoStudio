@@ -131,17 +131,15 @@
 				if (completed) return;
 				if (stage === 0) {
 					track('intro_click');
-					setStage(1);
 					ensureVideoLoaded();
 					if (blackOverlay) blackOverlay.classList.add('is-hidden');
-				// Start audio on first explicit click - only if user hasn't previously muted
-				const wasMuted = localStorage.getItem(LS_KEY) === 'false';
-				if (!wasMuted) {
-					setSoundEnabled(true);
-				}
+					// Start audio on first explicit click - only if user hasn't previously muted
+					const wasMuted = localStorage.getItem(LS_KEY) === 'false';
+					if (!wasMuted) {
+						setSoundEnabled(true);
+					}
 					setStage(2);
-					track('intro_fast_forward');
-					if (blackOverlay) blackOverlay.classList.add('is-hidden');
+					track('intro_complete');
 				}
 				}
 
