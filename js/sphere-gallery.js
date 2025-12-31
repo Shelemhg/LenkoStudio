@@ -768,8 +768,10 @@ window.SphereGallery = (() => {
     }
 
     // Stop if velocity is negligible AND not dragging
+    // Keep the animation loop alive while the modal is open so direct-manipulation
+    // rotations (dragging) always render immediately.
     if (!isDragging && Math.abs(velocityX) < 0.01 && Math.abs(velocityY) < 0.01) {
-      animationFrame = null;
+      animationFrame = requestAnimationFrame(animate);
       return;
     }
 

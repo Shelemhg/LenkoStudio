@@ -32,3 +32,7 @@ This file tracks every usability/accessibility/performance fix applied, with the
 ### 2025-12-31 (ops)
 - Set footer year to 2026.
 	- Files: app.js
+
+### 2025-12-31 (bugfix)
+- Fixed sphere gallery rotation regression: restoring the original always-running RAF loop so drag rotations visibly update (matches pre-change behavior from commit 9aaff9f).
+	- Files: js/sphere-gallery.js
