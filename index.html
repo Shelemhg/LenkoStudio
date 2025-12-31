@@ -33,28 +33,9 @@
 
 						<div id="heroCtas" class="hero-ctas" aria-live="polite">
 							<a class="cta" href="portfolio.html" id="ctaExplore">Explore Portfolio</a>
-							<!-- <a class="cta" href="services.html" id="ctaServices">Services for Creators</a> -->
-							<!-- <a class="cta" href="https://adam.lenkostudio.com" id="ctaAdam">ADAM - AI For Creators</a> -->
 						</div>
 					</div>
 				</section>
-				<!-- <section aria-label="ADAM Teaser" style="padding:20px 12px; max-width:960px; margin: 0 auto;">
-					<h2 style="font-size:1.25rem; margin: 0 0 12px;">For Creators — ADAM</h2>
-					<div style="display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
-					<div style="display:grid; gap:8px;">
-						<div style="height:28px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:8px; position:relative; overflow:hidden;">
-						<label style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:.9rem;">Evenings</label>
-						<span aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(90deg, var(--accent), #ff84b0); width:85%"></span>
-						</div>
-						<div style="height:28px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:8px; position:relative; overflow:hidden;">
-						<label style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:.9rem;">Mornings</label>
-						<span aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(90deg, var(--accent), #ff84b0); width:65%"></span>
-						</div>
-					</div>
-					</div>
-					<p class="muted" style="margin-top:10px;">Small insights to plan better posts.</p>
-					<p><a class="cta" href="https://adam.lenkostudio.com">Visit ADAM</a></p>
-				</section> -->
 				<a class="floating-cta" href="contact.html">Book a Shoot</a>
 			</main>
 
@@ -76,12 +57,10 @@
 			<script>
 			(function () {
 				const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-				const saveData = !!(navigator.connection && navigator.connection.saveData);
 				const body = document.body;
 				const bgVideo = document.getElementById('bgVideo');
 				const title = document.getElementById('introTitle');
 				const ctas = document.getElementById('heroCtas');
-				// const soundToggle = document.getElementById('soundToggle'); // Use lazy lookup
 				const ambient = document.getElementById('ambientAudio');
 				const blackOverlay = document.getElementById('blackOverlay');
 
@@ -93,143 +72,153 @@
 				
 				let stage = 0; // 0 = black, 1 = B&W animating, 2 = color + CTAs
 				let completed = false;
-				let animTimer = null;
 
 				function track(name) {
-				if (window.plausible) {
-					try { window.plausible(name); } catch (e) {}
-				} else {
-					console.log('[analytics]', name);
-				}
+					if (window.plausible) {
+						try { window.plausible(name); } catch (e) {}
+					} else {
+						console.log('[analytics]', name);
+					}
 				}
 
-				function setStage(next, opts = {}) {
-				stage = next;
-				body.classList.remove('stage-0', 'stage-1', 'stage-2');
-				body.classList.add('stage-' + next);
-				if (next === 2) {
-					completed = true;
-				}
+				function setStage(next) {
+					stage = next;
+					body.classList.remove('stage-0', 'stage-1', 'stage-2');
+					body.classList.add('stage-' + next);
+					if (next === 2) {
+						completed = true;
+					}
 				}
 
 				function ensureVideoLoaded() {
-				if (!bgVideo || bgVideo.dataset.loaded) return;
-				const src = 'media/oceanvideo.mp4';
-				const source = document.createElement('source');
-				source.src = src;
-				source.type = 'video/mp4';
-				bgVideo.appendChild(source);
-				bgVideo.dataset.loaded = '1';
-				bgVideo.muted = true;
-				const playPromise = bgVideo.play();
-				if (playPromise && typeof playPromise.then === 'function') {
-					playPromise.catch(() => {});
-				}
+					if (!bgVideo || bgVideo.dataset.loaded) return;
+					const src = 'media/oceanvideo.mp4';
+					const source = document.createElement('source');
+					source.src = src;
+					source.type = 'video/mp4';
+					bgVideo.appendChild(source);
+					bgVideo.dataset.loaded = '1';
+					bgVideo.muted = true;
+					const playPromise = bgVideo.play();
+					if (playPromise && typeof playPromise.then === 'function') {
+						playPromise.catch(() => {});
+					}
 				}
 
 				function firstInteraction() {
-				if (completed) return;
-				if (stage === 0) {
-					track('intro_click');
-					ensureVideoLoaded();
-					if (blackOverlay) blackOverlay.classList.add('is-hidden');
-					// Start audio on first explicit click - only if user hasn't previously muted
-					const wasMuted = localStorage.getItem(LS_KEY) === 'false';
-					if (!wasMuted) {
-						setSoundEnabled(true);
+					if (completed) return;
+					if (stage === 0) {
+						track('intro_click');
+						setStage(2);
+						ensureVideoLoaded();
+						if (blackOverlay) blackOverlay.classList.add('is-hidden');
+						// Start audio on first explicit click - only if user hasn't previously muted
+						const wasMuted = localStorage.getItem(LS_KEY) === 'false';
+						if (!wasMuted) {
+							setSoundEnabled(true);
+						}
 					}
-					setStage(2);
-					track('intro_complete');
-				}
 				}
 
 				title.addEventListener('click', firstInteraction);
 				title.addEventListener('touchstart', firstInteraction, { passive: false });
 				title.addEventListener('keydown', (e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					e.preventDefault();
-					firstInteraction();
-				}
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault();
+						firstInteraction();
+					}
 				});
 				document.addEventListener('click', (e) => {
-				if (!e.target.closest('.hero-ctas')) firstInteraction();
+					if (!e.target.closest('.hero-ctas')) firstInteraction();
 				}, { capture: true });
 				document.addEventListener('touchstart', (e) => {
-				if (!e.target.closest('.hero-ctas')) firstInteraction();
+					if (!e.target.closest('.hero-ctas')) firstInteraction();
 				}, { capture: true, passive: false });
 
-			// Skip intro entirely ONLY if sound was previously disabled
-			if (soundWasDisabled) {
-				setStage(2);
-				if (blackOverlay) blackOverlay.classList.add('is-hidden');
-				ensureVideoLoaded();
-				track('intro_skip_sound_off');
-			} else if (prefersReduced) {
-				setStage(2);
-				if (blackOverlay) blackOverlay.classList.add('is-hidden');
-			} else {
-			track('intro_load');
-		if ('requestIdleCallback' in window) {
-			window.requestIdleCallback(() => ensureVideoLoaded(), { timeout: 1500 });
-		}
+				// Skip intro entirely ONLY if sound was previously disabled
+				if (soundWasDisabled) {
+					setStage(2);
+					if (blackOverlay) blackOverlay.classList.add('is-hidden');
+					ensureVideoLoaded();
+					track('intro_skip_sound_off');
+				} else if (prefersReduced) {
+					setStage(2);
+					if (blackOverlay) blackOverlay.classList.add('is-hidden');
+				} else {
+					track('intro_load');
+					if ('requestIdleCallback' in window) {
+						window.requestIdleCallback(() => ensureVideoLoaded(), { timeout: 1500 });
+					}
+				}
+
+				function updateSoundButton(enabled) {
+					const btn = document.getElementById('soundToggle');
 					if (!btn) return;
 					const label = enabled ? 'Sound On' : 'Sound Off';
 					btn.textContent = label;
 					btn.setAttribute('aria-pressed', String(!!enabled));
 					btn.setAttribute('aria-label', label);
 				}
+
 				function fadeVolume(target, ms = 400) {
-				const start = ambient.volume;
-				const steps = Math.max(1, Math.floor(ms / 50));
-				let i = 0;
-				const t = setInterval(() => {
-					i++;
-					const v = start + (target - start) * (i / steps);
-					ambient.volume = Math.max(0, Math.min(1, v));
-					if (i >= steps) {
-					clearInterval(t);
-					if (target === 0) ambient.pause();
-					}
-				}, 50);
+					const start = ambient.volume;
+					const steps = Math.max(1, Math.floor(ms / 50));
+					let i = 0;
+					const t = setInterval(() => {
+						i++;
+						const v = start + (target - start) * (i / steps);
+						ambient.volume = Math.max(0, Math.min(1, v));
+						if (i >= steps) {
+							clearInterval(t);
+							if (target === 0) ambient.pause();
+						}
+					}, 50);
 				}
+
 				function setSoundEnabled(enabled) {
-				localStorage.setItem(LS_KEY, enabled ? 'true' : 'false');
-				updateSoundButton(enabled);
-				if (enabled) {
-					try { ambient.play(); } catch (_) {}
-					fadeVolume(1, 400);
-					track('sound_toggle_on');
-				} else {
-					fadeVolume(0, 400);
-					track('sound_toggle_off');
+					localStorage.setItem(LS_KEY, enabled ? 'true' : 'false');
+					updateSoundButton(enabled);
+					if (enabled) {
+						try { ambient.play(); } catch (_) {}
+						fadeVolume(1, 400);
+						track('sound_toggle_on');
+					} else {
+						fadeVolume(0, 400);
+						track('sound_toggle_off');
+					}
 				}
-				}
-				const saved = localStorage.getItem(LS_KEY);
+
 				const persisted = saved === null || saved === 'true';
-			ambient.volume = 0;
-			
-			// Initialize button state and attach listener
-			function initSoundButton() {
-				const btn = document.getElementById('soundToggle');
-				if (btn) {
-					updateSoundButton(persisted);
-					btn.addEventListener('click', () => {
-						const enabled = btn.getAttribute('aria-pressed') !== 'true';
-						setSoundEnabled(enabled);
-					});
-				} else {
-					requestAnimationFrame(initSoundButton);
+				ambient.volume = 0;
+				
+				// Initialize button state and attach listener
+				function initSoundButton() {
+					const btn = document.getElementById('soundToggle');
+					if (btn) {
+						updateSoundButton(persisted);
+						btn.addEventListener('click', () => {
+							const enabled = btn.getAttribute('aria-pressed') !== 'true';
+							setSoundEnabled(enabled);
+						});
+					} else {
+						requestAnimationFrame(initSoundButton);
+					}
 				}
-			}
-			initSoundButton();
+				initSoundButton();
 
 				const ctaExplore = document.getElementById('ctaExplore');
 				if (ctaExplore) ctaExplore.addEventListener('click', () => track('cta_explore_work'));
 
 				const skipIntro = document.getElementById('skipIntro');
-				if (skipIntro) skipIntro.addEventListener('click', () => { if (blackOverlay) blackOverlay.classList.add('is-hidden'); setStage(2); setSoundEnabled(true); });
+				if (skipIntro) skipIntro.addEventListener('click', () => { 
+					if (blackOverlay) blackOverlay.classList.add('is-hidden'); 
+					setStage(2); 
+					setSoundEnabled(true); 
+				});
+
 				const y = document.getElementById('year');
 				if (y) y.textContent = new Date().getFullYear();
+				
 				// Signal that index manages audio/toggle to avoid double-binding
 				window.__audioControllerActive = true;
 			})();

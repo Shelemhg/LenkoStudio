@@ -323,10 +323,11 @@ body.stage-2 #bgVideo {
   cursor: pointer;
   color: #ffffff;
   text-shadow: 
-    0 0 20px rgba(0,0,0,0.9),
-    0 0 40px rgba(0,0,0,0.7),
-    0 0 60px rgba(0,0,0,0.5),
-    0 2px 4px rgba(0,0,0,1);
+    0 0 30px rgba(0,0,0,1),
+    0 0 50px rgba(0,0,0,0.9),
+    0 0 70px rgba(0,0,0,0.8),
+    0 4px 8px rgba(0,0,0,1),
+    0 0 100px rgba(0,0,0,0.6);
   transition: transform 300ms ease, opacity 300ms ease, text-shadow 300ms ease, margin-bottom 2.5s ease;
   margin: 0;
   width: 100%;
@@ -342,10 +343,11 @@ body.stage-2 .intro-title {
 body.stage-2 .intro-title:hover {
   transform: none;
   text-shadow: 
-    0 0 20px rgba(0,0,0,0.9),
-    0 0 40px rgba(0,0,0,0.7),
-    0 0 60px rgba(0,0,0,0.5),
-    0 2px 4px rgba(0,0,0,1);
+    0 0 30px rgba(0,0,0,1),
+    0 0 50px rgba(0,0,0,0.9),
+    0 0 70px rgba(0,0,0,0.8),
+    0 4px 8px rgba(0,0,0,1),
+    0 0 100px rgba(0,0,0,0.6);
 }
 @media (hover: none) {
   .intro-title { animation: pulse 4s infinite ease-in-out; }
