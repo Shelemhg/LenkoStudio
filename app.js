@@ -490,13 +490,72 @@
       const doc = parser.parseFromString(html, 'text/html');
 
       // 1) Stylesheets: add missing, remove previously injected ones that are no longer needed.
+      // Preserve important attributes (media/crossorigin/etc).
       const nextLinks = Array.from(doc.querySelectorAll('link[rel="stylesheet"]'));
-      const requiredStyles = new Set(
-        nextLinks
-          .map((l) => l.getAttribute('href'))
-          .filter(Boolean)
-          .map((href) => new URL(href, url).href)
-      );
+      const nextStylesByHref = new Map();
+
+      nextLinks.forEach((linkEl) => {
+        const href = linkEl.getAttribute('href');
+        if (!href) {
+          return;
+        }
+
+        const absoluteHref = new URL(href, url).href;
+        nextStylesByHref.set(absoluteHref, linkEl);
+      });
+
+      const requiredStyles = new Set(nextStylesByHref.keys());
+
+      function createStylesheetLink(fromEl, absoluteHref) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = absoluteHref;
+
+        if (fromEl) {
+          const media = fromEl.getAttribute('media');
+          const crossOrigin = fromEl.getAttribute('crossorigin');
+          const integrity = fromEl.getAttribute('integrity');
+          const referrerPolicy = fromEl.getAttribute('referrerpolicy');
+          const title = fromEl.getAttribute('title');
+
+          if (media) {
+            link.media = media;
+          }
+
+          if (crossOrigin !== null) {
+            // Preserve empty attribute and explicit values.
+            link.setAttribute('crossorigin', crossOrigin);
+          }
+
+          if (integrity) {
+            link.setAttribute('integrity', integrity);
+          }
+
+          if (referrerPolicy) {
+            link.setAttribute('referrerpolicy', referrerPolicy);
+          }
+
+          if (title) {
+            link.setAttribute('title', title);
+          }
+
+          // Support the common non-blocking pattern:
+          // <link rel="stylesheet" media="print" onload="this.media='all'" ...>
+          // We intentionally DO NOT copy inline onload code. Instead we emulate it safely.
+          const onloadAttr = fromEl.getAttribute('onload');
+          if (media === 'print' && onloadAttr && /this\.media\s*=\s*['"]all['"]/i.test(onloadAttr)) {
+            link.addEventListener(
+              'load',
+              () => {
+                link.media = 'all';
+              },
+              { once: true }
+            );
+          }
+        }
+
+        return link;
+      }
 
       $all('link[rel="stylesheet"][data-pjax-added]').forEach((link) => {
         if (!requiredStyles.has(link.href)) {
@@ -510,9 +569,8 @@
           return;
         }
 
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = href;
+        const fromEl = nextStylesByHref.get(href) || null;
+        const link = createStylesheetLink(fromEl, href);
         link.setAttribute('data-pjax-added', '');
         document.head.appendChild(link);
       });
@@ -552,6 +610,17 @@
       }
 
       window.scrollTo(0, 0);
+
+      // Accessibility: move focus to the new main content.
+      // This helps keyboard/screen-reader users after PJAX navigation.
+      try {
+        if (!newMain.hasAttribute('tabindex')) {
+          newMain.setAttribute('tabindex', '-1');
+        }
+        newMain.focus({ preventScroll: true });
+      } catch {
+        // Some browsers may throw if focus options are unsupported.
+      }
 
       // 5) External scripts
       // We never execute inline scripts from fetched pages.
@@ -598,6 +667,11 @@
     (event) => {
       const a = event.target && event.target.closest ? event.target.closest('a') : null;
       if (!a) {
+        return;
+      }
+
+      // Allow opt-out for special links/pages.
+      if (a.hasAttribute('data-no-pjax') || (a.closest && a.closest('[data-no-pjax]'))) {
         return;
       }
 

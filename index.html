@@ -1,64 +1,62 @@
 <!doctype html>
-	<html lang="en">
-		<head>
-			<meta charset="utf-8" />
-			<meta name="viewport" content="width=device-width, initial-scale=1" />
-			<link rel="icon" type="image/png" href="media/Logo.png" />
-		<title>Lenko Studio — Cinematic Photo & Video</title>
-		
-		<!-- Google Fonts -->
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
-		
-			<link rel="stylesheet" href="style.css?v=20251230a" />
-			<script src="js/components.js?v=20251230a" defer></script>
-			<meta name="description" content="Lenko Studio — Cinematic photo and video. Book a shoot, explore work, and discover ADAM for creators." />
-		</head>
-		<body class="stage-0">
-			<div id="blackOverlay" class="overlay-black"></div>
-			<a id="skipIntro" class="skip-link" href="#main">Skip intro</a>
-			<a class="skip-link" href="#main">Skip to content</a>
-			<site-header current="home"></site-header>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" type="image/png" href="media/Logo.png" />
 
-			<main id="main" class="home" role="main">
-				<section class="hero" aria-label="Cinematic Intro">
-					<div class="video-wrap" aria-hidden="true">
-					<video id="bgVideo" muted playsinline loop preload="none"></video>
-					<div class="scrim"></div>
-					</div>
-					<div id="gridOverlay" class="grid-overlay" aria-hidden="true"></div>
+        <title>Lenko Studio — Cinematic Photo & Video</title>
 
-					<div class="hero-content">
-						<h1 id="introTitle" class="intro-title" tabindex="0">Lenko Studio</h1>
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
 
-						<div id="heroCtas" class="hero-ctas" aria-live="polite">
-							<a class="cta" href="portfolio.html" id="ctaExplore">Explore Portfolio</a>
-						</div>
-					</div>
-				</section>
-				<a class="floating-cta" href="contact.html">Book a Shoot</a>
-			</main>
+        <link rel="stylesheet" href="style.css?v=20251230a" />
+        <script src="js/components.js?v=20251230a" defer></script>
 
-			<footer class="site-footer" role="contentinfo">
-			<div class="footer-inner">
-				<p>© <span id="year"></span> Lenko Studio</p>
-				
-				<div class="social">
-				<a href="https://www.instagram.com/lenkostudio/" target="_blank" rel="noopener">Instagram</a>
-				<a href="https://www.facebook.com/LenkoStudio/" target="_blank" rel="noopener">Facebook</a>
-				</div>
-			</div>
-			</footer>
+        <meta
+            name="description"
+            content="Lenko Studio — Cinematic photo and video. Book a shoot, explore work, and discover ADAM for creators."
+        />
+    </head>
+    <body class="stage-0">
+        <div id="blackOverlay" class="overlay-black"></div>
 
-			<audio id="ambientAudio" preload="none" loop>
-			<source src="media/audio.mp3" type="audio/mpeg" />
-			</audio>
+        <a id="skipIntro" class="skip-link" href="#main">Skip intro</a>
 
-			<!-- Home-only behavior (intro + video lazy-load). -->
-			<script src="js/home.js?v=20251230a" defer></script>
+        <site-header current="home"></site-header>
 
-			<!-- Global site behavior (PJAX + audio + forms). -->
-			<script src="app.js?v=20251230a" defer></script>
-		</body>
-	</html>
+        <main id="main" class="home" role="main">
+            <section class="hero" aria-label="Cinematic Intro">
+                <div class="video-wrap" aria-hidden="true">
+                    <video id="bgVideo" muted playsinline loop preload="none"></video>
+                    <div class="scrim"></div>
+                </div>
+
+                <div id="gridOverlay" class="grid-overlay" aria-hidden="true"></div>
+
+                <div class="hero-content">
+                    <h1 id="introTitle" class="intro-title" tabindex="0">Lenko Studio</h1>
+
+                    <div id="heroCtas" class="hero-ctas" aria-live="polite">
+                        <a class="cta" href="portfolio.html" id="ctaExplore">Explore Portfolio</a>
+                    </div>
+                </div>
+            </section>
+
+            <a class="floating-cta" href="contact.html">Book a Shoot</a>
+        </main>
+
+        <site-footer></site-footer>
+
+        <!-- Home-only behavior (intro + video lazy-load). -->
+        <script src="js/home.js?v=20251230a" defer></script>
+
+        <!-- Global site behavior (PJAX + audio + forms). -->
+        <script src="app.js?v=20251230a" defer></script>
+    </body>
+</html>
