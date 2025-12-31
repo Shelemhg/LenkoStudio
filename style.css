@@ -217,7 +217,7 @@ site-header, site-footer { display: contents; }
     max-width: 320px;
     height: 100vh;
     background: var(--bg-elevated);
-    padding: var(--space-3xl) var(--space-lg);
+    padding: var(--space-3xl) 0;
     transition: left 0.3s ease;
     z-index: 90;
     flex-direction: column;
@@ -241,7 +241,7 @@ site-header, site-footer { display: contents; }
   .nav-list {
     flex-direction: column;
     width: 100%;
-    gap: var(--space-lg);
+    gap: var(--space-sm);
   }
   .nav-list a {
     width: 100%;
