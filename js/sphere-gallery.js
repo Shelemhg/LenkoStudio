@@ -247,10 +247,10 @@ window.SphereGallery = (() => {
         
         // Calculate Scale
         // Mobile/Desktop adaptive: smaller back for depth, compensate for higher res on mobile
-        // Desktop: 0.25 to 0.6 range | Mobile: 0.167 to 0.4 range (maintains visual size at 1.5x resolution)
+        // Desktop: 0.125 to 0.3 range | Mobile: 0.0835 to 0.2 range (maintains visual size at 2x resolution)
         const isMobile = window.innerWidth <= 768;
-        const baseScale = isMobile ? 0.167 : 0.25;
-        const scaleRange = isMobile ? 0.233 : 0.35;
+        const baseScale = isMobile ? 0.0835 : 0.125;
+        const scaleRange = isMobile ? 0.1165 : 0.175;
         let scale = baseScale + (clampedZ * scaleRange);
 
         // Initial transform
@@ -648,11 +648,11 @@ window.SphereGallery = (() => {
 
         // Calculate Scale
         // Mobile/Desktop adaptive: smaller back for depth, compensate for higher res on mobile
-        // Desktop: 0.25 to 0.6 range | Mobile: 0.167 to 0.4 range (maintains visual size at 1.5x resolution)
+        // Desktop: 0.125 to 0.3 range | Mobile: 0.0835 to 0.2 range (maintains visual size at 2x resolution)
         // This creates a nice "focus" effect and fixes mobile sizing issues
         const isMobile = window.innerWidth <= 768;
-        const baseScale = isMobile ? 0.167 : 0.25;
-        const scaleRange = isMobile ? 0.233 : 0.35;
+        const baseScale = isMobile ? 0.0835 : 0.125;
+        const scaleRange = isMobile ? 0.1165 : 0.175;
         let scale = baseScale + (clampedZ * scaleRange);
 
         // Apply translation and scale

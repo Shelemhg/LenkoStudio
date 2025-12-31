@@ -121,7 +121,6 @@
 				}
 
 				title.addEventListener('click', firstInteraction);
-				title.addEventListener('touchstart', firstInteraction, { passive: false });
 				title.addEventListener('keydown', (e) => {
 					if (e.key === 'Enter' || e.key === ' ') {
 						e.preventDefault();
@@ -131,9 +130,6 @@
 				document.addEventListener('click', (e) => {
 					if (!e.target.closest('.hero-ctas')) firstInteraction();
 				}, { capture: true });
-				document.addEventListener('touchstart', (e) => {
-					if (!e.target.closest('.hero-ctas')) firstInteraction();
-				}, { capture: true, passive: false });
 
 				// Skip intro entirely ONLY if sound was previously disabled
 				if (soundWasDisabled) {
