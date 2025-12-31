@@ -72,6 +72,15 @@
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const { body, blackOverlay, bgVideo, title, skipIntro } = getElements(root);
 
+        // Preserve the previous UX intent:
+        // - Mobile: default sound is OFF unless the user explicitly enabled it.
+        //   In that case we skip the intro and show the page immediately.
+        // - Desktop: default sound is ON unless the user explicitly disabled it.
+        //   If they disabled it, we also skip the intro.
+        const saved = localStorage.getItem('soundEnabled');
+        const isMobile = window.innerWidth <= 768;
+        const soundWasDisabled = isMobile ? (saved !== 'true') : (saved === 'false');
+
         // Idempotency: do not bind twice.
         if (body && body.dataset.homeIntroBound === 'true') {
             return;
@@ -84,7 +93,7 @@
         setStage(body, blackOverlay, 0);
 
         // Reduced-motion users should not have to "play" the intro.
-        if (prefersReducedMotion) {
+        if (prefersReducedMotion || soundWasDisabled) {
             setStage(body, blackOverlay, 2);
             ensureVideoLoaded(bgVideo);
             return;
