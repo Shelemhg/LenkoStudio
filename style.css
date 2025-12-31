@@ -177,24 +177,29 @@ site-header, site-footer { display: contents; }
   cursor: pointer;
   position: relative;
   z-index: 96;
+  width: 44px;
+  height: 44px;
 }
 .menu-toggle span {
-  display: block;
-  width: 24px;
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 50%;
   height: 2px;
   background: var(--fg);
-  margin: 5px 0;
-  transition: all 0.3s ease;
+  transform-origin: center;
+  transition: transform 0.25s ease, opacity 0.2s ease;
 }
-.menu-toggle[aria-expanded="true"] span:nth-child(1) {
-  transform: rotate(45deg) translate(6px, 6px);
-}
-.menu-toggle[aria-expanded="true"] span:nth-child(2) {
-  opacity: 0;
-}
-.menu-toggle[aria-expanded="true"] span:nth-child(3) {
-  transform: rotate(-45deg) translate(6px, -6px);
-}
+
+/* Hamburger default (3 lines) */
+.menu-toggle span:nth-child(1) { transform: translateY(-8px); }
+.menu-toggle span:nth-child(2) { transform: translateY(0); }
+.menu-toggle span:nth-child(3) { transform: translateY(8px); }
+
+/* Hamburger open (X centered) */
+.menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: rotate(45deg); }
+.menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.menu-toggle[aria-expanded="true"] span:nth-child(3) { transform: rotate(-45deg); }
 
 @media (max-width: 768px) {
   .site-header {
@@ -250,7 +255,8 @@ site-header, site-footer { display: contents; }
     background: rgba(0, 0, 0, 0.35);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    z-index: 85;
+    /* Must sit UNDER the header/menu so it doesn't cover the panel */
+    z-index: 70;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
