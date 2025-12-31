@@ -76,11 +76,11 @@
 
 .sphere-item {
   position: absolute;
-  /* SUPERSAMPLING: Double the size for high-DPI rendering */
-  width: 360px;  /* Visual target: 180px */
-  height: 520px; /* Visual target: 260px */
-  left: -180px;  /* Center: -width/2 */
-  top: -260px;   /* Center: -height/2 */
+  /* SUPERSAMPLING: 3x the size for ultra high-DPI rendering */
+  width: 540px;  /* Visual target: 180px */
+  height: 780px; /* Visual target: 260px */
+  left: -270px;  /* Center: -width/2 */
+  top: -390px;   /* Center: -height/2 */
   background: #000;
   border: 4px solid rgba(255, 255, 255, 0.1); /* Scaled border */
   border-radius: 8px; /* Scaled radius */
@@ -95,10 +95,10 @@
 }
 
 .sphere-item.sphere-item--landscape {
-  width: 520px;  /* Swap width/height */
-  height: 360px;
-  left: -260px;  /* Center: -width/2 */
-  top: -180px;   /* Center: -height/2 */
+  width: 780px;  /* Swap width/height */
+  height: 540px;
+  left: -390px;  /* Center: -width/2 */
+  top: -270px;   /* Center: -height/2 */
 }
 
 .sphere-item img {
@@ -144,10 +144,10 @@
   
   .sphere-item {
     /* Reduced base size so perspective scaling makes front item correct size */
-    /* SUPERSAMPLING: Double the mobile target (130x195 -> 260x390) */
-    width: 260px;
-    height: 390px;
-    left: -130px;
-    top: -195px;
+    /* SUPERSAMPLING: 3x the mobile target (130x195 -> 390x585) */
+    width: 390px;
+    height: 585px;
+    left: -195px;
+    top: -293px;
   }
 }

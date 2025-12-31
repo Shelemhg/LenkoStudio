@@ -246,9 +246,9 @@ window.SphereGallery = (() => {
         const clampedZ = Math.max(0, Math.min(1, normalizedZ));
         
         // Calculate Scale
-        // Base scale 0.5 (Supersampling). 
-        // Add up to 80% extra scale (0.4) for front items - 20% larger than before
-        let scale = 0.5 + (clampedZ * 0.4);
+        // Base scale 0.333 (3x Supersampling for ultra-sharp rendering). 
+        // Add up to 0.267 extra scale for front items, maintaining visual size
+        let scale = 0.333 + (clampedZ * 0.267);
 
         // Initial transform
         element.style.transform = `translate3d(${x}px, ${y}px, ${z}px) scale(${scale.toFixed(3)})`;
@@ -644,10 +644,10 @@ window.SphereGallery = (() => {
         const clampedZ = Math.max(0, Math.min(1, normalizedZ));
 
         // Calculate Scale
-        // Base scale 0.5 (Supersampling). 
-        // Add up to 80% extra scale (0.4) for front items - 20% larger than before
+        // Base scale 0.333 (3x Supersampling for ultra-sharp rendering). 
+        // Add up to 0.267 extra scale for front items, maintaining visual size
         // This creates a nice "focus" effect and fixes mobile sizing issues
-        let scale = 0.5 + (clampedZ * 0.4);
+        let scale = 0.333 + (clampedZ * 0.267);
 
         // Apply translation and scale
         item.element.style.transform = `translate3d(${x2.toFixed(2)}px, ${y2.toFixed(2)}px, ${z2.toFixed(2)}px) scale(${scale.toFixed(3)})`;
