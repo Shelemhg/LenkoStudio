@@ -11,8 +11,8 @@
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
 		
-			<link rel="stylesheet" href="style.css" />
-			<script src="js/components.js"></script>
+			<link rel="stylesheet" href="style.css?v=20251230a" />
+			<script src="js/components.js?v=20251230a"></script>
 			<meta name="description" content="Lenko Studio — Cinematic photo and video. Book a shoot, explore work, and discover ADAM for creators." />
 		</head>
 		<body class="stage-0">
@@ -132,21 +132,11 @@
 				}, { capture: true });
 
 				// Skip intro entirely ONLY if sound was previously disabled
-				// On mobile, add small delay to ensure CSS is fully loaded
-				const isMobile = window.innerWidth <= 768;
 				if (soundWasDisabled) {
-					const skipIntro = () => {
-						setStage(2);
-						if (blackOverlay) blackOverlay.classList.add('is-hidden');
-						ensureVideoLoaded();
-						track('intro_skip_sound_off');
-					};
-					// On mobile, wait for CSS to paint before skipping
-					if (isMobile) {
-						setTimeout(skipIntro, 100);
-					} else {
-						skipIntro();
-					}
+					setStage(2);
+					if (blackOverlay) blackOverlay.classList.add('is-hidden');
+					ensureVideoLoaded();
+					track('intro_skip_sound_off');
 				} else if (prefersReduced) {
 					setStage(2);
 					if (blackOverlay) blackOverlay.classList.add('is-hidden');
@@ -229,6 +219,6 @@
 				window.__audioControllerActive = true;
 			})();
 			</script>
-			<script src="app.js"></script>
+			<script src="app.js?v=20251230a"></script>
 		</body>
 	</html>

@@ -692,35 +692,6 @@ html {
   }
 }
 
-/* 12.5) Mobile-only fixes for intro stage ---------------------------------- */
-@media (max-width: 768px) {
-  /* Force hide all CTAs during stage-0 to prevent visibility issues */
-  body.stage-0 .hero-ctas {
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none;
-  }
-  
-  body.stage-0 .floating-cta {
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none;
-  }
-  
-  /* Ensure black overlay is above everything on mobile */
-  .overlay-black {
-    z-index: 9999 !important;
-  }
-  
-  /* Transition CTAs back when moving to stage-2 */
-  body.stage-2 .hero-ctas,
-  body.stage-2 .floating-cta {
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.8s ease 1s, visibility 0s 1s;
-  }
-}
-
 /* 13) Breakpoints: ≥768px --------------------------------------------------- */
 @media (min-width: 768px) {
   .intro-title { font-size: 4rem; }
