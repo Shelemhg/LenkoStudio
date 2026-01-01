@@ -29,6 +29,7 @@ class SiteHeader extends HTMLElement {
 
                     <ul class="nav-list">
                         <li><a href="portfolio.html"${currentPage === 'portfolio' ? ' aria-current="page"' : ''}>Portfolio</a></li>
+                        <li><a href="simulator.html"${currentPage === 'simulator' ? ' aria-current="page"' : ''}>Simulator</a></li>
                         <li><a href="about.html"${currentPage === 'about' ? ' aria-current="page"' : ''}>About</a></li>
                         <li><a href="contact.html"${currentPage === 'contact' ? ' aria-current="page"' : ''}>Contact</a></li>
                         <li><a class="adam-link" href="https://adam.lenkostudio.com" target="_blank" rel="noopener">For Creators — ADAM</a></li>

@@ -1,0 +1,417 @@
+/* Simulator Layout */
+.simulator-page {
+    padding-top: 0; /* Reset standard padding */
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Sticky Dashboard */
+.dashboard-wrapper {
+    position: sticky;
+    top: 0; /* Goes to very top when nav scrolls away */
+    z-index: 90; /* Above nav */
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sim-logo {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    color: var(--accent-color);
+    font-size: 1.1rem;
+}
+
+.dashboard-controls {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-text {
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0.25rem 0.5rem;
+    transition: color 0.2s;
+}
+
+.btn-text:hover:not(:disabled) {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.btn-text:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Dashboard Panes */
+.dashboard-panes {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+@media (min-width: 900px) {
+    .dashboard-panes {
+        grid-template-columns: 1fr 1.5fr;
+    }
+}
+
+@media (min-width: 1200px) {
+    .dashboard-panes {
+        grid-template-columns: 1fr 2fr;
+    }
+}
+
+/* Graph Pane */
+.pane-graph {
+    height: 200px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    overflow: visible;
+    padding: 0.5rem 0.5rem 0.65rem;
+}
+
+.pane-label {
+    font-size: 0.7rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding-left: 0.1rem;
+}
+
+#growthChart {
+    display: block;
+    width: 100%;
+    height: 100%;
+    flex: 1;
+}
+
+#growthChart circle {
+    transition: r 0.2s ease;
+}
+
+#growthChart circle:hover {
+    r: 6;
+}
+
+/* Data Pane */
+.pane-data {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.aspect-table-wrap {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.aspect-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Inter', sans-serif;
+    table-layout: fixed;
+}
+
+.aspect-table thead th {
+    font-size: 0.65rem;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 0.4rem 0.5rem;
+    text-align: right;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.01);
+    white-space: nowrap;
+}
+
+.aspect-table thead th:first-child {
+    width: 35%;
+}
+
+.aspect-table thead th:nth-child(2),
+.aspect-table thead th:nth-child(3) {
+    width: 13%;
+}
+
+.aspect-table thead th:nth-child(4),
+.aspect-table thead th:nth-child(5),
+.aspect-table thead th:nth-child(6) {
+    width: 13%;
+}
+
+.aspect-table thead th:first-child,
+.aspect-table tbody td:first-child {
+    text-align: left;
+}
+
+.aspect-table tbody td {
+    padding: 0.45rem 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.8rem;
+    color: #ddd;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.aspect-table tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.aspect-table tbody tr:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.aspect-table tbody tr.current-row td {
+    font-weight: 600;
+}
+
+.aspect-table tbody td.delta-pos {
+    color: #22c55e !important;
+    font-weight: 600;
+}
+
+.aspect-table tbody td.delta-neg {
+    color: #ff6b6b !important;
+    font-weight: 600;
+}
+
+.aspect-table tbody td.delta-cost-good {
+    color: #fbbf24 !important;
+    font-weight: 600;
+}
+
+.aspect-table tbody td.delta-cost-bad {
+    color: #ff6b6b !important;
+    font-weight: 600;
+}
+
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem 1rem;
+}
+
+@media (min-width: 600px) {
+    .metric-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.metric {
+    display: flex;
+    flex-direction: column;
+}
+
+.metric.secondary {
+    opacity: 0.7;
+}
+
+.metric .label {
+    font-size: 0.7rem;
+    color: #888;
+    text-transform: uppercase;
+}
+
+.metric .value {
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+}
+
+.active-costs {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: #ff6b6b;
+}
+
+.cost-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Scroll Container */
+.simulator-scroll-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    width: 100%;
+}
+
+/* Hero */
+.hero-section {
+    text-align: center;
+    margin-bottom: 4rem;
+    animation: fadeIn 0.8s ease;
+}
+
+.hero-section h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.hero-sub {
+    font-size: 1.2rem;
+    color: #ccc;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.disclaimer {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: #555;
+}
+
+/* Chapters */
+.chapter-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 4rem; /* Space between chapters */
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideUp 0.6s forwards;
+}
+
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chapter-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+}
+
+.chapter-card p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    color: #ddd;
+}
+
+.choices-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+@media (min-width: 600px) {
+    .choices-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.choice-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 1.5rem;
+    border-radius: 8px;
+    color: #fff;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.choice-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.choice-btn.active {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+}
+
+.choice-btn h4 {
+    margin-bottom: 0.5rem;
+    color: var(--accent-color);
+    font-size: 1.1rem;
+}
+
+
+.choice-btn p {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+    opacity: 0.8;
+    line-height: 1.4;
+}
+
+.btn-primary {
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+    background: #f0f0f0;
+}
+
+.btn-large {
+    font-size: 1.2rem;
+    padding: 1.2rem 3rem;
+}
+
+/* End Screen */
+.end-screen {
+    text-align: center;
+    padding: 2rem;
+}
+
+.end-screen h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.verdict {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #ccc;
+}

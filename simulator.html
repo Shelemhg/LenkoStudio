@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" type="image/png" href="media/Logo.png" />
+
+        <title>Creator Simulator — Lenko Studio</title>
+
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+
+        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="css/simulator.css" />
+        <script src="js/components.js" defer></script>
+
+        <meta
+            name="description"
+            content="Test your creator instincts. Make choices, grow your audience, and avoid burnout in this interactive simulator."
+        />
+    </head>
+    <body>
+        <site-header current="simulator"></site-header>
+
+        <main id="main" class="simulator-page" role="main">
+            
+            <!-- Sticky Dashboard -->
+            <div class="dashboard-wrapper">
+                <div class="dashboard-header">
+                    <div class="brand-area">
+                        <span class="sim-logo">Creator Growth Simulator</span>
+                    </div>
+                    <div class="dashboard-controls">
+                        <button id="btnUndo" class="btn-text" disabled>Undo</button>
+                        <button id="btnReset" class="btn-text">Reset</button>
+                    </div>
+                </div>
+                
+                <div class="dashboard-panes">
+                    <!-- Graph Pane -->
+                    <div class="pane-graph">
+                        <div class="pane-label">Followers Growth</div>
+                        <svg id="growthChart" width="100%" height="100%" preserveAspectRatio="none"></svg>
+                    </div>
+                    
+                    <!-- Data Pane -->
+                    <div class="pane-data">
+                        <div class="aspect-table-wrap">
+                            <table class="aspect-table" aria-label="Current values and decision impacts">
+                                <thead>
+                                    <tr>
+                                        <th>Row</th>
+                                        <th>Followers</th>
+                                        <th>Views</th>
+                                        <th>Paid Subs</th>
+                                        <th>Cost/mo</th>
+                                        <th>Income/mo</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="aspectTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scrollable Content -->
+            <div class="simulator-scroll-container">
+                <section class="hero-section" id="simHero">
+                    <div class="hero-inner">
+                        <h1>Your next 8 decisions shape the next 6 months.</h1>
+                        <p class="hero-sub">You’re posting consistently. Growth is flattening. Today you’ll choose what to keep DIY, what to upgrade, and when pro photo/video production actually helps (or hurts).</p>
+                        <button class="btn-primary btn-large" id="startSimBtn">Start Simulation</button>
+                        <p class="disclaimer">Simulator – estimates. Real growth varies.</p>
+                    </div>
+                </section>
+
+                <section class="chapter-container" id="simContent">
+                    <!-- Chapters injected here -->
+                </section>
+            </div>
+        </main>
+
+        <site-footer></site-footer>
+
+        <script src="js/simulator.js" defer></script>
+        <script src="app.js" defer></script>
+    </body>
+</html>
