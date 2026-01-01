@@ -707,12 +707,14 @@ window.SphereGallery = (() => {
     });
 
     // FORCE PARALLAX STATE
-    // Since we know we just centered the item, the parallax progress is exactly 0.5.
-    // The formula is progress * -10 = -5%.
-    // We manually apply this to ensure the measurement is correct even if the 
-    // parallax engine hasn't updated yet.
+    // We calculate the exact parallax transform based on where the item *actually* ended up.
+    // This handles cases where the item couldn't be perfectly centered (e.g. near top/bottom of page).
+    const finalItemRect = itemToUpdate.getBoundingClientRect();
+    const progress = (viewportHeight - finalItemRect.top) / (viewportHeight + finalItemRect.height);
+    const parallaxY = progress * -10; // Matches the -10 multiplier in portfolio.js
+
     if (targetImg) {
-        targetImg.style.transform = 'translateY(-5%)';
+        targetImg.style.transform = `translateY(${parallaxY}%)`;
     }
     
     // 4. Animate to Target
