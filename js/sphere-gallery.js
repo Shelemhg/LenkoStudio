@@ -692,6 +692,11 @@ window.SphereGallery = (() => {
     document.body.style.overflow = '';
     document.body.style.paddingRight = '';
 
+    // Disable CSS smooth scrolling temporarily to ensure instant jump
+    const html = document.documentElement;
+    const originalScrollBehavior = html.style.scrollBehavior;
+    html.style.scrollBehavior = 'auto';
+
     // Calculate the center position.
     // We want the portfolio item to be centered in the viewport.
     const itemRect = itemToUpdate.getBoundingClientRect(); // This is relative to viewport currently (before scroll)
@@ -750,6 +755,9 @@ window.SphereGallery = (() => {
                     if (clone === activeClone) activeClone = null;
                     clone.remove();
                     
+                    // Restore scroll behavior
+                    html.style.scrollBehavior = originalScrollBehavior;
+
                     // Trigger a real parallax refresh to ensure it takes over control
                     if (window.PortfolioParallax && typeof window.PortfolioParallax.refresh === 'function') {
                         window.PortfolioParallax.refresh();
