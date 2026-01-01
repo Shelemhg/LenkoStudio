@@ -719,6 +719,8 @@ window.SphereGallery = (() => {
     const parallaxY = progress * -10; // Matches the -10 multiplier in portfolio.js
 
     if (targetImg) {
+        // Disable transition to ensure immediate application
+        targetImg.style.transition = 'none';
         targetImg.style.transform = `translateY(${parallaxY}%)`;
     }
     
@@ -757,6 +759,11 @@ window.SphereGallery = (() => {
                     
                     // Restore scroll behavior
                     html.style.scrollBehavior = originalScrollBehavior;
+                    
+                    // Restore transition
+                    if (targetImg) {
+                        targetImg.style.transition = '';
+                    }
 
                     // Trigger a real parallax refresh to ensure it takes over control
                     if (window.PortfolioParallax && typeof window.PortfolioParallax.refresh === 'function') {
