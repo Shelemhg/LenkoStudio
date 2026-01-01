@@ -51,6 +51,134 @@ window.SphereGallery = (() => {
   // Keep references to prevent Garbage Collection of preloading images
   const imageCache = [];
 
+  // Persist selected cover images across refreshes.
+  const COVER_STORAGE_KEY = 'portfolioCoverSelections';
+
+  function storageGet(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  function storageSet(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      // ignore
+    }
+  }
+
+  function storageRemove(key) {
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      // ignore
+    }
+  }
+
+  function readCoverSelections() {
+    try {
+      const raw = storageGet(COVER_STORAGE_KEY);
+      if (!raw) {
+        return {};
+      }
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== 'object') {
+        return {};
+      }
+      return parsed;
+    } catch {
+      return {};
+    }
+  }
+
+  function writeCoverSelections(map) {
+    try {
+      storageSet(COVER_STORAGE_KEY, JSON.stringify(map || {}));
+    } catch {
+      // ignore
+    }
+  }
+
+  function normalizeCoverSrc(folder, src) {
+    if (!src || !folder) {
+      return src;
+    }
+
+    // Prefer storing a stable, relative path (e.g. media/portfolio/Fashion/3.jpg)
+    try {
+      const url = new URL(src, window.location.href);
+      const path = String(url.pathname || '').replace(/^\/+/, '');
+      const token = `${folder}/`;
+      const idx = path.indexOf(token);
+      if (idx >= 0) {
+        return path.slice(idx);
+      }
+      return path;
+    } catch {
+      const token = `${folder}/`;
+      const idx = String(src).indexOf(token);
+      if (idx >= 0) {
+        return String(src).slice(idx);
+      }
+      return src;
+    }
+  }
+
+  function setCoverSelection(folder, src) {
+    const map = readCoverSelections();
+    map[folder] = normalizeCoverSrc(folder, src);
+    writeCoverSelections(map);
+  }
+
+  function applyStoredCovers(root = document) {
+    const map = readCoverSelections();
+    root.querySelectorAll('.portfolio-item[data-folder]').forEach((item) => {
+      const folder = item.dataset.folder;
+      if (!folder) {
+        return;
+      }
+
+      const stored = map[folder];
+      if (!stored) {
+        return;
+      }
+
+      const img = item.querySelector('.portfolio-item__image');
+      if (!img) {
+        return;
+      }
+
+      img.src = stored;
+      if (img.hasAttribute('srcset')) {
+        img.removeAttribute('srcset');
+      }
+    });
+  }
+
+  function resetCovers(root = document) {
+    storageRemove(COVER_STORAGE_KEY);
+
+    root.querySelectorAll('.portfolio-item[data-folder]').forEach((item) => {
+      const folder = item.dataset.folder;
+      if (!folder) {
+        return;
+      }
+
+      const img = item.querySelector('.portfolio-item__image');
+      if (!img) {
+        return;
+      }
+
+      img.src = `${folder}/1.jpg`;
+      if (img.hasAttribute('srcset')) {
+        img.removeAttribute('srcset');
+      }
+    });
+  }
+
   function preloadImages(folder, count) {
     if (preloadedFolders.has(folder)) return;
     preloadedFolders.add(folder);
@@ -227,6 +355,18 @@ window.SphereGallery = (() => {
    * This is required after PJAX replaces `#main`.
    */
   function refresh() {
+    // Restore any persisted cover selections.
+    applyStoredCovers(document);
+
+    // Bind reset button once (portfolio page only).
+    const resetBtn = document.getElementById('resetPictures');
+    if (resetBtn && resetBtn.dataset.bound !== 'true') {
+      resetBtn.dataset.bound = 'true';
+      resetBtn.addEventListener('click', () => {
+        resetCovers(document);
+      });
+    }
+
     // Portfolio items exist on the portfolio page only.
     document.querySelectorAll('.portfolio-item[data-folder]').forEach((item) => {
       if (item.dataset.sphereBound === 'true') {
@@ -490,6 +630,16 @@ window.SphereGallery = (() => {
 
   function selectImage(src, sphereItemElement) {
     if (!activePortfolioItem) return;
+
+    // Persist the selected cover so refresh keeps the same image.
+    try {
+      const folder = activePortfolioItem.dataset.folder;
+      if (folder) {
+        setCoverSelection(folder, src);
+      }
+    } catch {
+      // ignore
+    }
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 

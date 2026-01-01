@@ -36,3 +36,22 @@ This file tracks every usability/accessibility/performance fix applied, with the
 ### 2025-12-31 (bugfix)
 - Fixed sphere gallery rotation regression: restoring the original always-running RAF loop so drag rotations visibly update (matches pre-change behavior from commit 9aaff9f).
 	- Files: js/sphere-gallery.js
+
+### 2025-12-31 (content)
+- Hid Services / Case Studies / Pricing pages:
+	- Removed header navigation links.
+	- Converted `services.html`, `pricing.html`, and `case-studies.html` into `noindex` redirect stubs to `index.html`.
+	- Updated redirect stubs `portraits.html` and `3dWedding.html` to redirect to `portfolio.html` instead of hidden pages.
+	- Files: js/components.js, services.html, pricing.html, case-studies.html, portraits.html, 3dWedding.html
+
+### 2025-12-31 (content)
+- Modernized Contact page and simplified contact methods:
+	- Removed the contact form and local “Download Saved” workflow.
+	- Set the only contact methods to `mailto:hi@lenkostudio.com` and WhatsApp.
+	- Files: contact.html, style.css
+
+### 2025-12-31 (portfolio)
+- Persist selected portfolio cover images and add a reset control:
+	- When a user selects an image as a category cover from the sphere modal, the selection is saved to localStorage and restored on refresh.
+	- Added a subtle “Reset pictures” button at the top of the portfolio page to clear stored selections.
+	- Files: portfolio.html, css/portfolio.css, js/sphere-gallery.js

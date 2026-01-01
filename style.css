@@ -733,6 +733,21 @@ button[type="submit"]:hover, .btn:hover {
   gap: 8px;
 }
 
+/* Contact page layout */
+.contact-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.contact-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  text-decoration: none;
+}
+
 /* Pricing page layout (moved from inline <style>) */
 .tiers {
   display: grid;

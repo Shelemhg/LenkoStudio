@@ -29,9 +29,6 @@ class SiteHeader extends HTMLElement {
 
                     <ul class="nav-list">
                         <li><a href="portfolio.html"${currentPage === 'portfolio' ? ' aria-current="page"' : ''}>Portfolio</a></li>
-                        <li><a href="services.html"${currentPage === 'services' ? ' aria-current="page"' : ''}>Services</a></li>
-                        <li><a href="case-studies.html"${currentPage === 'case-studies' ? ' aria-current="page"' : ''}>Case Studies</a></li>
-                        <li><a href="pricing.html"${currentPage === 'pricing' ? ' aria-current="page"' : ''}>Pricing</a></li>
                         <li><a href="about.html"${currentPage === 'about' ? ' aria-current="page"' : ''}>About</a></li>
                         <li><a href="contact.html"${currentPage === 'contact' ? ' aria-current="page"' : ''}>Contact</a></li>
                         <li><a class="adam-link" href="https://adam.lenkostudio.com" target="_blank" rel="noopener">For Creators — ADAM</a></li>
@@ -128,10 +125,46 @@ class SiteHeader extends HTMLElement {
                 }
             };
 
-            // Ensure correct initial state.
-            closeMenu(false);
+            const mobileNavQuery = window.matchMedia('(max-width: 768px)');
+
+            const syncNavForViewport = () => {
+                if (mobileNavQuery.matches) {
+                    // Mobile: start closed and keep focus out of the off-canvas panel.
+                    closeMenu(false);
+                    return;
+                }
+
+                // Desktop: nav is always visible + interactive.
+                nav.classList.remove('is-open');
+                nav.setAttribute('aria-hidden', 'false');
+                overlay.classList.remove('is-visible');
+                overlay.setAttribute('aria-hidden', 'true');
+                menuToggle.setAttribute('aria-expanded', 'false');
+                document.body.style.overflow = '';
+
+                setNavFocusable(true);
+                try {
+                    nav.removeAttribute('inert');
+                } catch {
+                    // ignore
+                }
+            };
+
+            // Ensure correct initial state for current viewport.
+            syncNavForViewport();
+
+            try {
+                mobileNavQuery.addEventListener('change', syncNavForViewport);
+            } catch {
+                // Safari < 14 fallback
+                mobileNavQuery.addListener(syncNavForViewport);
+            }
 
             menuToggle.addEventListener('click', () => {
+                if (!mobileNavQuery.matches) {
+                    return;
+                }
+
                 const isOpen = nav.classList.contains('is-open');
 
                 if (isOpen) {
@@ -142,10 +175,20 @@ class SiteHeader extends HTMLElement {
                 openMenu();
             });
 
-            overlay.addEventListener('click', closeMenu);
+            overlay.addEventListener('click', () => {
+                if (!mobileNavQuery.matches) {
+                    return;
+                }
+                closeMenu();
+            });
 
             nav.querySelectorAll('a').forEach((link) => {
-                link.addEventListener('click', closeMenu);
+                link.addEventListener('click', () => {
+                    if (!mobileNavQuery.matches) {
+                        return;
+                    }
+                    closeMenu(false);
+                });
             });
 
             // Accessibility: let users close the menu with Escape.
