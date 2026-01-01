@@ -684,18 +684,34 @@ window.SphereGallery = (() => {
     
     // 3. Close Modal (starts fade out)
     // We pass false to delay overflow reset, keeping layout stable during animation
+    // BUT we override this immediately below to force scroll.
     close(false);
+
+    // 3b. FORCE IMMEDIATE SCROLL
+    // We must unlock the body to allow scrolling.
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+
+    // Calculate the center position.
+    // We want the portfolio item to be centered in the viewport.
+    const itemRect = itemToUpdate.getBoundingClientRect(); // This is relative to viewport currently (before scroll)
+    const absoluteTop = itemRect.top + window.scrollY;
+    const viewportHeight = window.innerHeight;
+    
+    // Center the item:
+    const centeredScrollY = absoluteTop - (viewportHeight / 2) + (itemRect.height / 2);
+    
+    window.scrollTo({
+        top: centeredScrollY,
+        behavior: 'auto' // Instant
+    });
     
     // 4. Animate to Target
+    // We use double RAF to ensure the scroll has painted and any scroll-triggered 
+    // parallax updates (if any) have had a chance to run.
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-            // Calculate target position
-            // Since we haven't reset overflow yet, the page layout is stable (no scrollbar)
-            // But the target might be off-screen?
-            // We can try to scroll it into view now?
-            // If we scroll, we change positions.
-            // Let's assume it's visible enough or just animate to where it is.
-            
+            // Now that scroll is settled, measure target position.
             const targetRect = targetImg.getBoundingClientRect();
             
             clone.style.left = `${targetRect.left}px`;
@@ -719,10 +735,6 @@ window.SphereGallery = (() => {
             // 6. Cleanup
             setTimeout(() => {
                 clone.style.opacity = '0';
-                
-                // Scroll into view centered (now that animation is done)
-                // This might cause a shift if it wasn't centered, but it's the requested behavior
-                itemToUpdate.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 
                 setTimeout(() => {
                     if (clone === activeClone) activeClone = null;
