@@ -705,6 +705,14 @@ window.SphereGallery = (() => {
         top: centeredScrollY,
         behavior: 'auto' // Instant
     });
+
+    // FORCE PARALLAX UPDATE
+    // The scroll changed the position, so the parallax transform needs to update 
+    // to match the new "centered" state. Otherwise the image rect we measure 
+    // next will be based on the OLD transform (from before the scroll).
+    if (window.PortfolioParallax && typeof window.PortfolioParallax.refresh === 'function') {
+        window.PortfolioParallax.refresh();
+    }
     
     // 4. Animate to Target
     // We use double RAF to ensure the scroll has painted and any scroll-triggered 
