@@ -706,20 +706,20 @@ window.SphereGallery = (() => {
         behavior: 'auto' // Instant
     });
 
-    // FORCE PARALLAX UPDATE
-    // The scroll changed the position, so the parallax transform needs to update 
-    // to match the new "centered" state. Otherwise the image rect we measure 
-    // next will be based on the OLD transform (from before the scroll).
-    if (window.PortfolioParallax && typeof window.PortfolioParallax.refresh === 'function') {
-        window.PortfolioParallax.refresh();
+    // FORCE PARALLAX STATE
+    // Since we know we just centered the item, the parallax progress is exactly 0.5.
+    // The formula is progress * -10 = -5%.
+    // We manually apply this to ensure the measurement is correct even if the 
+    // parallax engine hasn't updated yet.
+    if (targetImg) {
+        targetImg.style.transform = 'translateY(-5%)';
     }
     
     // 4. Animate to Target
-    // We use double RAF to ensure the scroll has painted and any scroll-triggered 
-    // parallax updates (if any) have had a chance to run.
+    // We use double RAF to ensure the scroll has painted.
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-            // Now that scroll is settled, measure target position.
+            // Now that scroll is settled and transform is forced, measure target position.
             const targetRect = targetImg.getBoundingClientRect();
             
             clone.style.left = `${targetRect.left}px`;
@@ -747,6 +747,11 @@ window.SphereGallery = (() => {
                 setTimeout(() => {
                     if (clone === activeClone) activeClone = null;
                     clone.remove();
+                    
+                    // Trigger a real parallax refresh to ensure it takes over control
+                    if (window.PortfolioParallax && typeof window.PortfolioParallax.refresh === 'function') {
+                        window.PortfolioParallax.refresh();
+                    }
                 }, 300);
             }, 600);
         });
