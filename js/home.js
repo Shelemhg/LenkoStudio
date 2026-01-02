@@ -82,7 +82,10 @@
 
         // Simplified behavior:
         // - Always show the cinematic intro on both mobile and desktop.
-        // - Only `prefers-reduced-motion` skips the intro.
+        // - We no longer skip it for `prefers-reduced-motion` because users
+        //   reported confusion when the "black screen" was missing.
+        //   Instead, we rely on CSS `transition: none` to make the reveal instant
+        //   for reduced-motion users, preserving the interaction flow.
 
         // Idempotency: do not bind twice.
         if (body && body.dataset.homeIntroBound === 'true') {
@@ -94,13 +97,6 @@
 
         // Default state: show the cinematic intro overlay.
         setStage(body, blackOverlay, 0);
-
-        // Reduced-motion users should not have to "play" the intro.
-        if (prefersReducedMotion) {
-            setStage(body, blackOverlay, 2);
-            ensureVideoLoaded(bgVideo);
-            return;
-        }
 
         // Load video when the browser is idle (keeps initial show fast).
         if ('requestIdleCallback' in window) {
