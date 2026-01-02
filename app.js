@@ -81,9 +81,8 @@
     let fadeTimer = null;
 
     function getDefaultEnabled() {
-      // Default behavior: desktop ON, mobile OFF.
-      // We keep it intentionally simple and deterministic.
-      return window.innerWidth > 768;
+      // Unified behavior: audio ON by default for all devices.
+      return true;
     }
 
     function getEnabled() {
