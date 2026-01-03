@@ -472,14 +472,6 @@
     } catch {
       // ignore
     }
-
-    try {
-      if (window.CreatorSimulator && typeof window.CreatorSimulator.destroy === 'function') {
-        window.CreatorSimulator.destroy();
-      }
-    } catch {
-      // ignore
-    }
   }
 
   function initPageFeatures(root = document) {
@@ -518,10 +510,6 @@
 
     if (window.SphereGallery && typeof window.SphereGallery.init === 'function') {
       window.SphereGallery.init();
-    }
-
-    if (window.CreatorSimulator && typeof window.CreatorSimulator.init === 'function') {
-      window.CreatorSimulator.init();
     }
 
     // Home intro controller (idempotent, no-op on non-home pages).

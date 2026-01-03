@@ -7,14 +7,9 @@
 /* ============================================
    BASE STYLES
    ============================================ */
-body {
-  background: #ffffff;
-  color: #0a0a0a;
-}
-
-html {
-  scroll-behavior: smooth;
-}
+/* No global body/html overrides.
+   Portfolio should inherit the site theme from style.css.
+   Keep this file scoped to portfolio-specific layout and components. */
 
 /* ============================================
    HEADER OVERRIDES
@@ -29,6 +24,8 @@ html {
   max-width: 100%;
   margin: 0;
   padding: 0;
+  background: var(--bg);
+  color: var(--fg);
 }
 
 .portfolio-reset-container {
@@ -42,11 +39,9 @@ html {
 .portfolio-reset {
   appearance: none;
   position: static;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 0, 0, 0.14);
-  color: #444;
+  background: var(--btn-secondary-bg);
+  border: 1px solid var(--border);
+  color: var(--fg);
   padding: 8px 12px;
   border-radius: 6px;
   font-size: 0.875rem;
@@ -54,8 +49,7 @@ html {
 }
 
 .portfolio-reset:hover {
-  border-color: rgba(0, 0, 0, 0.22);
-  color: #0a0a0a;
+  border-color: var(--border-hover);
 }
 
 /* ============================================
@@ -105,7 +99,8 @@ html {
   z-index: 10;
   width: 100%;
   padding: 20px 20px;
-  background: #fff;;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
 }
 
 /* Portfolio Item - Heading (Element) */
@@ -114,34 +109,9 @@ html {
   font-size: clamp(1.25rem, 3vw, 1.5rem);
   font-weight: 600;
   margin: 0;
-  color: #0a0a0a;
+  color: var(--fg);
   letter-spacing: -0.02em;
   line-height: 1.2;
-}
-
-/* Portfolio Item - Description (Element) */
-.portfolio-item__description {
-  margin: 8px 0 0;
-  color: #666;
-  font-size: 1rem;
-  font-weight: 400;
-}
-
-/* ============================================
-   FOOTER OVERRIDES
-   ============================================ */
-.site-footer {
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  background: #ffffff;
-  color: #0a0a0a;
-}
-
-.site-footer a {
-  color: #0a0a0a;
-}
-
-.site-footer a:hover {
-  color: #3b82f6;
 }
 
 /* ============================================
@@ -197,10 +167,6 @@ html {
    ACCESSIBILITY
    ============================================ */
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
   .portfolio-item__image {
     transition: none;
   }

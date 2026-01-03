@@ -462,10 +462,6 @@ body.stage-2 .intro-title:hover {
   text-decoration: none;
 }
 
-.hero-ctas .cta.primary { 
-  color: rgba(255,255,255,0.9); 
-}
-
 /* 7) Floating CTA ----------------------------------------------------------- */
 .floating-cta {
   position: fixed; 
@@ -515,13 +511,6 @@ body.stage-0 .intro-title {
   animation: none;
 }
 
-@keyframes titleFade { 
-  from { opacity: 0; transform: scale(0.96); } 
-  to { opacity: 1; transform: scale(1); } 
-}
-
-body.stage-1 .hero-ctas { pointer-events: auto; }
-
 body.stage-2 .hero-ctas { 
   pointer-events: auto;
 }
@@ -529,10 +518,6 @@ body.stage-2 .intro-title {
   opacity: 1; 
   pointer-events: auto; 
 }
-
-/* Title: opacity flash on first click (dip then return) */
-.title-opacity-flash { animation: titleOpacityFlash 1s ease; }
-@keyframes titleOpacityFlash { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
 /* 9) Footer ----------------------------------------------------------------- */
 .site-footer { border-top: 1px solid var(--border); margin-top: var(--space-3xl); }
@@ -553,62 +538,6 @@ body.stage-2 .intro-title {
 }
 .social a:hover {
   color: var(--accent);
-}
-
-/* ADAM Teaser Section */
-.adam-teaser {
-  padding: var(--space-2xl) var(--space-lg);
-  max-width: 960px;
-  margin: 0 auto;
-  background: var(--bg-card);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
-}
-.adam-teaser h2 {
-  font-size: 1.25rem;
-  margin: 0 0 var(--space-lg);
-  color: var(--fg);
-}
-.adam-insights {
-  display: grid;
-  gap: var(--space-md);
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  margin-bottom: var(--space-lg);
-}
-.adam-insights-group {
-  display: grid;
-  gap: var(--space-sm);
-}
-.adam-insight-bar {
-  height: 36px;
-  background: var(--btn-secondary-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  position: relative;
-  overflow: hidden;
-}
-.adam-insight-bar label {
-  position: absolute;
-  left: var(--space-md);
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 0.9rem;
-  z-index: 1;
-  font-weight: 500;
-  margin: 0;
-}
-.adam-insight-bar-fill {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, var(--accent), #60a5fa);
-  transition: width 0.6s ease;
-}
-.adam-teaser .muted {
-  margin-top: var(--space-md);
-  margin-bottom: var(--space-lg);
-}
-.adam-teaser p:last-child {
-  margin: 0;
 }
 
 /* 10) Page Content Shells --------------------------------------------------- */
@@ -647,35 +576,6 @@ body.stage-2 .intro-title {
 .muted { 
   color: var(--fg-muted); 
 }
-
-/* Work page — original buttons copied -------------------------------------- */
-.work-ctas { display: grid; gap: 12px; width: min(720px, 92vw); margin: 24px auto 0; }
-.work-ctas .button {
-  color:#fff;
-  border:none;
-  position:relative;
-  height:3rem;
-  font-size:1.2em;
-  cursor:pointer;
-  transition:800ms ease all;
-  outline:none;
-  padding: 1rem;
-}
-.work-ctas .button:hover {
-  background:#fff;
-  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
-}
-.work-ctas .button:before,.work-ctas .button:after{
-  content:'';
-  position:absolute;
-  height:2px;
-  width:0;
-  background:#fff;
-  transition:400ms ease all;
-}
-.work-ctas .button:before { top:0; right:0; }
-.work-ctas .button:after { bottom:0; left:0; }
-.work-ctas .button:hover:before, .work-ctas .button:hover:after{ width:100%; }
 
 /* 11) Forms ----------------------------------------------------------------- */
 label { 
@@ -716,27 +616,11 @@ button[type="submit"], .btn {
 }
 
 /* Inline form feedback (replaces disruptive alerts) */
-.form-status {
-  margin: var(--space-sm) 0 0;
-  color: var(--fg-muted);
-  min-height: 1.2em;
-}
 button[type="submit"]:hover, .btn:hover { 
   background: var(--accent-hover);
   border-color: var(--accent-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
-}
-
-/* 14) Page-specific utility classes --------------------------------------- */
-.direct-contact {
-  margin-top: 20px;
-}
-
-.whatsapp-inline {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
 }
 
 /* Contact page layout */
@@ -755,12 +639,6 @@ button[type="submit"]:hover, .btn:hover {
 }
 
 /* Pricing page layout (moved from inline <style>) */
-.tiers {
-  display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-}
-
 .card {
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -776,7 +654,10 @@ button[type="submit"]:hover, .btn:hover {
 
 /* 12) Reduced Motion -------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; }
+  /* Keep animations off, but allow transitions.
+     Mobile browsers / battery-saver reduced-motion can disable animations;
+     if we also force transitions off, the intro overlay disappears instantly. */
+  * { animation: none !important; }
 }
 
 /* Page Load Animation */
@@ -812,179 +693,3 @@ html {
 @media (min-width: 768px) {
   .intro-title { font-size: 4rem; }
 }
-
-/* _________________________ Mobile BUTTONS _____________________________________________ */
-@media (max-width: 999px) {
-  .work-ctas .button {
-    color:#fff;
-    border:none;
-    position:relative;
-    height:3rem;
-    font-size:1.2em;
-    cursor:pointer;
-    transition:800ms ease all;
-    outline:none;
-    padding: 1rem;
-  }
-  .work-ctas .button:hover {
-    background:#fff;
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
-  }
-  .work-ctas .button:before,.work-ctas .button:after{
-    content:'';
-    position:absolute;
-    top:0;
-    right:0;
-    height:2px;
-    width:0;
-    transition:400ms ease all;
-  }
-  .work-ctas .button:after{
-    right:inherit;
-    top:inherit;
-    left:0;
-    bottom:0;
-  }
-  .work-ctas .button:hover:before,.work-ctas .button:hover:after{
-    width:100%;
-    transition:800ms ease all;
-  }
-  .work-ctas .button:active{
-    color:#fff;
-  }
-
-  /* Weddings button (mobile) */
-  .work-ctas .weddings-btn {
-    background:#D0253C;
-  }
-  .work-ctas .weddings-btn:hover{
-    color:#D0253C;
-  }
-  .work-ctas .weddings-btn:before,.work-ctas .weddings-btn:after{
-    background: #D0253C;
-  }
-  .work-ctas .weddings-btn:active{
-    background:#D0253C;
-  }
-
-  /* Portraits button (mobile) */
-  .work-ctas .portraits-btn {
-    background:#2f2a50;
-  }
-  .work-ctas .portraits-btn:hover{
-    color:#2f2a50;
-  }
-  .work-ctas .portraits-btn:before,.work-ctas .portraits-btn:after{
-    background: #2f2a50;
-  }
-  .work-ctas .portraits-btn:active{
-    background:#2f2a50;
-  }
-
-  /* Projects button (mobile) */
-  .work-ctas .projects-btn {
-    background:#f4572A;
-  }
-  .work-ctas .projects-btn:hover{
-    color:#f4572A;
-  }
-  .work-ctas .projects-btn:before,.work-ctas .projects-btn:after{
-    background: #f4572A;
-  }
-  .work-ctas .projects-btn:active{
-    background:#f4572A;
-  }
-}
-
-/* _________________________ Desktop BUTTONS _____________________________________________ */
-@media (min-width: 1000px) {
-  .work-ctas .button {
-    color:#fff;
-    border:none;
-    position:relative;
-    height:60px;
-    font-size:1.6em;
-    padding:0 2em;
-    cursor:pointer;
-    transition:800ms ease all;
-    outline:none;
-  }
-  .work-ctas .button:hover {
-    background:#fff;
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
-  }
-  .work-ctas .button:before,.work-ctas .button:after{
-    content:'';
-    position:absolute;
-    top:0;
-    right:0;
-    height:2px;
-    width:0;
-    transition:400ms ease all;
-  }
-  .work-ctas .button:after{
-    right:inherit;
-    top:inherit;
-    left:0;
-    bottom:0;
-  }
-  .work-ctas .button:hover:before,.work-ctas .button:hover:after{
-    width:100%;
-    transition:800ms ease all;
-  }
-  .work-ctas .button:active{
-    color:#fff;
-  }
-
-  /* Weddings button (desktop) */
-  .work-ctas .weddings-btn {
-    background:#D0253C;
-  }
-  .work-ctas .weddings-btn:hover{
-    color:#D0253C;
-  }
-  .work-ctas .weddings-btn:before,.work-ctas .weddings-btn:after{
-    background: #D0253C;
-  }
-  .work-ctas .weddings-btn:active{
-    background:#D0253C;
-  }
-
-  /* Portraits button (desktop) */
-  .work-ctas .portraits-btn {
-    background:#2f2a50;
-  }
-  .work-ctas .portraits-btn:hover{
-    color:#2f2a50;
-  }
-  .work-ctas .portraits-btn:before,.work-ctas .portraits-btn:after{
-    background: #2f2a50;
-  }
-  .work-ctas .portraits-btn:active{
-    background:#2f2a50;
-  }
-
-  /* Projects button (desktop) */
-  .work-ctas .projects-btn {
-    background:#f4572A;
-  }
-  .work-ctas .projects-btn:hover{
-    color:#f4572A;
-  }
-  .work-ctas .projects-btn:before,.work-ctas .projects-btn:after{
-    background: #f4572A;
-  }
-  .work-ctas .projects-btn:active{
-    background:#f4572A;
-  }
-}
-
-/* Work page buttons — visibility boost (equal glow + thicker lines) */
-.work-ctas .button:before,
-.work-ctas .button:after { height: 3px; }
-.work-ctas .weddings-btn:before,
-.work-ctas .weddings-btn:after { box-shadow: 0 0 8px #D0253C; }
-.work-ctas .portraits-btn:before,
-.work-ctas .portraits-btn:after { background: #6c63a8; box-shadow: 0 0 8px #6c63a8; }
-.work-ctas .projects-btn:before,
-.work-ctas .projects-btn:after { box-shadow: 0 0 8px #f4572A; }

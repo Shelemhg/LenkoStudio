@@ -59,7 +59,7 @@
         }
     }
 
-    function setStage(rootBody, blackOverlay, stage) {
+    function setStage(rootBody, blackOverlay, stage, options = {}) {
         if (!rootBody) {
             return;
         }
@@ -68,6 +68,22 @@
         rootBody.classList.add(`stage-${stage}`);
 
         if (stage === 2 && blackOverlay) {
+            // When skipping the intro entirely (e.g., sound explicitly OFF),
+            // hide the overlay immediately so it never flashes.
+            if (options.immediateOverlayHide) {
+                const prevTransition = blackOverlay.style.transition;
+                blackOverlay.style.transition = 'none';
+                blackOverlay.classList.add('is-hidden');
+
+                // Force a style flush then restore transition for future navigations.
+                // eslint-disable-next-line no-unused-expressions
+                blackOverlay.offsetHeight;
+                window.requestAnimationFrame(() => {
+                    blackOverlay.style.transition = prevTransition;
+                });
+                return;
+            }
+
             blackOverlay.classList.add('is-hidden');
         }
     }
@@ -82,10 +98,9 @@
 
         // Simplified behavior:
         // - Always show the cinematic intro on both mobile and desktop.
-        // - We no longer skip it for `prefers-reduced-motion` because users
-        //   reported confusion when the "black screen" was missing.
-        //   Instead, we rely on CSS `transition: none` to make the reveal instant
-        //   for reduced-motion users, preserving the interaction flow.
+        // - Do not auto-skip for `prefers-reduced-motion` (phones often enable it
+        //   automatically in battery saver mode, which made the intro "disappear").
+        // - If the user explicitly turned sound OFF, skip the intro on refresh.
 
         // Idempotency: do not bind twice.
         if (body && body.dataset.homeIntroBound === 'true') {
@@ -97,6 +112,16 @@
 
         // Default state: show the cinematic intro overlay.
         setStage(body, blackOverlay, 0);
+
+        // If the user explicitly turned sound OFF, do not show the black screen
+        // on refresh (match the "desktop" expectation you described).
+        // Note: home.js runs before app.js (both are `defer`), so read storage directly.
+        const soundPref = storageGet('soundEnabled');
+        if (soundPref === 'false') {
+            setStage(body, blackOverlay, 2, { immediateOverlayHide: true });
+            ensureVideoLoaded(bgVideo);
+            return;
+        }
 
         // Load video when the browser is idle (keeps initial show fast).
         if ('requestIdleCallback' in window) {
@@ -130,6 +155,17 @@
             const audioController = window.Lenko && window.Lenko.audio;
             if (audioController && audioController.getEnabled()) {
                 audioController.enable(true);
+            }
+
+            // Some mobile browsers pause one media element when another starts.
+            // Ensure the muted background video continues after enabling audio.
+            if (bgVideo && typeof bgVideo.play === 'function') {
+                const p = bgVideo.play();
+                if (p && typeof p.catch === 'function') {
+                    p.catch(() => {
+                        // ignore: autoplay policies / iOS quirks
+                    });
+                }
             }
         }
 
