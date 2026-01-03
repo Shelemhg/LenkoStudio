@@ -525,6 +525,25 @@
 
       document.body.style.overflow = 'hidden';
 
+      // WHY Fullscreen API: Provides immersive viewing experience by removing browser chrome
+      // (address bar, tabs, bookmarks) similar to pressing F11. This maximizes screen real estate
+      // for viewing photos. Automatically exits on Escape key (browser built-in behavior).
+      // requestFullscreen() is async and may fail (user denied, browser policy), so we handle errors silently.
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {
+          // Fullscreen may be denied by browser policy or user preference - continue without it
+        });
+      } else if (document.documentElement.webkitRequestFullscreen) {
+        // Safari/older WebKit browsers
+        document.documentElement.webkitRequestFullscreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        // Older Firefox
+        document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.msRequestFullscreen) {
+        // IE11/Edge Legacy
+        document.documentElement.msRequestFullscreen();
+      }
+
       // Ensure the image is focusable for keyboard users.
       try {
         lightboxImg.setAttribute('tabindex', '0');
@@ -552,6 +571,24 @@
       lightboxImg.src = '';
 
       document.body.style.overflow = '';
+
+      // WHY Exit fullscreen: When closing lightbox, we should return to normal browsing mode.
+      // exitFullscreen() is safe to call even if not in fullscreen (it's a no-op).
+      // This ensures the browser UI (address bar, tabs) returns when user closes the lightbox.
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {
+          // Already exited or not in fullscreen - ignore
+        });
+      } else if (document.webkitExitFullscreen) {
+        // Safari/older WebKit browsers
+        document.webkitExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        // Older Firefox
+        document.mozCancelFullScreen();
+      } else if (document.msExitFullscreen) {
+        // IE11/Edge Legacy
+        document.msExitFullscreen();
+      }
 
       if (restoreFocus && this._lastFocusEl) {
         try {
