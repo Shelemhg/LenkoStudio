@@ -54,6 +54,11 @@
         />
 
 
+        <!-- ===== PRELOAD CRITICAL RESOURCES ===== -->
+        <!-- Preload first gallery image for faster LCP -->
+        <link rel="preload" as="image" href="media/home/i (1).jpg" fetchpriority="high" />
+        
+        
         <!-- ===== STYLESHEETS ===== -->
         <!-- Global styles and design tokens -->
         <link rel="stylesheet" href="style.css?v=20251230a" />
@@ -85,8 +90,32 @@
             <!-- Gallery Container -->
             <!-- This wrapper holds the multi-column masonry layout -->
             <div class="home-gallery__wrap">
-                <!-- Gallery columns are dynamically populated by home-gallery.js -->
-                <div id="homeGallery" class="home-gallery__columns" aria-label="Gallery"></div>
+                <!-- Gallery columns with server-side rendered initial images for fast LCP -->
+                <!-- JavaScript will enhance with additional images and shuffle capability -->
+                <div id="homeGallery" class="home-gallery__columns" aria-label="Gallery">
+                    
+                    <!-- Column 1 - Initial images for immediate paint -->
+                    <div class="home-gallery__column">
+                        <a href="#" class="home-gallery__item" data-index="0">
+                            <img class="home-gallery__img" src="media/home/i (1).jpg" alt="Gallery image" loading="eager" fetchpriority="high" width="800" height="1200" />
+                        </a>
+                        <a href="#" class="home-gallery__item" data-index="1">
+                            <img class="home-gallery__img" src="media/home/i (3).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
+                        </a>
+                    </div>
+                    
+                    <!-- Column 2 - Initial images for immediate paint -->
+                    <div class="home-gallery__column">
+                        <a href="#" class="home-gallery__item" data-index="2">
+                            <img class="home-gallery__img" src="media/home/i (2).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
+                        </a>
+                        <a href="#" class="home-gallery__item" data-index="3">
+                            <img class="home-gallery__img" src="media/home/i (4).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
+                        </a>
+                    </div>
+                    
+                    <!-- Additional images will be added by JavaScript -->
+                </div>
             </div>
 
 

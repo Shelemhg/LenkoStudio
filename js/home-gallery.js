@@ -349,19 +349,37 @@
 
     _renderColumns(root) {
       const columns = getColumnCount();
-      root.innerHTML = '';
+      
+      // PERFORMANCE OPTIMIZATION: Check if server-rendered content exists
+      // If initial images are already in the DOM, preserve them and only add new ones
+      const hasServerContent = root.querySelector('.home-gallery__item');
+      
+      if (!hasServerContent) {
+        // No server-rendered content, render from scratch
+        root.innerHTML = '';
+      }
 
       if (!this._images.length) {
         return;
       }
 
-      // Create column containers for masonry layout
-      const columnEls = [];
-      for (let i = 0; i < columns; i += 1) {
-        const col = document.createElement('div');
-        col.className = 'home-gallery__column';
-        root.appendChild(col);
-        columnEls.push(col);
+      // Get or create column containers for masonry layout
+      let columnEls = Array.from(root.querySelectorAll('.home-gallery__column'));
+      
+      if (columnEls.length === 0) {
+        // No columns exist, create them
+        for (let i = 0; i < columns; i += 1) {
+          const col = document.createElement('div');
+          col.className = 'home-gallery__column';
+          root.appendChild(col);
+          columnEls.push(col);
+        }
+      }
+      
+      // If server-rendered content exists, clear columns and re-render with all images
+      // This allows JavaScript to shuffle and add additional images
+      if (hasServerContent) {
+        columnEls.forEach(col => col.innerHTML = '');
       }
 
       // WHY simple modulo distribution (idx % columns): This round-robin approach ensures
