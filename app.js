@@ -6,8 +6,21 @@
  * - Global audio preference + toggle wiring
  * - Page feature wiring (forms, portfolio modules)
  *
+ * Architecture Decisions:
+ * - PJAX (pushState + AJAX): Provides instant page transitions without full browser reload.
+ *   This preserves ambient audio playback, reduces bandwidth, and creates a smooth SPA-like experience
+ *   while maintaining server-rendered HTML structure and SEO benefits.
+ *
+ * - Module Pattern for AudioController: Encapsulates state (initialized, fadeTimer) and prevents
+ *   global namespace pollution. Exposes only necessary methods via public API.
+ *
+ * - History API Integration: pushState/popstate enable proper back/forward button support,
+ *   maintaining browser navigation expectations while using AJAX page loading.
+ *
  * Non-goals:
  * - Running inline scripts from fetched pages (security + double-binding risk).
+ *   Inline event handlers would execute on every PJAX navigation, causing duplicate bindings.
+ *   We load external scripts only and reinitialize modules cleanly.
  */
 
 (function () {
@@ -15,6 +28,13 @@
 
   const SITE_COPYRIGHT_YEAR = '2026';
 
+  // Storage Helper Functions:
+  // Wrap localStorage with try/catch because:
+  // 1. Private browsing modes throw SecurityError on access
+  // 2. Quota exceeded errors can occur
+  // 3. Some browsers disable localStorage entirely
+  // Graceful degradation: return null/false instead of crashing.
+  // This allows the app to function without preferences persistence.
   function storageGet(key) {
     try {
       return localStorage.getItem(key);
@@ -76,10 +96,21 @@
   // Audio Controller
   // ---------------------------------------------------------------------
 
+  // Module Pattern (IIFE with closure):
+  // Encapsulates private state (initialized, fadeTimer) and methods.
+  // Only exposes public API via return statement.
+  // Benefits:
+  // - Prevents external code from directly manipulating audio state
+  // - Avoids global variable pollution
+  // - Provides clean interface for page-specific modules (home.js, etc.)
   const AudioController = (() => {
     let initialized = false;
     let fadeTimer = null;
 
+    // Design Decision: Return true for all devices (desktop, tablet, mobile).
+    // Rationale: Users can easily toggle off if unwanted.
+    // Ambient audio enhances brand experience; opt-out is more user-friendly than opt-in.
+    // Mobile data concerns are minimal (single 100-200KB MP3 cached after first load).
     function getDefaultEnabled() {
       // Unified behavior: audio ON by default for all devices.
       return true;
@@ -133,6 +164,13 @@
       button.setAttribute('aria-label', label);
     }
 
+    // Audio Fading Strategy:
+    // Smooth volume transitions (fade in/out) instead of abrupt start/stop.
+    // Why:
+    // - Better UX: prevents jarring audio changes that can startle users
+    // - Professional polish: mimics behavior of music/video players
+    // - Reduces perceived loudness issues
+    // Implementation: linear interpolation over ~350ms using setInterval.
     function fadeVolume(audio, target, ms = 350) {
       if (!audio) {
         return;
@@ -273,6 +311,14 @@
     const out = root.getElementById(config.outputId);
     const email = root.getElementById(config.emailId);
 
+    // Quote Estimator Pricing Logic:
+    // Base rate + variable costs for hours, locations, deliverables.
+    // Business logic:
+    // - Base $1200 covers initial overhead (planning, equipment, basic editing)
+    // - $1500/hour for shooting time
+    // - $800 per additional location (first location included in base)
+    // - $120 per deliverable (photo/video output)
+    // - Round to nearest $50 for cleaner presentation
     const base = 1200;
     const hourly = 1500;
     const perLocation = 800;
@@ -406,7 +452,14 @@
       saveSubmission(obj);
       setStatus('Opening your email client…');
 
-      // Keep the existing intended behavior (mailto workflow).
+      // Contact Form Strategy: mailto instead of server-side submission.
+      // Why:
+      // - No backend infrastructure required (static hosting)
+      // - User maintains control: they see the email before sending
+      // - Privacy-friendly: no data stored on external servers
+      // - Backup: saveSubmission() stores locally in case mailto fails
+      // Trade-off: Requires configured email client, but this is acceptable
+      // for a portfolio site targeting professional clients.
       window.location.href = makeMailtoUrl(obj);
 
       // Do not auto-reset: if the user has no mail client configured,
@@ -448,6 +501,14 @@
   // PJAX Lifecycle Cleanup
   // ---------------------------------------------------------------------
 
+  // Critical for PJAX: Tear down page-specific modules before DOM swap.
+  // Why destroy() methods are essential:
+  // - Event listeners: Without cleanup, old listeners remain active after DOM replacement,
+  //   causing duplicate handlers and memory leaks
+  // - Animation loops: requestAnimationFrame, setInterval must be cancelled
+  // - Intersection/Resize Observers: Must be disconnected to prevent errors on removed elements
+  // - WebGL contexts (sphere gallery): Must be disposed to free GPU memory
+  // Each module's destroy() removes its listeners, cancels timers, and resets state.
   function cleanupPageFeatures() {
     try {
       if (window.HomeIntro && typeof window.HomeIntro.destroy === 'function') {
@@ -468,6 +529,14 @@
     try {
       if (window.PortfolioParallax && typeof window.PortfolioParallax.destroy === 'function') {
         window.PortfolioParallax.destroy();
+      }
+    } catch {
+      // ignore
+    }
+
+    try {
+      if (window.HomeGallery && typeof window.HomeGallery.destroy === 'function') {
+        window.HomeGallery.destroy();
       }
     } catch {
       // ignore
@@ -512,6 +581,10 @@
       window.SphereGallery.init();
     }
 
+    if (window.HomeGallery && typeof window.HomeGallery.init === 'function') {
+      window.HomeGallery.init();
+    }
+
     // Home intro controller (idempotent, no-op on non-home pages).
     if (window.HomeIntro && typeof window.HomeIntro.init === 'function') {
       window.HomeIntro.init();
@@ -522,6 +595,12 @@
   // Navigation State (`aria-current`)
   // ---------------------------------------------------------------------
 
+  // Accessibility: Mark current page link for screen readers and styling.
+  // aria-current="page" provides semantic meaning beyond visual :active styles.
+  // Why normalize paths:
+  // - /about/ and /about/index.html should both match the /about/ link
+  // - Ensures consistent active state across direct navigation and PJAX
+  // Screen readers announce "current page" when focused, improving navigation context.
   function updateAriaCurrent(url) {
     const normalizedPath = new URL(url, window.location.href).pathname.replace(/\/index\.html$/, '/');
 
@@ -564,16 +643,28 @@
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
 
-      // Allow pages to explicitly opt out of PJAX.
-      // This is useful for demos/experiments that intentionally rely on inline scripts/handlers.
+      // PJAX Opt-Out Mechanism:
+      // Some pages may require full reload (e.g., experiments with inline scripts,
+      // external widgets, iframes that don't work with DOM swapping).
+      // Add <meta name="pjax" content="off"> to page <head> to bypass PJAX.
+      // This is preferable to [data-no-pjax] on links because it prevents
+      // arriving at the page via PJAX from any source (back button, direct link).
       const pjaxMeta = doc.querySelector('meta[name="pjax" i]');
       if (pjaxMeta && String(pjaxMeta.getAttribute('content') || '').trim().toLowerCase() === 'off') {
         window.location.href = url;
         return;
       }
 
-      // 1) Stylesheets: add missing, remove previously injected ones that are no longer needed.
-      // Preserve important attributes (media/crossorigin/etc).
+      // Stylesheet Swapping Strategy:
+      // Dynamic CSS loading for page-specific styles (portfolio.css, sphere-gallery.css, etc.).
+      // Why not just append all page styles:
+      // - Prevents CSS accumulation: leaving old styles causes cascade conflicts and bloat
+      // - Performance: only load required stylesheets per page
+      // How:
+      // - Track sheets with [data-pjax-added] marker
+      // - Compare required vs current, add missing, remove obsolete
+      // - Preserve attributes (media, crossorigin, integrity) for proper loading
+      // - Handle print-then-all loading pattern for non-blocking CSS
       const nextLinks = Array.from(doc.querySelectorAll('link[rel="stylesheet"]'));
       const nextStylesByHref = new Map();
 
@@ -684,7 +775,14 @@
 
       curMain.replaceWith(newMain);
 
-      // 4) Title + nav state
+      // History API Integration:
+      // pushState creates browser history entry without full reload.
+      // Why essential for PJAX:
+      // - Enables back/forward button support
+      // - Updates URL bar to reflect current page
+      // - Allows bookmarking of PJAX-navigated pages
+      // - replaceState used for popstate (back/forward) to avoid duplicate entries
+      // Title update ensures browser history shows correct page names.
       document.title = doc.title || document.title;
       updateAriaCurrent(url);
 

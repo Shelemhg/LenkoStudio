@@ -1,110 +1,288 @@
+<!--
+    ============================================================================
+    Lenko Studio — Portfolio Page
+    ============================================================================
+    
+    Purpose: Gallery categories with click-to-open sphere gallery viewer
+    
+    Key Features:
+    - Portfolio organized by photography style (Fashion, Conceptual, etc.)
+    - Each category opens a 3D sphere gallery on click
+    - Reset button to refresh randomized portfolio images
+    - Responsive grid layout adapts to different screen sizes
+    
+    Structure:
+    1. Accessibility skip link
+    2. Site header (navigation component)
+    3. Reset button for portfolio images
+    4. Portfolio items grid (6 categories)
+    5. Site footer component
+    
+    Portfolio Categories:
+    - Fashion: 11 images
+    - Conceptual: 10 images
+    - Beauty: 10 images
+    - Glamour: 15 images
+    - Editorial: 6 images
+    - Lingerie: 6 images
+    
+    Dependencies:
+    - style.css: Global styles and design tokens
+    - portfolio.css: Portfolio grid layout
+    - sphere-gallery.css: 3D sphere viewer styles
+    - components.js: Reusable header/footer web components
+    - portfolio.js: Portfolio interaction and sphere gallery initialization
+    - sphere-gallery.js: 3D sphere gallery logic
+    - app.js: PJAX navigation and audio controls
+    ============================================================================
+-->
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/png" href="media/Logo.png" />
-    <title>Lenko Studio — Portfolio</title>
-    <meta name="description" content="Explore the Lenko Studio portfolio — fashion, conceptual, beauty, glamour, editorial, and lingerie sessions." />
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="style.css?v=20251230a" />
-    <link rel="stylesheet" href="css/portfolio.css" />
-    <link rel="stylesheet" href="css/sphere-gallery.css" />
-    
-    <!-- Web Components (deferred to not block render) -->
-    <script src="js/components.js?v=20251230a" defer></script>
-  </head>
-  <body>
-    <a class="skip-link" href="#main">Skip to content</a>
+    <head>
+        <!-- ===== META TAGS ===== -->
+        <!-- Character encoding and viewport settings -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" href="media/Logo.png" />
+        
+        <!-- Page title and description -->
+        <title>Lenko Studio — Portfolio</title>
+        <meta name="description" content="Explore the Lenko Studio portfolio — fashion, conceptual, beauty, glamour, editorial, and lingerie sessions." />
+        
 
-    <!-- Reusable Header Component -->
-    <site-header current="portfolio"></site-header>
+        <!-- ===== FONT PRELOADING ===== -->
+        <!-- Preconnect to Google Fonts for faster loading -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        
+        <!-- Preload fonts as stylesheet to prioritize loading -->
+        <link
+            rel="preload"
+            as="style"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+        />
+        
+        <!-- Load Inter (UI text) and Playfair Display (headings) fonts -->
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        
 
-    <main id="main" class="portfolio-container" role="main">
-      <div class="portfolio-reset-container">
-        <button id="resetPictures" class="portfolio-reset" type="button">Reset pictures</button>
-      </div>
-      <!-- Portfolio Item 1 - Fashion -->
-      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Fashion" data-count="11" role="button" tabindex="0" aria-label="Open Fashion gallery">
-        <div class="portfolio-item__image-wrapper">
-          <img class="portfolio-item__image" src="media/portfolio/Fashion/1.jpg" alt="Fashion" width="1200" height="1600" fetchpriority="high">
-        </div>
-        <div class="portfolio-item__title">
-          <h2 class="portfolio-item__heading">Fashion</h2>
-        </div>
-      </article>
+        <!-- ===== STYLESHEETS ===== -->
+        <!-- Global styles and design tokens -->
+        <link rel="stylesheet" href="style.css?v=20251230a" />
+        
+        <!-- Portfolio grid layout styles -->
+        <link rel="stylesheet" href="css/portfolio.css" />
+        
+        <!-- 3D sphere gallery viewer styles -->
+        <link rel="stylesheet" href="css/sphere-gallery.css" />
+        
 
-      <!-- Portfolio Item 2 - Conceptual -->
-      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Conceptual" data-count="10" role="button" tabindex="0" aria-label="Open Conceptual gallery">
-        <div class="portfolio-item__image-wrapper">
-          <img class="portfolio-item__image" src="media/portfolio/Conceptual/1.jpg" alt="Conceptual" loading="lazy" width="1200" height="1600">
-        </div>
-        <div class="portfolio-item__title">
-          <h2 class="portfolio-item__heading">Conceptual</h2>
-        </div>
-      </article>
+        <!-- ===== SCRIPTS ===== -->
+        <!-- Web components for header/footer (deferred to avoid render blocking) -->
+        <script src="js/components.js?v=20251230a" defer></script>
+    </head>
 
-      <!-- Portfolio Item 3 - Beauty -->
-      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Beauty" data-count="10" role="button" tabindex="0" aria-label="Open Beauty gallery">
-        <div class="portfolio-item__image-wrapper">
-          <img class="portfolio-item__image" src="media/portfolio/Beauty/1.jpg" alt="Beauty" loading="lazy" width="1200" height="1600">
-        </div>
-        <div class="portfolio-item__title">
-          <h2 class="portfolio-item__heading">Beauty</h2>
-        </div>
-      </article>
 
-      <!-- Portfolio Item 4 - Glamour -->
-      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Glamour" data-count="15" role="button" tabindex="0" aria-label="Open Glamour gallery">
-        <div class="portfolio-item__image-wrapper">
-          <img class="portfolio-item__image" src="media/portfolio/Glamour/1.jpg" alt="Glamour" loading="lazy" width="1200" height="1600">
-        </div>
-        <div class="portfolio-item__title">
-          <h2 class="portfolio-item__heading">Glamour</h2>
-        </div>
-      </article>
+    <body>
+        <!-- ===== ACCESSIBILITY ===== -->
+        <!-- Skip link allows keyboard users to jump directly to main content -->
+        <a class="skip-link" href="#main">Skip to content</a>
 
-      <!-- Portfolio Item 5 - Editorial -->
-      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Editorial" data-count="6" role="button" tabindex="0" aria-label="Open Editorial gallery">
-        <div class="portfolio-item__image-wrapper">
-          <img class="portfolio-item__image" src="media/portfolio/Editorial/1.jpg" alt="Editorial" loading="lazy" width="1200" height="1600">
-        </div>
-        <div class="portfolio-item__title">
-          <h2 class="portfolio-item__heading">Editorial</h2>
-        </div>
-      </article>
 
-      <!-- Portfolio Item 6 - Lingerie -->
-      <article class="portfolio-item portfolio-item--portrait" data-parallax data-folder="media/portfolio/Lingerie" data-count="6" role="button" tabindex="0" aria-label="Open Lingerie gallery">
-        <div class="portfolio-item__image-wrapper">
-          <img class="portfolio-item__image" src="media/portfolio/Lingerie/1.jpg" alt="Lingerie" loading="lazy" width="1200" height="1600">
-        </div>
-        <div class="portfolio-item__title">
-          <h2 class="portfolio-item__heading">Lingerie</h2>
-        </div>
-      </article>
-    </main>
+        <!-- ===== HEADER ===== -->
+        <!-- Reusable navigation component, 'current' attribute highlights active page -->
+        <site-header current="portfolio"></site-header>
 
-    <!-- Reusable Footer Component -->
-    <site-footer></site-footer>
 
-    <!-- Scripts -->
-    <script src="app.js?v=20251230a" defer></script>
-    <script src="js/portfolio.js"></script>
-    <script src="js/sphere-gallery.js"></script>
-  </body>
+        <!-- ===== MAIN CONTENT ===== -->
+        <main id="main" class="portfolio-container" role="main">
+            
+            <!-- ===== RESET BUTTON ===== -->
+            <!-- Allows users to refresh portfolio images for variety -->
+            <div class="portfolio-reset-container">
+                <button id="resetPictures" class="portfolio-reset" type="button">
+                    Reset pictures
+                </button>
+            </div>
+
+
+            <!-- ===== PORTFOLIO GRID ===== -->
+            
+            <!-- Portfolio Item 1: Fashion -->
+            <!-- Contains 11 images in media/portfolio/Fashion folder -->
+            <article 
+                class="portfolio-item portfolio-item--portrait" 
+                data-folder="media/portfolio/Fashion" 
+                data-count="11" 
+                role="button" 
+                tabindex="0" 
+                aria-label="Open Fashion gallery"
+            >
+                <div class="portfolio-item__image-wrapper">
+                    <img 
+                        class="portfolio-item__image" 
+                        src="media/portfolio/Fashion/p (1).jpg" 
+                        alt="Fashion" 
+                        width="1200" 
+                        height="1600" 
+                        fetchpriority="high"
+                    >
+                </div>
+                <div class="portfolio-item__title">
+                    <h2 class="portfolio-item__heading">Fashion</h2>
+                </div>
+            </article>
+
+
+            <!-- Portfolio Item 2: Conceptual -->
+            <!-- Contains 10 images in media/portfolio/Conceptual folder -->
+            <article 
+                class="portfolio-item portfolio-item--portrait" 
+                data-folder="media/portfolio/Conceptual" 
+                data-count="10" 
+                role="button" 
+                tabindex="0" 
+                aria-label="Open Conceptual gallery"
+            >
+                <div class="portfolio-item__image-wrapper">
+                    <img 
+                        class="portfolio-item__image" 
+                        src="media/portfolio/Conceptual/p (1).jpg" 
+                        alt="Conceptual" 
+                        loading="lazy" 
+                        width="1200" 
+                        height="1600"
+                    >
+                </div>
+                <div class="portfolio-item__title">
+                    <h2 class="portfolio-item__heading">Conceptual</h2>
+                </div>
+            </article>
+
+
+            <!-- Portfolio Item 3: Beauty -->
+            <!-- Contains 10 images in media/portfolio/Beauty folder -->
+            <article 
+                class="portfolio-item portfolio-item--portrait" 
+                data-folder="media/portfolio/Beauty" 
+                data-count="10" 
+                role="button" 
+                tabindex="0" 
+                aria-label="Open Beauty gallery"
+            >
+                <div class="portfolio-item__image-wrapper">
+                    <img 
+                        class="portfolio-item__image" 
+                        src="media/portfolio/Beauty/p (1).jpg" 
+                        alt="Beauty" 
+                        loading="lazy" 
+                        width="1200" 
+                        height="1600"
+                    >
+                </div>
+                <div class="portfolio-item__title">
+                    <h2 class="portfolio-item__heading">Beauty</h2>
+                </div>
+            </article>
+
+
+            <!-- Portfolio Item 4: Glamour -->
+            <!-- Contains 15 images in media/portfolio/Glamour folder -->
+            <article 
+                class="portfolio-item portfolio-item--portrait" 
+                data-folder="media/portfolio/Glamour" 
+                data-count="15" 
+                role="button" 
+                tabindex="0" 
+                aria-label="Open Glamour gallery"
+            >
+                <div class="portfolio-item__image-wrapper">
+                    <img 
+                        class="portfolio-item__image" 
+                        src="media/portfolio/Glamour/p (1).jpg" 
+                        alt="Glamour" 
+                        loading="lazy" 
+                        width="1200" 
+                        height="1600"
+                    >
+                </div>
+                <div class="portfolio-item__title">
+                    <h2 class="portfolio-item__heading">Glamour</h2>
+                </div>
+            </article>
+
+
+            <!-- Portfolio Item 5: Editorial -->
+            <!-- Contains 6 images in media/portfolio/Editorial folder -->
+            <article 
+                class="portfolio-item portfolio-item--portrait" 
+                data-folder="media/portfolio/Editorial" 
+                data-count="6" 
+                role="button" 
+                tabindex="0" 
+                aria-label="Open Editorial gallery"
+            >
+                <div class="portfolio-item__image-wrapper">
+                    <img 
+                        class="portfolio-item__image" 
+                        src="media/portfolio/Editorial/p (1).jpg" 
+                        alt="Editorial" 
+                        loading="lazy" 
+                        width="1200" 
+                        height="1600"
+                    >
+                </div>
+                <div class="portfolio-item__title">
+                    <h2 class="portfolio-item__heading">Editorial</h2>
+                </div>
+            </article>
+
+
+            <!-- Portfolio Item 6: Lingerie -->
+            <!-- Contains 6 images in media/portfolio/Lingerie folder -->
+            <article 
+                class="portfolio-item portfolio-item--portrait" 
+                data-folder="media/portfolio/Lingerie" 
+                data-count="6" 
+                role="button" 
+                tabindex="0" 
+                aria-label="Open Lingerie gallery"
+            >
+                <div class="portfolio-item__image-wrapper">
+                    <img 
+                        class="portfolio-item__image" 
+                        src="media/portfolio/Lingerie/p (1).jpg" 
+                        alt="Lingerie" 
+                        loading="lazy" 
+                        width="1200" 
+                        height="1600"
+                    >
+                </div>
+                <div class="portfolio-item__title">
+                    <h2 class="portfolio-item__heading">Lingerie</h2>
+                </div>
+            </article>
+        </main>
+
+
+        <!-- ===== FOOTER ===== -->
+        <!-- Reusable footer component with contact info and social links -->
+        <site-footer></site-footer>
+
+
+        <!-- ===== PAGE SCRIPTS ===== -->
+        <!-- Global app logic: PJAX navigation and audio controls -->
+        <script src="app.js?v=20251230a" defer></script>
+        
+        <!-- Portfolio click handlers and sphere gallery initialization -->
+        <script src="js/portfolio.js"></script>
+        
+        <!-- 3D sphere gallery rendering and interaction -->
+        <script src="js/sphere-gallery.js"></script>
+    </body>
 </html>

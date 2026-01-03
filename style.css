@@ -97,7 +97,6 @@ button { font: inherit; color: inherit; }
   transform: translateY(-150%);
 }
 .skip-link:focus { transform: translateY(0); outline: 2px solid var(--focus); }
-:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
 
 /* Visually hidden text (screen-reader only) */
 .sr-only {

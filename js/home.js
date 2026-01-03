@@ -38,52 +38,90 @@
         };
     }
 
+    /**
+     * VIDEO LAZY LOADING: Defer video loading until browser is idle
+     *
+     * Performance strategy:
+     * - Keeps initial page load fast by not blocking on video parsing
+     * - Uses requestIdleCallback to wait for CPU idle time (1.5s max)
+     * - Marks video as loaded to prevent duplicate source injection
+     * - Mutes video to comply with autoplay policies across browsers
+     */
     function ensureVideoLoaded(bgVideo) {
+        // Idempotency check: don't load the same video twice
         if (!bgVideo || bgVideo.dataset.loaded) {
             return;
         }
 
+        // Dynamically inject video source (not in HTML to avoid blocking parse)
         const source = document.createElement('source');
         source.src = 'media/oceanvideo.mp4';
         source.type = 'video/mp4';
 
         bgVideo.appendChild(source);
         bgVideo.dataset.loaded = '1';
-        bgVideo.muted = true;
+        bgVideo.muted = true;  // Required for autoplay to work
 
+        // Attempt autoplay (browsers may block, handled gracefully)
         const playPromise = bgVideo.play();
         if (playPromise && typeof playPromise.catch === 'function') {
             playPromise.catch(() => {
-                // Autoplay can be blocked; that is expected.
+                // Autoplay can be blocked by browser policy; this is expected
+                // and acceptable (user can still interact to start playback).
             });
         }
     }
 
+    /**
+     * STATE MACHINE: Controls the cinematic intro progression
+     *
+     * Stage 0: Black overlay fully visible, title clickable but not yet revealed
+     *          (Initial state when page loads with sound enabled)
+     *
+     * Stage 1: [Currently unused, reserved for future fade-in animations]
+     *
+     * Stage 2: Black overlay fades out, gallery becomes visible, intro complete
+     *          (Final state after user interaction or immediate skip)
+     *
+     * Transitions:
+     * - Sound ON:  0 → 2 (on user click/enter)
+     * - Sound OFF: 0 → 2 (immediate, no black screen flash)
+     */
     function setStage(rootBody, blackOverlay, stage, options = {}) {
         if (!rootBody) {
             return;
         }
 
+        // Remove all stage classes and apply the new one
         rootBody.classList.remove('stage-0', 'stage-1', 'stage-2');
         rootBody.classList.add(`stage-${stage}`);
 
         if (stage === 2 && blackOverlay) {
-            // When skipping the intro entirely (e.g., sound explicitly OFF),
-            // hide the overlay immediately so it never flashes.
+            // SOUND OFF BEHAVIOR: When user has explicitly disabled sound,
+            // we skip the black overlay entirely to avoid a jarring flash.
+            // This respects the user's preference for a "fast, no intro" experience.
             if (options.immediateOverlayHide) {
+                // STYLE FLUSH TECHNIQUE: Disable transitions temporarily to hide
+                // the overlay instantly (no fade animation).
                 const prevTransition = blackOverlay.style.transition;
                 blackOverlay.style.transition = 'none';
                 blackOverlay.classList.add('is-hidden');
 
-                // Force a style flush then restore transition for future navigations.
+                // Force browser to apply the style change immediately by reading
+                // a layout property (offsetHeight). This ensures the overlay is
+                // truly hidden before the next paint.
                 // eslint-disable-next-line no-unused-expressions
                 blackOverlay.offsetHeight;
+
+                // Restore the transition property in the next animation frame
+                // so future navigations can animate properly.
                 window.requestAnimationFrame(() => {
                     blackOverlay.style.transition = prevTransition;
                 });
                 return;
             }
 
+            // SOUND ON BEHAVIOR: Normal fade-out transition via CSS
             blackOverlay.classList.add('is-hidden');
         }
     }
@@ -96,13 +134,18 @@
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const { body, blackOverlay, bgVideo, title, skipIntro } = getElements(root);
 
-        // Simplified behavior:
-        // - Always show the cinematic intro on both mobile and desktop.
-        // - Do not auto-skip for `prefers-reduced-motion` (phones often enable it
-        //   automatically in battery saver mode, which made the intro "disappear").
-        // - If the user explicitly turned sound OFF, skip the intro on refresh.
+        // INTRO BEHAVIOR PHILOSOPHY:
+        // - Always show the cinematic intro on both mobile and desktop for a premium feel.
+        // - Do NOT auto-skip for `prefers-reduced-motion` because:
+        //   * MOBILE BATTERY SAVER: Phones automatically enable reduced motion in
+        //     battery saver mode, which would make the intro "disappear" unintentionally.
+        //   * The intro is user-initiated (click/tap to continue), not auto-playing,
+        //     so it respects the spirit of reduced motion without breaking the UX.
+        // - WHY SOUND PREFERENCE DRIVES BEHAVIOR: If user explicitly disabled sound,
+        //   they've signaled they want a "fast, no frills" experience. We honor this
+        //   by skipping the black overlay entirely on subsequent page loads.
 
-        // Idempotency: do not bind twice.
+        // Idempotency check: prevent double-initialization under PJAX navigation
         if (body && body.dataset.homeIntroBound === 'true') {
             return;
         }
@@ -110,29 +153,36 @@
             body.dataset.homeIntroBound = 'true';
         }
 
-        // Default state: show the cinematic intro overlay.
+        // STATE MACHINE INITIALIZATION: Start at stage 0 (black overlay visible)
         setStage(body, blackOverlay, 0);
 
-        // If the user explicitly turned sound OFF, do not show the black screen
-        // on refresh (match the "desktop" expectation you described).
-        // Note: home.js runs before app.js (both are `defer`), so read storage directly.
+        // SOUND PREFERENCE CHECK: Read localStorage directly (home.js loads before app.js)
+        // If sound is OFF, user wants a fast experience - skip intro immediately.
+        // WHY IMMEDIATE HIDE: Prevents the black overlay from flashing for even
+        // a single frame, which would feel janky. The gallery appears instantly.
         const soundPref = storageGet('soundEnabled');
         if (soundPref === 'false') {
             setStage(body, blackOverlay, 2, { immediateOverlayHide: true });
-            ensureVideoLoaded(bgVideo);
-            return;
+            ensureVideoLoaded(bgVideo);  // Still load video for ambient background
+            return;  // Exit early, no event listeners needed
         }
 
-        // Load video when the browser is idle (keeps initial show fast).
+        // PERFORMANCE OPTIMIZATION: Lazy load video during browser idle time
+        // requestIdleCallback waits for CPU to be free (max 1.5s timeout)
+        // Fallback to setTimeout for Safari and older browsers
         if ('requestIdleCallback' in window) {
             window.requestIdleCallback(() => ensureVideoLoaded(bgVideo), { timeout: 1500 });
         } else {
             setTimeout(() => ensureVideoLoaded(bgVideo), 500);
         }
 
+        // Guard flag to prevent multiple completions (e.g., double-click)
         let completed = false;
 
-        // Keep handler references so we can remove them under PJAX.
+        // EVENT LISTENER CLEANUP FOR PJAX:
+        // Store all handler references so destroy() can properly remove them.
+        // This prevents memory leaks and duplicate bindings when navigating
+        // away and back to the home page with PJAX.
         const state = {
             onTitleClick: null,
             onTitleKeydown: null,
@@ -140,43 +190,65 @@
             onSkipClick: null
         };
 
+        /**
+         * Complete the intro sequence and transition to stage 2
+         *
+         * Responsibilities:
+         * 1. Transition state machine to stage 2 (fade out black overlay)
+         * 2. Ensure background video is loaded and playing
+         * 3. Enable ambient audio if user preference allows
+         */
         function completeIntro() {
             if (completed) {
-                return;
+                return;  // Prevent double-execution from multiple events
             }
 
             completed = true;
 
+            // STATE TRANSITION: Move to final stage
             setStage(body, blackOverlay, 2);
             ensureVideoLoaded(bgVideo);
 
-            // Only enable audio if the user preference is enabled.
-            // app.js owns the preference and the audio element.
+            // AUDIO CONTROLLER INTEGRATION:
+            // app.js owns the audio preference and <audio> element.
+            // We only enable audio if the user's preference allows it.
+            // This respects their choice while still allowing the intro to complete.
             const audioController = window.Lenko && window.Lenko.audio;
             if (audioController && audioController.getEnabled()) {
                 audioController.enable(true);
             }
 
-            // Some mobile browsers pause one media element when another starts.
-            // Ensure the muted background video continues after enabling audio.
+            // MOBILE MEDIA CONFLICT FIX:
+            // Some mobile browsers (especially iOS) pause one media element when
+            // another starts playing. Explicitly resume the background video to
+            // prevent it from stopping when ambient audio begins.
             if (bgVideo && typeof bgVideo.play === 'function') {
                 const p = bgVideo.play();
                 if (p && typeof p.catch === 'function') {
                     p.catch(() => {
-                        // ignore: autoplay policies / iOS quirks
+                        // Silently ignore autoplay policy blocks or iOS quirks
                     });
                 }
             }
         }
 
+        // TITLE INTERACTION:
+        // WHY TITLE IS CLICKABLE: Provides a clear, centered focal point for
+        // interaction. Users naturally expect to click the title to "enter" the site.
+        // This is more intuitive than hunting for a tiny "Skip" button.
+        //
+        // KEYBOARD ACCESSIBILITY: Support Enter and Space keys for screen readers
+        // and keyboard-only navigation. Makes the intro fully accessible to users
+        // who cannot or prefer not to use a mouse.
         if (title) {
             state.onTitleClick = completeIntro;
             state.onTitleKeydown = (event) => {
+                // Only respond to Enter and Space (standard button activation keys)
                 if (event.key !== 'Enter' && event.key !== ' ') {
                     return;
                 }
 
-                event.preventDefault();
+                event.preventDefault();  // Prevent page scroll on Space
                 completeIntro();
             };
 
@@ -184,24 +256,33 @@
             title.addEventListener('keydown', state.onTitleKeydown);
         }
 
-        // Clicking anywhere in the hero (except CTA buttons) should continue.
+        // CLICK-ANYWHERE TO CONTINUE:
+        // Uses capture phase to intercept clicks before they reach other handlers.
+        // Provides maximum interaction area - users can click anywhere to proceed.
+        // Exception: CTA buttons in the hero should navigate normally, not skip intro.
         state.onRootClickCapture = (event) => {
+                // Check if click target is inside a CTA button group
                 const clickedCTA = event.target && event.target.closest && event.target.closest('.hero-ctas');
                 if (clickedCTA) {
-                    return;
+                    return;  // Let CTA clicks through to their normal handlers
                 }
 
                 completeIntro();
             };
 
+        // Capture phase ensures this runs before any child element handlers
         root.addEventListener('click', state.onRootClickCapture, { capture: true });
 
+        // SKIP INTRO FUNCTIONALITY:
+        // Provides an explicit "Skip" button for users who want to bypass the intro.
+        // Useful for returning visitors or users in a hurry.
         if (skipIntro) {
             state.onSkipClick = () => {
                 completeIntro();
 
-                // Do NOT force-enable sound on skip.
-                // Users can turn it on via the header toggle if they want.
+                // IMPORTANT: Do NOT force-enable sound when skipping.
+                // Skip implies "I want the fast experience" - respect that intent.
+                // Users can manually enable sound via the header toggle if desired.
             };
 
             skipIntro.addEventListener('click', state.onSkipClick);
@@ -211,9 +292,23 @@
         window.HomeIntro._state = state;
     }
 
-    // Public entry point for PJAX.
+    // PUBLIC API FOR PJAX INTEGRATION:
+    // init() - Call when navigating to home page
+    // destroy() - Call when navigating away to clean up event listeners
     window.HomeIntro = {
         init: () => initHomeIntro(document),
+
+        /**
+         * EVENT LISTENER CLEANUP FOR PJAX:
+         *
+         * Critical for single-page app navigation. Without cleanup:
+         * - Memory leaks from orphaned event listeners
+         * - Duplicate handlers firing on return navigation
+         * - Stale references to removed DOM elements
+         *
+         * Wrapped in try-catch because elements may not exist if navigation
+         * happened before intro completed, or if DOM was modified externally.
+         */
         destroy: () => {
             const root = document;
             const body = root.body;
@@ -221,14 +316,16 @@
             const skipIntro = root.getElementById('skipIntro');
             const state = window.HomeIntro && window.HomeIntro._state;
 
+            // Remove capture-phase click handler from document root
             try {
                 if (state && state.onRootClickCapture) {
                     root.removeEventListener('click', state.onRootClickCapture, { capture: true });
                 }
             } catch {
-                // ignore
+                // Element may have been removed already
             }
 
+            // Remove title interaction handlers (click + keyboard)
             try {
                 if (title && state && state.onTitleClick) {
                     title.removeEventListener('click', state.onTitleClick);
@@ -237,21 +334,24 @@
                     title.removeEventListener('keydown', state.onTitleKeydown);
                 }
             } catch {
-                // ignore
+                // Element may have been removed already
             }
 
+            // Remove skip button handler
             try {
                 if (skipIntro && state && state.onSkipClick) {
                     skipIntro.removeEventListener('click', state.onSkipClick);
                 }
             } catch {
-                // ignore
+                // Element may have been removed already
             }
 
+            // Clear initialization flag so re-init works on return navigation
             if (body) {
                 delete body.dataset.homeIntroBound;
             }
 
+            // Clear state object to allow garbage collection
             delete window.HomeIntro._state;
         }
     };

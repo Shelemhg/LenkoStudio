@@ -1,0 +1,270 @@
+<!--
+╔═════════════════════════════════════════════════════════════════════════════╗
+║                          LENKO STUDIO - PROJECT PAGE                        ║
+║                     Cinematic Intro with Video Background                   ║
+╚═════════════════════════════════════════════════════════════════════════════╝
+
+PURPOSE:
+    This page serves as a cinematic landing experience with a full-screen video
+    background, animated intro sequence, and stage-based reveal system. It 
+    creates an immersive first impression for visitors before they explore the
+    portfolio or book a shoot.
+
+FEATURES:
+    • Full-screen looping video background with lazy loading
+    • Multi-stage intro animation system (controlled by body classes)
+    • Animated grid overlay for visual depth
+    • Dark scrim layer for text readability over video
+    • Accessibility features: skip link, ARIA labels, keyboard navigation
+    • Floating CTA button for persistent conversion opportunity
+    • Responsive design with mobile-optimized video handling
+
+STRUCTURE:
+    1. Black overlay for fade-in transition
+    2. Skip link for accessibility
+    3. Site header (custom web component)
+    4. Hero section with video background and content
+    5. Floating CTA button
+    6. Site footer (custom web component)
+
+DEPENDENCIES:
+    CSS:  style.css (global styles + hero + animations)
+    JS:   components.js (site-header, site-footer web components)
+          home.js (intro sequence, video lazy-load, stage management)
+          app.js (PJAX navigation, audio, forms)
+
+STAGE SYSTEM:
+    stage-0: Initial state (hidden/preparing)
+    stage-1: Fade in overlay and grid
+    stage-2: Reveal title
+    stage-3: Reveal CTA buttons
+    stage-4: Intro complete, normal state
+
+BROWSER SUPPORT:
+    • Modern browsers (Chrome, Firefox, Safari, Edge)
+    • Progressive enhancement for older browsers
+    • Graceful degradation if JavaScript disabled
+
+AUTHOR: Lenko Studio
+LAST MODIFIED: 2026-01-03
+-->
+
+<!doctype html>
+<html lang="en">
+
+
+<!-- ========================================================================= -->
+<!-- HEAD: Meta, Fonts, Stylesheets, SEO                                       -->
+<!-- ========================================================================= -->
+
+<head>
+    <!-- Character encoding and viewport for responsive design -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <!-- Site favicon -->
+    <link rel="icon" type="image/png" href="media/Logo.png" />
+
+    <!-- Page title shown in browser tab -->
+    <title>Lenko Studio — Project</title>
+
+
+    <!-- ===== FONTS ===== -->
+    
+    <!-- Google Fonts: Inter (body text) + Playfair Display (headings) -->
+    <!-- Preconnect for faster font loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    />
+
+
+    <!-- ===== STYLESHEETS ===== -->
+    
+    <!-- Main stylesheet with cache-busting version parameter -->
+    <link rel="stylesheet" href="style.css?v=20251230a" />
+
+
+    <!-- ===== SCRIPTS ===== -->
+    
+    <!-- Web components (header/footer) - load early but defer execution -->
+    <script src="js/components.js?v=20251230a" defer></script>
+
+
+    <!-- ===== SEO ===== -->
+    
+    <!-- Meta description for search engines -->
+    <meta
+        name="description"
+        content="Lenko Studio — Cinematic photo and video. Book a shoot, explore work, and discover ADAM for creators."
+    />
+</head>
+
+
+<!-- ========================================================================= -->
+<!-- BODY: Main Content and Layout                                             -->
+<!-- ========================================================================= -->
+
+<!-- 
+    Initial class "stage-0" hides content for intro animation.
+    home.js will transition through stages: stage-0 → stage-1 → stage-2 → stage-3 → stage-4
+-->
+<body class="stage-0">
+
+
+    <!-- ===== BLACK OVERLAY ===== -->
+    
+    <!-- 
+        Full-screen black overlay for smooth page entry transition.
+        Fades out during stage-1 to reveal content beneath.
+    -->
+    <div id="blackOverlay" class="overlay-black"></div>
+
+
+    <!-- ===== ACCESSIBILITY ===== -->
+    
+    <!-- 
+        Skip link for keyboard users and screen readers.
+        Allows bypassing the intro animation to reach main content immediately.
+    -->
+    <a id="skipIntro" class="skip-link" href="#main">Skip intro</a>
+
+
+    <!-- ===== SITE HEADER ===== -->
+    
+    <!-- 
+        Custom web component (defined in components.js).
+        Renders navigation bar with logo and menu links.
+        "current" attribute highlights the active page.
+    -->
+    <site-header current="project"></site-header>
+
+
+    <!-- ========================================================================= -->
+    <!-- MAIN CONTENT: Hero Section with Video Background                         -->
+    <!-- ========================================================================= -->
+
+    <main id="main" class="home" role="main">
+
+        <!-- ===== HERO SECTION ===== -->
+        
+        <!-- 
+            Full-viewport cinematic intro section.
+            Contains layered elements: video, scrim, grid, content.
+        -->
+        <section class="hero" aria-label="Cinematic Intro">
+
+            <!-- ----- VIDEO BACKGROUND ----- -->
+            
+            <!-- 
+                Video wrap container for responsive video sizing.
+                Hidden from screen readers (decorative only).
+            -->
+            <div class="video-wrap" aria-hidden="true">
+                <!-- 
+                    Background video element.
+                    - muted: Required for autoplay in most browsers
+                    - playsinline: Prevents fullscreen on iOS
+                    - loop: Continuous playback
+                    - preload="none": Lazy loading (home.js loads video after page ready)
+                    - No src: Added dynamically by home.js for performance
+                -->
+                <video id="bgVideo" muted playsinline loop preload="none"></video>
+                
+                <!-- 
+                    Scrim (dark overlay) for text readability.
+                    Creates semi-transparent gradient over video.
+                -->
+                <div class="scrim"></div>
+            </div>
+
+
+            <!-- ----- GRID OVERLAY ----- -->
+            
+            <!-- 
+                Animated grid pattern for visual depth and sophistication.
+                Hidden from screen readers (decorative).
+                Animated during stage-1 transition.
+            -->
+            <div id="gridOverlay" class="grid-overlay" aria-hidden="true"></div>
+
+
+            <!-- ----- HERO CONTENT ----- -->
+            
+            <!-- 
+                Main content container with title and CTAs.
+                Stacks above video/grid using z-index.
+            -->
+            <div class="hero-content">
+                
+                <!-- 
+                    Main title with intro animation.
+                    - tabindex="0": Makes focusable for accessibility
+                    - Animated during stage-2 (fade in + slide up)
+                -->
+                <h1 id="introTitle" class="intro-title" tabindex="0">Lenko Studio</h1>
+
+                <!-- 
+                    Call-to-action buttons container.
+                    - aria-live="polite": Announces changes to screen readers
+                    - Animated during stage-3 (fade in)
+                -->
+                <div id="heroCtas" class="hero-ctas" aria-live="polite">
+                    <!-- Primary CTA: Navigate to portfolio -->
+                    <a class="cta" href="portfolio.html" id="ctaExplore">Explore Portfolio</a>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ===== FLOATING CTA ===== -->
+        
+        <!-- 
+            Persistent call-to-action button fixed to viewport.
+            Remains visible during scroll for conversion opportunities.
+            Links to booking/contact page.
+        -->
+        <a class="floating-cta" href="contact.html">Book a Shoot</a>
+
+    </main>
+
+
+    <!-- ========================================================================= -->
+    <!-- SITE FOOTER                                                               -->
+    <!-- ========================================================================= -->
+
+    <!-- 
+        Custom web component (defined in components.js).
+        Renders footer with links, social media, and copyright.
+    -->
+    <site-footer></site-footer>
+
+
+    <!-- ========================================================================= -->
+    <!-- SCRIPTS: Page Behavior and Interactions                                  -->
+    <!-- ========================================================================= -->
+
+    <!-- 
+        home.js: Page-specific functionality
+        - Intro sequence orchestration (stage transitions)
+        - Video lazy loading and playback
+        - Grid overlay animations
+        - Black overlay fade-out
+    -->
+    <script src="js/home.js?v=20251230a" defer></script>
+
+    <!-- 
+        app.js: Global site functionality
+        - PJAX (smooth page transitions without full reload)
+        - Audio management
+        - Form handling and validation
+    -->
+    <script src="app.js?v=20251230a" defer></script>
+
+
+</body>
+</html>

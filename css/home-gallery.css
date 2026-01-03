@@ -1,0 +1,236 @@
+/* Home Gallery Page (scoped)
+   Requirements:
+   - White page background (home only)
+   - 2 columns on mobile, 3 columns on desktop
+   - Lightbox uses semi-transparent white overlay
+*/
+
+body.home-gallery-page {
+  /* WHITE THEME OVERRIDE - HOME PAGE ONLY
+     The home gallery is the only page with a white theme to create a clean,
+     gallery-like aesthetic that puts focus on the photography. This overrides
+     the global dark theme tokens defined in style.css without affecting other
+     pages like portfolio.html which maintains its dark theme. Using CSS custom
+     properties scoped to .home-gallery-page ensures this is isolated. */
+  --bg: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-card: #ffffff;
+  --fg: #0a0a0a;
+  --fg-muted: rgba(10, 10, 10, 0.65);
+  --fg-subtle: rgba(10, 10, 10, 0.5);
+
+  --border: rgba(0, 0, 0, 0.10);
+  --border-hover: rgba(0, 0, 0, 0.18);
+
+  --header-bg: rgba(255, 255, 255, 0.7);
+  --header-border: rgba(0, 0, 0, 0.08);
+
+  --btn-secondary-bg: rgba(0, 0, 0, 0.06);
+  --btn-secondary-hover: rgba(0, 0, 0, 0.10);
+
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.home-gallery {
+  padding: var(--space-lg);
+}
+
+.home-gallery__wrap {
+  max-width: 90vw;
+  margin: 0 auto;
+}
+
+.home-gallery__columns {
+  display: grid;
+  /* MASONRY LAYOUT - 2 COLUMNS MOBILE, 3 DESKTOP
+     Mobile (default): 2 columns provides optimal viewing on small screens -
+     single column would require excessive scrolling, while 3+ would make
+     images too small to appreciate. Desktop (1024px+): 3 columns utilizes
+     wider screens while maintaining comfortable image sizes. This creates
+     a Pinterest-style masonry layout where images of varying heights are
+     distributed across columns, avoiding the rigid uniformity of traditional
+     grids and creating more visual interest. */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-lg);
+}
+
+.home-gallery__column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.home-gallery__item {
+  display: block;
+  border-radius: 0;
+  overflow: hidden;
+  border: none;
+  background: var(--bg);
+  padding: 0;
+  /* CURSOR: zoom-in vs pointer
+     Uses zoom-in to visually communicate that clicking will enlarge the image
+     in a lightbox, rather than navigating to a new page. This is more semantic
+     than 'pointer' (which suggests a link) and provides better UX by setting
+     clear expectations about the interaction behavior. */
+  cursor: zoom-in;
+}
+
+.home-gallery__item:focus-visible {
+  outline: none;
+}
+
+.home-gallery__img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+/* Z-INDEX: 5000 FOR LIGHTBOX
+     High z-index ensures lightbox appears above all other page elements
+     including header (z-index: 1000), navigation, and any modals. Value
+     5000 provides sufficient headroom above typical UI elements while
+     staying below browser chrome (e.g., autofill suggestions ~2147483647).
+     This prevents any visual stacking context issues. */
+  
+/* Lightbox */
+.home-lightbox {
+  position: fixed;
+  inset: 0;
+  /* SEMI-TRANSPARENT WHITE BACKDROP (not black like portfolio)
+     Uses rgba(255, 255, 255, 0.85) to maintain consistency with the home
+     page's white theme. The 85% opacity provides enough translucency to
+     subtly show the underlying gallery (creating depth/context) while
+     ensuring the focused image remains the clear focal point. Portfolio
+     uses black backdrop because its dark theme creates different aesthetic
+     expectations. The white backdrop is softer and more gallery-like. */
+  z-index: 5000;
+  display: none;
+}
+
+.home-lightbox.is-open {
+  display: block;
+}
+
+.home-lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.home-lightbox__stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 3vw, 32px);
+}
+
+.home-lightbox__close {
+  appearance: none;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--fg);
+  font-size: 28px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.home-lightbox__close:hover {
+  border-color: var(--border-hover);
+}
+.home-lightbox__nav {
+  appearance: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--fg);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.home-lightbox__nav:hover {
+  border-color: var(--border-hover);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.home-lightbox__nav--prev {
+  left: 24px;
+}
+
+.home-lightbox__nav--next {
+  right: 24px;
+}
+
+.home-lightbox__image {
+  /* MAX-WIDTH: min(1200px, 95vw)
+     Uses min() function to be responsive across all screen sizes:
+     - 1200px: Maximum width on large displays prevents images from becoming
+       too large and losing impact, maintains comfortable viewing distance
+     - 95vw: On smaller screens, ensures 2.5% padding on each side for
+       breathing room and prevents edge-to-edge display
+     The browser automatically selects whichever value is smaller, providing
+     optimal sizing whether on mobile (320px), tablet (768px), or desktop (1920px+). */
+  max-width: min(1200px, 95vw);
+  max-height: 92vh;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  /* PERFORMANCE: box-shadow
+     Uses var(--shadow-md) instead of multiple layered shadows to reduce
+     paint complexity. Box-shadow can trigger repaints, so we keep it simple
+     and static (not animated) for better performance especially on mobile. */
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+}
+
+/* PERFORMANCE: Transitions and Motion
+   No transitions are applied to lightbox open/close or image changes because:
+   1. Fading/scaling animations require compositing which can cause jank on
+      mobile devices, especially with large high-res images
+   2. Instant transitions feel snappier and more responsive for image galleries
+   3. Reduces CPU/GPU usage for better battery life on mobile devices
+   This media query respects user preference for reduced motion (accessibility). */
+@media (prefers-reduced-motion: reduce) {
+  .home-lightbox__image {
+    transition: none;
+  }
+}
+
+/* Desktop layouts */
+@media (min-width: 1024px) {
+  .home-gallery__columns {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 767px) {
+  /* NAVIGATION BUTTONS HIDDEN ON MOBILE
+     Previous/Next buttons are hidden on mobile because:
+     1. Touch devices use swipe gestures which feel more natural than tapping
+        buttons for navigation in a lightbox context
+     2. Buttons take up valuable screen real estate on small displays
+     3. Reduces visual clutter and keeps focus on the image
+     4. Prevents accidental taps when trying to close lightbox or zoom
+     Desktop keeps buttons visible because mouse users benefit from the
+     explicit UI affordance and can't swipe. */
+  .home-lightbox__nav {
+    display: none;
+  }
+}

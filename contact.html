@@ -1,61 +1,178 @@
+<!--
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                         LENKO STUDIO — CONTACT PAGE                          ║
+╔══════════════════════════════════════════════════════════════════════════════╗
+
+PURPOSE:
+    Landing page for client inquiries and shoot bookings. Provides clear,
+    accessible contact methods (email and WhatsApp) with usage guidance to
+    help clients know what information to include when reaching out.
+
+FEATURES:
+    • Two primary contact methods with clear use cases
+    • Guidelines for what to include in initial message
+    • Responsive card-based layout for contact options
+    • Accessibility-compliant structure with ARIA labels
+    • Skip link for keyboard navigation
+
+PAGE STRUCTURE:
+    1. Header with navigation (via site-header component)
+    2. Main content area with:
+       - Page title and introduction
+       - Contact methods section (email + WhatsApp cards)
+       - Information guidelines section
+    3. Footer (via site-footer component)
+
+DEPENDENCIES:
+    • style.css — Global styles and contact page-specific styles
+    • js/components.js — Web components (site-header, site-footer)
+    • app.js — Global application logic
+
+ACCESSIBILITY NOTES:
+    • Skip link enables keyboard users to bypass navigation
+    • ARIA labels provide semantic structure for screen readers
+    • External links include rel="noopener" for security
+
+LAST UPDATED: 2025-01-03
+-->
+
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/png" href="media/Logo.png" />
-    <title>Lenko Studio — Contact</title>
-    <meta name="description" content="Contact Lenko Studio to book a shoot via email (hi@lenkostudio.com) or WhatsApp." />
-    <link rel="stylesheet" href="style.css?v=20251230a" />
-    <script src="js/components.js?v=20251230a" defer></script>
-  </head>
-  <body>
-    <a class="skip-link" href="#main">Skip to content</a>
-    <site-header current="contact"></site-header>
 
-    <main id="main" class="page" role="main">
-      <h1>Contact</h1>
-      <p class="muted">Ready to book, ask a question, or share a concept? Reach us anytime by email or WhatsApp.</p>
 
-      <section aria-labelledby="contact-methods">
-        <h2 id="contact-methods">Get in Touch</h2>
+    <!-- ===================================================================== -->
+    <!-- ============================= HEAD ================================== -->
+    <!-- ===================================================================== -->
 
-        <div class="contact-grid">
-          <div class="card">
-            <h3>Email</h3>
-            <p class="muted">Best for detailed requests, references, and longer notes.</p>
-            <p><a class="btn contact-action" href="mailto:hi@lenkostudio.com">hi@lenkostudio.com</a></p>
-          </div>
+    <head>
+        <!-- Character encoding for international character support -->
+        <meta charset="utf-8" />
 
-          <div class="card">
-            <h3>WhatsApp</h3>
-            <p class="muted">Best for quick questions and fast coordination.</p>
-            <p>
-              <a class="btn contact-action" href="https://wa.me/525548342523" target="_blank" rel="noopener">
-                WhatsApp +52 55 4834 2523
-              </a>
-            </p>
-          </div>
-        </div>
-      </section>
+        <!-- Responsive design viewport configuration -->
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-      <section aria-labelledby="before-you-message">
-        <h2 id="before-you-message">What to Include</h2>
-        <div class="card">
-          <ul>
-            <li>Type of shoot (portraits, fashion, editorial, etc.)</li>
-            <li>Preferred date(s) and location</li>
-            <li>Any moodboard / references (links are perfect)</li>
-            <li>How you want to use the photos (personal / brand / campaign)</li>
-          </ul>
-          <p class="muted">We reply as soon as possible—include your timezone if you’re traveling.</p>
-        </div>
-      </section>
-    </main>
+        <!-- Browser tab icon -->
+        <link rel="icon" type="image/png" href="media/Logo.png" />
 
-    <site-footer></site-footer>
+        <!-- Page title shown in browser tab and search results -->
+        <title>Lenko Studio — Contact</title>
 
-    <script src="app.js?v=20251230a" defer></script>
-  </body>
-  </html>
+        <!-- SEO description for search engines -->
+        <meta name="description" content="Contact Lenko Studio to book a shoot via email (hi@lenkostudio.com) or WhatsApp." />
+
+        <!-- Main stylesheet with cache-busting version parameter -->
+        <link rel="stylesheet" href="style.css?v=20251230a" />
+
+        <!-- Web components loader (deferred to not block page rendering) -->
+        <script src="js/components.js?v=20251230a" defer></script>
+    </head>
+
+
+    <!-- ===================================================================== -->
+    <!-- ============================= BODY ================================== -->
+    <!-- ===================================================================== -->
+
+    <body>
+
+        <!-- Skip link for accessibility: allows keyboard users to jump to main content -->
+        <a class="skip-link" href="#main">Skip to content</a>
+
+        <!-- Site header with navigation — 'current' attribute highlights Contact in nav -->
+        <site-header current="contact"></site-header>
+
+
+        <!-- ================================================================= -->
+        <!-- ========================= MAIN CONTENT ========================== -->
+        <!-- ================================================================= -->
+
+        <main id="main" class="page" role="main">
+
+            <!-- Page title -->
+            <h1>Contact</h1>
+
+            <!-- Introduction text explaining page purpose -->
+            <p class="muted">Ready to book, ask a question, or share a concept? Reach us anytime by email or WhatsApp.</p>
+
+
+            <!-- ============================================================= -->
+            <!-- =================== CONTACT METHODS SECTION ================= -->
+            <!-- ============================================================= -->
+
+            <!-- Section provides two primary contact options with clear guidance on when to use each -->
+            <section aria-labelledby="contact-methods">
+                <h2 id="contact-methods">Get in Touch</h2>
+
+                <!-- Grid layout for contact method cards (responsive: stacks on mobile) -->
+                <div class="contact-grid">
+
+                    <!-- Email contact option -->
+                    <div class="card">
+                        <h3>Email</h3>
+                        <!-- Guidance text: when to use email -->
+                        <p class="muted">Best for detailed requests, references, and longer notes.</p>
+                        <!-- Clickable email button with mailto: protocol -->
+                        <p><a class="btn contact-action" href="mailto:hi@lenkostudio.com">hi@lenkostudio.com</a></p>
+                    </div>
+
+                    <!-- WhatsApp contact option -->
+                    <div class="card">
+                        <h3>WhatsApp</h3>
+                        <!-- Guidance text: when to use WhatsApp -->
+                        <p class="muted">Best for quick questions and fast coordination.</p>
+                        <!-- WhatsApp button using wa.me short link format -->
+                        <!-- Opens in new tab (target="_blank") with security attribute (rel="noopener") -->
+                        <p>
+                            <a class="btn contact-action" href="https://wa.me/525548342523" target="_blank" rel="noopener">
+                                WhatsApp +52 55 4834 2523
+                            </a>
+                        </p>
+                    </div>
+
+                </div>
+            </section>
+
+
+            <!-- ============================================================= -->
+            <!-- =============== MESSAGING GUIDELINES SECTION ================ -->
+            <!-- ============================================================= -->
+
+            <!-- Section helps clients prepare their initial message with relevant details -->
+            <section aria-labelledby="before-you-message">
+                <h2 id="before-you-message">What to Include</h2>
+
+                <div class="card">
+                    <!-- Checklist of recommended information to include in first message -->
+                    <ul>
+                        <li>Type of shoot (portraits, fashion, editorial, etc.)</li>
+                        <li>Preferred date(s) and location</li>
+                        <li>Any moodboard / references (links are perfect)</li>
+                        <li>How you want to use the photos (personal / brand / campaign)</li>
+                    </ul>
+
+                    <!-- Response time expectation and timezone tip for travelers -->
+                    <p class="muted">We reply as soon as possible—include your timezone if you're traveling.</p>
+                </div>
+            </section>
+
+        </main>
+
+
+        <!-- ================================================================= -->
+        <!-- ============================ FOOTER ============================= -->
+        <!-- ================================================================= -->
+
+        <!-- Site footer with social links and legal pages (privacy, terms) -->
+        <site-footer></site-footer>
+
+
+        <!-- ================================================================= -->
+        <!-- ========================== SCRIPTS ============================== -->
+        <!-- ================================================================= -->
+
+        <!-- Main application script (deferred to load after content) -->
+        <script src="app.js?v=20251230a" defer></script>
+
+    </body>
+
+</html>
 

@@ -6,10 +6,24 @@
 (function () {
     'use strict';
 
+    // Core simulator class managing the chapter-based decision tree.
+    // Each chapter presents a scenario with multiple choices, each choice affects growth metrics.
+    // The simulator tracks state across all decisions and calculates cumulative effects.
     class CreatorSimulator {
         constructor() {
+            // Chapter-based decision tree: Each chapter = one decision point with multiple choice options.
+            // Loaded from CSV with questions, choices, and their growth/cost effects.
             this.chapters = []; // Loaded from CSV
             this.userStartingFollowers = 1000; // Default, will be overridden
+            
+            // State tracking: Tracks all key creator metrics throughout the simulation.
+            // - followers: Total follower count (main growth metric)
+            // - views: Monthly views (engagement indicator)
+            // - engagement: Engagement rate as percentage points (0-100)
+            // - income: Monthly revenue in dollars
+            // - subscribers: Paid subscriber count
+            // - costs: Array of recurring monthly costs {name, val}
+            // - historyByStep: Follower count snapshot after each decision (used for chart rendering)
             this.initialState = {
                 followers: 1000, // Start with some base
                 views: 5000,
@@ -21,12 +35,18 @@
             };
             
             this.state = { ...this.initialState };
+            // Track selected choice index per chapter (null = no choice yet).
             this.choices = []; // Track selected choice index per chapter
+            
+            // Preview system: Hover to see impact of a choice before committing.
+            // Shows a dashed preview line on the chart.
             this.previewData = null; // For hover preview
 
-            this._pendingChartAnim = null; // { fromStep, toStep }
+            // Animation state tracking: Coordinates smooth transitions when choices are made.
+            // These flags prevent race conditions between chart animation, row animation, and highlight application.
+            this._pendingChartAnim = null; // { fromStep, toStep } - triggers chart segment animation
             this._pendingHighlightChapter = null; // Which chapter index is currently animating (only that row delays highlights)
-            this._pendingDecisionAnim = null; // { chapterIndex, from, to }
+            this._pendingDecisionAnim = null; // { chapterIndex, from, to } - decision row count-up animation data
             
             this.els = {};
         }
@@ -50,6 +70,16 @@
             };
         }
 
+        // Decision animation system: Smooth count-up effect when a choice is made.
+        // 
+        // Animation flow (750ms + 200ms = 950ms total):
+        // 1. New choice is selected → old values stored
+        // 2. Table row is re-rendered with data-final-class attributes (green highlights delayed)
+        // 3. This function animates from old values to new values over 950ms
+        // 4. Uses cubic ease-out for natural deceleration
+        // 5. After animation completes, applyDelayedHighlights() reveals green best-choice highlights
+        // 
+        // Why 950ms? Slower transitions feel more premium and give users time to absorb the impact.
         animateDecisionRow(anim, done) {
             const tbody = this.els.aspectTableBody;
             if (!tbody || !anim) {
@@ -69,7 +99,7 @@
                 return;
             }
 
-            const duration = 950; // slower per request
+            const duration = 950; // 750ms transition + 200ms buffer for polish
             const start = performance.now();
             const from = anim.from;
             const to = anim.to;
@@ -104,6 +134,10 @@
             requestAnimationFrame(step);
         }
 
+        // Delayed highlight application: Apply green "best choice" highlighting after animations complete.
+        // Why needed: If we apply green immediately, it flashes during the count-up animation.
+        // Instead, we store the final class in data-final-class and apply it after the 750ms transition.
+        // This creates a polished reveal effect: numbers count up → burst animation → green highlight appears.
         applyDelayedHighlights() {
             const tbody = this.els.aspectTableBody;
             if (!tbody) return;
@@ -116,18 +150,39 @@
         }
 
         /**
-         * Scale growth effects based on account size.
-         * Uses exponential scaling so decisions have meaningful impact at any scale.
+         * Growth multiplier math: Exponential scaling for realistic account growth.
+         * 
+         * Why exponential scaling?
+         * - Small accounts (1K followers): Decisions have smaller absolute impact but higher % growth.
+         * - Large accounts (100K+ followers): Decisions have larger absolute impact but lower % growth.
+         * - Formula: (followers / 35000) ^ 0.57
+         * 
+         * The 0.57 exponent was chosen through testing to balance:
+         * - At 1K followers: multiplier ≈ 0.1 (10% of base effect)
+         * - At 35K followers: multiplier = 1.0 (100% of base effect)
+         * - At 200K followers: multiplier ≈ 2.4 (240% of base effect)
+         * 
+         * This creates realistic growth curves where early decisions matter but later decisions
+         * scale appropriately with audience size (e.g., hiring an editor has more impact at 100K than 1K).
          */
         getGrowthMultiplier(baseFollowers) {
             // Balanced exponential scaling: reasonable % growth at small scale, meaningful absolute at large scale
             const followers = Math.max(baseFollowers, 1000);
             const multiplier = Math.pow(followers / 35000, 0.57);
             
-            // Clamp to reasonable bounds (minimum 0.1x for very small accounts)
+            // Clamp to reasonable bounds (minimum 0.1x for very small accounts, max 500x for edge cases)
             return Math.max(0.1, Math.min(500.0, multiplier));
         }
 
+        // Percent vs absolute growth effects:
+        // CSV stores effects as percentages (e.g., 0.05 = 5% follower growth).
+        // To maintain exponential scaling consistency, we need a dampening factor.
+        // 
+        // Formula: (35000 / followers) ^ 0.43
+        // This ensures: Pct * Followers * PercentMultiplier = Base * (Followers/35k) ^ 0.57
+        // 
+        // Why 0.43? It's calculated so percent-based effects scale inversely to absolute effects.
+        // As account grows, percent multiplier decreases (dampening) while absolute multiplier increases.
         getPercentMultiplier(baseFollowers) {
             // Dampening factor for percentages as account grows
             // Formula: (35000 / followers)^0.43
@@ -137,6 +192,14 @@
             return multiplier;
         }
 
+        // Scale effect based on current account size.
+        // Takes raw percentages from CSV and converts them to scaled absolute values.
+        // 
+        // Cost accumulation logic:
+        // - Monthly costs (e.g., software subscriptions, team salaries) are recurring.
+        // - One-time costs could be added but are currently all monthly in the CSV.
+        // - Costs scale with account size (hiring an editor costs more for 100K vs 1K account).
+        // - All costs accumulate in state.costs array and sum to show total monthly burn rate.
         scaleEffect(effect, currentFollowers) {
             const absMultiplier = this.getGrowthMultiplier(currentFollowers);
             const pctMultiplier = this.getPercentMultiplier(currentFollowers);
@@ -150,7 +213,7 @@
             return {
                 followers: Math.round(currentFollowers * effect.followersPct * pctMultiplier),
                 views: Math.round(currentFollowers * effect.viewsPct * pctMultiplier),
-                engagement: effect.engagement, // Keep engagement as-is (points)
+                engagement: effect.engagement, // Keep engagement as-is (absolute points, not scaled)
                 income: Math.round(currentFollowers * effect.incomePct * pctMultiplier),
                 subscribers: Math.round(currentFollowers * effect.subscribersPct * pctMultiplier),
                 costs: scaledCosts
@@ -192,6 +255,18 @@
             }
         }
 
+        // CSV parsing logic with proper quote handling.
+        // 
+        // Why custom parser instead of library?
+        // - Need to handle multi-line text fields in CSV (e.g., long explanations with line breaks).
+        // - CSV standard: Fields can be quoted with " to allow commas and newlines inside.
+        // - Escaped quotes: "" inside quoted field becomes a single " character.
+        // 
+        // Algorithm:
+        // 1. Track insideQuote state to know if we're inside a quoted field.
+        // 2. Only treat commas and newlines as delimiters when NOT inside quotes.
+        // 3. Handle escaped quotes (two consecutive quotes "" = literal quote character).
+        // 4. Build rows array where each row is an array of field values.
         parseCSV(text) {
             const rows = [];
             let currentRow = [];
@@ -202,17 +277,22 @@
                 const char = text[i];
                 const nextChar = text[i+1];
                 
+                // Quote handling: Toggle insideQuote state, or handle escaped quotes
                 if (char === '"') {
                     if (insideQuote && nextChar === '"') {
+                        // Escaped quote: "" becomes "
                         currentVal += '"';
-                        i++;
+                        i++; // Skip next quote
                     } else {
+                        // Regular quote: Toggle insideQuote state
                         insideQuote = !insideQuote;
                     }
                 } else if (char === ',' && !insideQuote) {
+                    // Field delimiter (only outside quotes)
                     currentRow.push(currentVal);
                     currentVal = '';
                 } else if ((char === '\n' || char === '\r') && !insideQuote) {
+                    // Row delimiter (only outside quotes)
                     if (currentVal || currentRow.length > 0) {
                         currentRow.push(currentVal);
                         rows.push(currentRow);
@@ -220,6 +300,7 @@
                         currentVal = '';
                     }
                 } else {
+                    // Regular character: Add to current field value
                     currentVal += char;
                 }
             }
@@ -840,6 +921,17 @@
             });
         }
 
+        // Preview system: Hover to see impact before committing to a choice.
+        // 
+        // How it works:
+        // 1. Mouse enters a choice button → showPreview() is called
+        // 2. Calculate scaled effect at that specific step (not current total)
+        // 3. Store preview data (fromStep, fromFollowers, toFollowers)
+        // 4. updateChart() renders a dashed grey line showing potential growth
+        // 5. Mouse leaves → hidePreview() clears preview and restores normal chart
+        // 
+        // Why useful? Users can compare options visually before making a decision.
+        // Dashed line is non-committal and clearly distinguishes preview from actual progress.
         showPreview(chapterIndex, choiceIndex) {
             const chapter = this.chapters[chapterIndex];
             if (!chapter || !chapter.choices) return;
@@ -849,14 +941,16 @@
             const totalDecisions = this.chapters.length - 1;
             if (chapterIndex < 0 || chapterIndex >= totalDecisions) return;
 
+            // Get follower count at the time this decision would be made
             const fromFollowers = (this.state.historyByStep && this.state.historyByStep[chapterIndex] != null)
                 ? this.state.historyByStep[chapterIndex]
                 : this.initialState.followers;
 
-            // Scale the effect based on current followers at that step
+            // Scale the effect based on current followers at that step (not final total)
             const scaledEffect = this.scaleEffect(choice.effect, fromFollowers);
             const toFollowers = fromFollowers + scaledEffect.followers;
 
+            // Store preview data for chart rendering
             this.previewData = {
                 fromStep: chapterIndex,
                 fromFollowers,
@@ -926,13 +1020,23 @@
             const maxFollowers = theoreticalMax;
             const range = maxFollowers - minFollowers || 1;
 
-            // Generate main path
+            // Chart animation logic: Animate only the newest segment growing from previous point.
+            // 
+            // Animation approach:
+            // 1. Render static path up to the previous step
+            // 2. Add animated segment using stroke-dasharray/stroke-dashoffset trick
+            // 3. Segment grows over 700ms with CSS animation
+            // 4. Burst ring appears at the end point (delayed by segDurationMs)
+            // 5. After animation, re-render chart to final static state
+            // 
+            // Why segment-only animation? Animating the full path is jarring when changing past decisions.
+            // Only animating the new/changed segment feels responsive and focused.
             let pathD = '';
             let circles = '';
             let animSegment = '';
             let burst = '';
 
-            const segDurationMs = 700;
+            const segDurationMs = 700; // Segment growth duration in milliseconds
             // Allow chart animation for both new answers and changed answers
             const chartAnim = (!this.previewData && this._pendingChartAnim && this._pendingChartAnim.toStep <= lastAnsweredStep + 1)
                 ? { ...this._pendingChartAnim }

@@ -1,53 +1,190 @@
+<!--
+╔═══════════════════════════════════════════════════════════════════════════════════════════════╗
+║                                        ABOUT PAGE                                             ║
+║                                      Lenko Studio                                             ║
+╚═══════════════════════════════════════════════════════════════════════════════════════════════╝
+
+PURPOSE:
+    Introduces Lenko Studio's background, philosophy, and service offerings to prospective
+    clients. This page establishes brand identity and builds trust through storytelling.
+
+FEATURES:
+    • Studio origin story (Manhattan → Upstate NY → Mexico City)
+    • Core values and approach to photography/videography
+    • Service offerings overview (weddings, portraits, projects)
+    • Floating CTA for immediate booking conversion
+    • Fully accessible with ARIA labels and semantic HTML
+
+STRUCTURE:
+    1. HEAD - Meta tags, styles, and component scripts
+    2. BODY - Skip link for accessibility
+    3. HEADER - Site navigation (web component)
+    4. MAIN - Three content sections with proper heading hierarchy
+    5. FOOTER - Site footer (web component)
+
+DEPENDENCIES:
+    • style.css - Global styles and page-specific layout
+    • js/components.js - Web components (site-header, site-footer)
+    • app.js - Global JavaScript utilities
+
+ACCESSIBILITY:
+    • Skip link for keyboard navigation
+    • Semantic HTML5 sections with aria-labelledby
+    • Proper heading hierarchy (h1 → h2)
+    • Main landmark with role="main"
+
+LAST UPDATED: January 3, 2026
+-->
 <!doctype html>
 <html lang="en">
-  <head>
+
+
+<!-- ========================================================================== -->
+<!-- HEAD SECTION                                                               -->
+<!-- ========================================================================== -->
+<head>
+    <!-- Character encoding for proper text rendering -->
     <meta charset="utf-8" />
+    
+    <!-- Viewport settings for responsive design on mobile devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <!-- Favicon displayed in browser tabs and bookmarks -->
     <link rel="icon" type="image/png" href="media/Logo.png" />
+    
+    <!-- Page title shown in browser tab and search results -->
     <title>Lenko Studio — About</title>
+    
+    <!-- SEO meta description for search engines and social sharing -->
     <meta name="description" content="About Lenko Studio — cinematic photo and video with a calm, editorial approach." />
+    
+    <!-- Main stylesheet with cache-busting version parameter -->
     <link rel="stylesheet" href="style.css?v=20251230a" />
+    
+    <!-- Web components script loaded with defer for better performance -->
+    <!-- Provides <site-header> and <site-footer> custom elements -->
     <script src="js/components.js?v=20251230a" defer></script>
-  </head>
-  <body>
+</head>
+
+
+<!-- ========================================================================== -->
+<!-- BODY - MAIN CONTENT AREA                                                   -->
+<!-- ========================================================================== -->
+<body>
+
+    <!-- ===================================================================== -->
+    <!-- ACCESSIBILITY - Skip Link                                             -->
+    <!-- ===================================================================== -->
+    <!-- Hidden link for keyboard users to bypass navigation and jump to main content -->
     <a class="skip-link" href="#main">Skip to content</a>
+
+
+    <!-- ===================================================================== -->
+    <!-- HEADER - Site Navigation                                              -->
+    <!-- ===================================================================== -->
+    <!-- Custom web component that renders site navigation -->
+    <!-- The 'current' attribute highlights "About" in the menu -->
     <site-header current="about"></site-header>
 
+
+    <!-- ===================================================================== -->
+    <!-- MAIN CONTENT - About Information                                      -->
+    <!-- ===================================================================== -->
     <main id="main" class="page" role="main">
-      <h1>About Us</h1>
 
-      <section aria-labelledby="our-story">
-        <h2 id="our-story">Our Story</h2>
-        <p><strong>Lenko Studio, a distinct style.</strong> From the busy streets of Manhattan to Upstate New York, Lenko Studio began with a different concept. We later moved to Mexico and evolved, offering a service shaped by the style and experiences of the world’s capital. Deep emotions, rich colors, and naturally elegant posing are the signature of our work.</p>
-        <p><strong>Lenko Studio Weddings.</strong> Every service is built on a close, attentive relationship with our clients to ensure expectations are exceeded. We preserve one of life’s most important moments in a relaxed and natural way—telling your story from beginning to end while we capture the highlights and the small, meaningful details of your day. These memories are crafted to be treasures for a lifetime.</p>
-      </section>
+        <!-- Page title -->
+        <h1>About Us</h1>
 
-      <section aria-labelledby="approach-values">
-        <h2 id="approach-values">Approach & Values</h2>
-        <ul>
-          <li><strong>Calm direction:</strong> Relaxed sessions that keep you present and comfortable.</li>
-          <li><strong>Editorial color:</strong> Rich, cinematic tones with natural light whenever possible.</li>
-          <li><strong>Story first:</strong> Honest storytelling that balances iconic moments and subtle details.</li>
-          <li><strong>Close collaboration:</strong> We plan with you so expectations aren’t just met—they’re exceeded.</li>
-          <li><strong>Mexico City roots, global reach:</strong> Based in CDMX; we happily travel.</li>
-        </ul>
-      </section>
 
-      <section aria-labelledby="what-we-offer">
-        <h2 id="what-we-offer">What We Offer</h2>
-        <ul>
-          <li><strong>Weddings:</strong> From proposals and “Save the Date” to ceremony coverage and “Trash the Dress”.</li>
-          <li><strong>Portraits:</strong> Editorial portraits for individuals, couples, and teams.</li>
-          <li><strong>Projects:</strong> Brand films and visual stories with cinematic polish.</li>
-        </ul>
-      </section>
+        <!-- ================================================================= -->
+        <!-- SECTION: Our Story                                                -->
+        <!-- ================================================================= -->
+        <!-- Tells the journey of Lenko Studio from NYC to Mexico -->
+        <section aria-labelledby="our-story">
+            <h2 id="our-story">Our Story</h2>
+            
+            <!-- Studio origin and evolution narrative -->
+            <p>
+                <strong>Lenko Studio, a distinct style.</strong> From the busy streets of Manhattan to Upstate New York, Lenko Studio began with a different concept. We later moved to Mexico and evolved, offering a service shaped by the style and experiences of the world's capital. Deep emotions, rich colors, and naturally elegant posing are the signature of our work.
+            </p>
+            
+            <!-- Wedding photography philosophy and approach -->
+            <p>
+                <strong>Lenko Studio Weddings.</strong> Every service is built on a close, attentive relationship with our clients to ensure expectations are exceeded. We preserve one of life's most important moments in a relaxed and natural way—telling your story from beginning to end while we capture the highlights and the small, meaningful details of your day. These memories are crafted to be treasures for a lifetime.
+            </p>
+        </section>
 
-      <a class="floating-cta" href="contact.html">Book a Shoot</a>
+
+        <!-- ================================================================= -->
+        <!-- SECTION: Approach & Values                                        -->
+        <!-- ================================================================= -->
+        <!-- Lists the core principles that guide the studio's work -->
+        <section aria-labelledby="approach-values">
+            <h2 id="approach-values">Approach & Values</h2>
+            
+            <ul>
+                <!-- Philosophy: Creating comfortable shooting environment -->
+                <li><strong>Calm direction:</strong> Relaxed sessions that keep you present and comfortable.</li>
+                
+                <!-- Visual style: Color grading and lighting approach -->
+                <li><strong>Editorial color:</strong> Rich, cinematic tones with natural light whenever possible.</li>
+                
+                <!-- Content philosophy: Authentic narrative-driven work -->
+                <li><strong>Story first:</strong> Honest storytelling that balances iconic moments and subtle details.</li>
+                
+                <!-- Client relationship: Partnership and communication -->
+                <li><strong>Close collaboration:</strong> We plan with you so expectations aren't just met—they're exceeded.</li>
+                
+                <!-- Geographic positioning: Location and travel availability -->
+                <li><strong>Mexico City roots, global reach:</strong> Based in CDMX; we happily travel.</li>
+            </ul>
+        </section>
+
+
+        <!-- ================================================================= -->
+        <!-- SECTION: What We Offer                                            -->
+        <!-- ================================================================= -->
+        <!-- Overview of service categories available to clients -->
+        <section aria-labelledby="what-we-offer">
+            <h2 id="what-we-offer">What We Offer</h2>
+            
+            <ul>
+                <!-- Wedding services: Full range from engagement to post-wedding -->
+                <li><strong>Weddings:</strong> From proposals and "Save the Date" to ceremony coverage and "Trash the Dress".</li>
+                
+                <!-- Portrait services: Personal and professional photography -->
+                <li><strong>Portraits:</strong> Editorial portraits for individuals, couples, and teams.</li>
+                
+                <!-- Video/brand services: Commercial and storytelling work -->
+                <li><strong>Projects:</strong> Brand films and visual stories with cinematic polish.</li>
+            </ul>
+        </section>
+
+
+        <!-- ================================================================= -->
+        <!-- CALL TO ACTION - Floating Button                                  -->
+        <!-- ================================================================= -->
+        <!-- Persistent button that encourages immediate booking -->
+        <!-- Styled as floating element via .floating-cta class -->
+        <a class="floating-cta" href="contact.html">Book a Shoot</a>
+
     </main>
 
+
+    <!-- ===================================================================== -->
+    <!-- FOOTER - Site Footer                                                  -->
+    <!-- ===================================================================== -->
+    <!-- Custom web component that renders site footer with links and info -->
     <site-footer></site-footer>
 
+
+    <!-- ===================================================================== -->
+    <!-- SCRIPTS - Application Logic                                           -->
+    <!-- ===================================================================== -->
+    <!-- Main application script with cache-busting version parameter -->
+    <!-- Loaded with defer to not block page rendering -->
     <script src="app.js?v=20251230a" defer></script>
-  </body>
-  </html>
+
+</body>
+</html>
 
