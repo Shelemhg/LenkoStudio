@@ -28,7 +28,7 @@ contact,/contact.html,active,li,contact-date,Preferred date(s) and location,Fech
 contact,/contact.html,active,li,contact-refs,Any moodboard / references (links are perfect),Cualquier moodboard / referencias (los enlaces son perfectos)
 contact,/contact.html,active,li,contact-use,How you want to use the photos (personal / brand / campaign),C?mo quieres usar las fotos (personal / marca / campa?a)
 contact,/contact.html,active,p,contact-reply,We reply as soon as possible—include your timezone if you're traveling.,Respondemos lo antes posible?incluye tu zona horaria si est?s viajando.
-portfolio,/portfolio.html,active,button,resetPictures,Reset pictures,Reset pictures
+portfolio,/portfolio.html,active,button,resetPictures,Reset pictures,Restablecer imágenes
 portfolio,/portfolio.html,active,h2,category-fashion,Fashion,Moda
 portfolio,/portfolio.html,active,h2,category-conceptual,Conceptual,Conceptual
 portfolio,/portfolio.html,active,h2,category-beauty,Beauty,Belleza

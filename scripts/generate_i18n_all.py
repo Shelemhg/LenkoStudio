@@ -162,6 +162,47 @@ def update_component_lang_attributes(html: str, lang: str, page_name: str) -> st
     return html
 
 
+def fix_spanish_data_paths(html: str, page_name: str) -> str:
+    """Fix data-folder paths for Spanish portfolio page to include ../ prefix"""
+    
+    if page_name == 'portfolio':
+        # Fix data-folder paths for sphere gallery
+        html = re.sub(
+            r'data-folder="media/',
+            'data-folder="../media/',
+            html
+        )
+    
+    return html
+
+
+def fix_spanish_hreflang(html: str, page_name: str) -> str:
+    """Fix hreflang links in Spanish pages to use correct relative paths"""
+    
+    # Replace en href: page.html -> ../page.html
+    html = re.sub(
+        f'hreflang="en" href="{page_name}.html"',
+        f'hreflang="en" href="../{page_name}.html"',
+        html
+    )
+    
+    # Replace es href: es/page.html -> page.html
+    html = re.sub(
+        f'hreflang="es" href="es/{page_name}.html"',
+        f'hreflang="es" href="{page_name}.html"',
+        html
+    )
+    
+    # Replace x-default href: page.html -> ../page.html
+    html = re.sub(
+        f'hreflang="x-default" href="{page_name}.html"',
+        f'hreflang="x-default" href="../{page_name}.html"',
+        html
+    )
+    
+    return html
+
+
 def translate_content(html: str, lang: str, csv_translations: Dict[str, Dict[str, str]]) -> str:
     """Translate page content from English to Spanish using CSV translations with element IDs"""
     
@@ -230,6 +271,11 @@ def generate_page(page_name: str, lang: str, translations: Dict[str, Any], csv_t
     html = update_asset_paths(html, is_default)
     html = update_component_lang_attributes(html, lang, page_name)
     html = translate_content(html, lang, csv_translations)
+    
+    # Apply Spanish-specific fixes if not default language
+    if not is_default:
+        html = fix_spanish_hreflang(html, page_name)
+        html = fix_spanish_data_paths(html, page_name)
     
     return html
 
