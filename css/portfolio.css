@@ -42,6 +42,10 @@ body {
   padding: 0;
   background: #ffffff;
   color: #0a0a0a;
+  /* Force single column layout with centered items */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .portfolio-reset-container {
@@ -79,7 +83,12 @@ body {
   width: 100%;
   max-height: 100vh;
   overflow: hidden;
-  display: flex;
+  /* 
+   * inline-flex makes container shrink-wrap to image width
+   * This ensures title background automatically matches the rendered image width
+   * rather than spanning full container width (which can be wider than portrait images)
+   */
+  display: inline-flex;
   flex-direction: column;
   padding: 0;
   margin: 0 auto 120px auto;
@@ -94,7 +103,12 @@ body {
   flex: 0 0 auto;
   overflow: hidden;
   display: flex;
-  align-items: center;
+  /*
+   * Align the image to the bottom so the title bar visually “touches” the photo.
+   * Centering the image vertically creates empty space below shorter images,
+   * which reads like an unwanted gap between photo and title.
+   */
+  align-items: flex-end;
   justify-content: center;
   /* 
    * Why calc(100vh - 80px)?
@@ -106,10 +120,13 @@ body {
    */
   max-height: calc(100vh - 80px);
   width: 100%;
+  /* Avoid any inline-image baseline quirks creating stray gaps. */
+  line-height: 0;
 }
 
 /* Portfolio Item - Image (Element) */
 .portfolio-item__image {
+  display: block;
   max-width: 100%;
   max-height: calc(100vh - 80px);
   width: auto;
@@ -204,11 +221,16 @@ body {
   .portfolio-item {
     max-width: 80%;
     max-height: 100vh;
-    align-items: center;
+    /* Children should naturally fill the card width so title == image area width. */
+    align-items: stretch;
+    /* Center the card itself horizontally */
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .portfolio-item__title {
-    width: auto;
+    /* Title will automatically match image width due to parent inline-flex */
+    width: 100%;
     align-self: stretch;
   }
 

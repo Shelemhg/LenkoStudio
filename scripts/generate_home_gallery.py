@@ -29,34 +29,41 @@ def generate_gallery_html():
     # Randomize order for variety (you can remove this line for alphabetical order)
     random.shuffle(images)
     
-    # Distribute across 3 columns (desktop default - CSS will show 2 on mobile)
+    # Distribute across 3 columns for desktop (CSS adjusts to 2 on mobile)
     columns = [[], [], []]
     for idx, img in enumerate(images):
         columns[idx % 3].append(img)
     
-    # Generate HTML - flat list, CSS Grid handles column distribution
+    # Generate HTML with column divs
     html = """            <!-- Gallery Container -->
             <!-- This wrapper holds the multi-column masonry layout -->
             <div class="home-gallery__wrap">
-                <!-- All images in flat list - CSS Grid auto-distributes to columns -->
-                <div id="homeGallery" class="home-gallery__grid" aria-label="Gallery">
+                <!-- Gallery columns for true masonry - each item has its own height -->
+                <div id="homeGallery" class="home-gallery__columns" aria-label="Gallery">
 """
     
-    # Generate flat list of all images
-    for idx, img_name in enumerate(images):
-        img_path = f"media/home/{img_name}"
+    # Generate columns with images
+    for col_idx, column_images in enumerate(columns):
+        html += f'\n                    <!-- Column {col_idx + 1} -->\n'
+        html += '                    <div class="home-gallery__column">\n'
         
-        # First image gets priority loading
-        if idx == 0:
-            loading = 'eager'
-            fetchpriority = ' fetchpriority="high"'
-        else:
-            loading = 'lazy'
-            fetchpriority = ''
+        for img_idx, img_name in enumerate(column_images):
+            img_path = f"media/home/{img_name}"
+            global_idx = col_idx + img_idx * 3
+            
+            # First image gets priority loading
+            if col_idx == 0 and img_idx == 0:
+                loading = 'eager'
+                fetchpriority = ' fetchpriority="high"'
+            else:
+                loading = 'lazy'
+                fetchpriority = ''
+            
+            html += f'                        <button type="button" class="home-gallery__item" data-index="{global_idx}" aria-label="Open image">\n'
+            html += f'                            <img class="home-gallery__img" src="{img_path}" alt="Gallery image" loading="{loading}"{fetchpriority} width="800" height="1200" />\n'
+            html += '                        </button>\n'
         
-        html += f'                    <button type="button" class="home-gallery__item" data-index="{idx}" aria-label="Open image">\n'
-        html += f'                        <img class="home-gallery__img" src="{img_path}" alt="Gallery image" loading="{loading}"{fetchpriority} width="800" height="1200" />\n'
-        html += '                    </button>\n'
+        html += '                    </div>\n'
     
     html += """                </div>
             </div>"""
