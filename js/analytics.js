@@ -39,6 +39,13 @@
     const POSTHOG_API_KEY = window.ENV?.POSTHOG_API_KEY || 'phc_lDBqhO1wCp2NLBMEjGm1apM0XDhKoJGPetvVc6uRCHJ';
     const POSTHOG_HOST = 'https://app.posthog.com'; // or your self-hosted instance
     
+    // Disable analytics on localhost/local development
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0') {
+        console.log('PostHog: Analytics disabled for local development');
+        return;
+    }
+    
     // Check if PostHog should be loaded (respect privacy settings)
     if (!POSTHOG_API_KEY || POSTHOG_API_KEY === 'YOUR_PROJECT_API_KEY') {
         console.warn('PostHog: API key not configured. Analytics disabled.');
