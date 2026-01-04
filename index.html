@@ -55,8 +55,42 @@
 
 
         <!-- ===== PRELOAD CRITICAL RESOURCES ===== -->
-        <!-- Preload first gallery image for faster LCP -->
-        <link rel="preload" as="image" href="media/home/i (13).jpg" fetchpriority="high" />
+        <!-- Dynamic preload injected by shuffle script below -->
+        
+        <!-- ===== IMAGE RANDOMIZATION ===== -->
+        <!-- Inline script runs BEFORE preload to randomize all 24 images.
+             This ensures the first image varies on each refresh while still
+             allowing us to preload it for optimal LCP performance. -->
+        <script>
+            (function() {
+                // All 24 image filenames
+                const allImages = [
+                    'i (1).jpg', 'i (2).jpg', 'i (3).jpg', 'i (4).jpg',
+                    'i (5).jpg', 'i (6).jpg', 'i (7).jpg', 'i (8).jpg',
+                    'i (9).jpg', 'i (10).jpg', 'i (11).jpg', 'i (12).jpg',
+                    'i (13).jpg', 'i (14).jpg', 'i (15).jpg', 'i (16).jpg',
+                    'i (17).jpg', 'i (18).jpg', 'i (19).jpg', 'i (20).jpg',
+                    'i (21).jpg', 'i (22).jpg', 'i (23).jpg', 'i (24).jpg'
+                ];
+                
+                // Fisher-Yates shuffle for true randomization
+                for (let i = allImages.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [allImages[i], allImages[j]] = [allImages[j], allImages[i]];
+                }
+                
+                // Store shuffled order globally for gallery rendering
+                window.SHUFFLED_GALLERY_IMAGES = allImages;
+                
+                // Inject preload link for the first (random) image
+                const preloadLink = document.createElement('link');
+                preloadLink.rel = 'preload';
+                preloadLink.as = 'image';
+                preloadLink.href = 'media/home/' + allImages[0];
+                preloadLink.fetchpriority = 'high';
+                document.head.appendChild(preloadLink);
+            })();
+        </script>
         
         
         <!-- ===== STYLESHEETS ===== -->
@@ -91,93 +125,52 @@
             <!-- This wrapper holds the multi-column masonry layout -->
             <div class="home-gallery__wrap">
                 <!-- Gallery columns for true masonry - each item has its own height -->
-                <div id="homeGallery" class="home-gallery__columns" aria-label="Gallery">
-
-                    <!-- Column 1 -->
-                    <div class="home-gallery__column">
-                        <button type="button" class="home-gallery__item" data-index="0" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (13).jpg" alt="Gallery image" loading="eager" fetchpriority="high" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="3" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (18).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="6" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (22).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="9" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (11).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="12" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (24).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="15" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (15).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="18" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (3).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="21" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (17).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                    </div>
-
-                    <!-- Column 2 -->
-                    <div class="home-gallery__column">
-                        <button type="button" class="home-gallery__item" data-index="1" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (7).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="4" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (9).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="7" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (20).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="10" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (16).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="13" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (12).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="16" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (2).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="19" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (23).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="22" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (8).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                    </div>
-
-                    <!-- Column 3 -->
-                    <div class="home-gallery__column">
-                        <button type="button" class="home-gallery__item" data-index="2" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (14).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="5" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (19).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="8" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (10).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="11" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (21).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="14" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (6).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="17" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (1).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="20" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (5).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                        <button type="button" class="home-gallery__item" data-index="23" aria-label="Open image">
-                            <img class="home-gallery__img" src="media/home/i (4).jpg" alt="Gallery image" loading="lazy" width="800" height="1200" />
-                        </button>
-                    </div>
-                </div>
+                <!-- Images are rendered by inline script below using shuffled order -->
+                <div id="homeGallery" class="home-gallery__columns" aria-label="Gallery"></div>
             </div>
+            
+            <!-- ===== GALLERY RENDERING ===== -->
+            <!-- Inline script renders gallery HTML from shuffled image array.
+                 Runs immediately to minimize layout shift and keep LCP fast. -->
+            <script>
+                (function() {
+                    const gallery = document.getElementById('homeGallery');
+                    const images = window.SHUFFLED_GALLERY_IMAGES;
+                    if (!gallery || !images) return;
+                    
+                    // Determine column count based on viewport
+                    const columnCount = window.matchMedia('(min-width: 1024px)').matches ? 3 : 2;
+                    
+                    // Distribute images across columns
+                    const columns = Array.from({ length: columnCount }, () => []);
+                    images.forEach((img, idx) => {
+                        columns[idx % columnCount].push({ img, idx });
+                    });
+                    
+                    // Build HTML for each column
+                    let html = '';
+                    columns.forEach((columnImages) => {
+                        html += '<div class="home-gallery__column">';
+                        columnImages.forEach(({ img, idx }) => {
+                            const isFirst = idx === 0;
+                            html += `
+                                <button type="button" class="home-gallery__item" data-index="${idx}" aria-label="Open image">
+                                    <img class="home-gallery__img" 
+                                         src="media/home/${img}" 
+                                         alt="Gallery image" 
+                                         loading="${isFirst ? 'eager' : 'lazy'}" 
+                                         ${isFirst ? 'fetchpriority="high"' : ''}
+                                         width="800" height="1200" />
+                                </button>`;
+                        });
+                        html += '</div>';
+                    });
+                    
+                    gallery.innerHTML = html;
+                })();
+            </script>
+
+
 
 
             <!-- ===== LIGHTBOX OVERLAY ===== -->

@@ -55,6 +55,13 @@ body.home-gallery-page {
   width: 100%;
 }
 
+/* MOBILE: Show only first 2 columns (hide 3rd column if present) */
+@media (max-width: 1023px) {
+  .home-gallery__column:nth-child(3) {
+    display: none;
+  }
+}
+
 .home-gallery__column {
   display: flex;
   flex-direction: column;
