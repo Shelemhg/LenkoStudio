@@ -61,6 +61,7 @@
         autocapture: true, // Automatically capture clicks and form interactions
         capture_pageview: true, // Track page views
         capture_pageleave: true, // Track when users leave pages
+        cross_subdomain_cookie: true, // Track users across subdomains (lenkostudio.com, adam.lenkostudio.com, etc.)
         
         // Session recording settings
         session_recording: {
