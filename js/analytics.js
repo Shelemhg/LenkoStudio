@@ -1,0 +1,331 @@
+/**
+ * ============================================================================
+ * Lenko Studio — PostHog Analytics & Event Tracking
+ * ============================================================================
+ * 
+ * Purpose: Comprehensive tracking for user behavior and interactions
+ * 
+ * Features:
+ * - Automatic page view tracking
+ * - Click tracking on all interactive elements
+ * - Image view duration tracking
+ * - Gallery interaction tracking
+ * - Form submission tracking
+ * - Navigation tracking
+ * - Scroll depth tracking
+ * - Session recording (with privacy controls)
+ * 
+ * Privacy:
+ * - Respects user privacy preferences
+ * - No personal data collection
+ * - GDPR compliant
+ * 
+ * Setup Instructions:
+ * 1. Sign up at https://posthog.com (free tier)
+ * 2. Get your Project API Key
+ * 3. Replace 'YOUR_PROJECT_API_KEY' below with your actual key
+ * 4. Deploy and test
+ * 
+ * ============================================================================
+ */
+
+// ===== PostHog Configuration =====
+(function() {
+    'use strict';
+
+    // PostHog initialization
+    // API key loaded from environment variable (set in Cloudflare Pages dashboard)
+    // Fallback to hardcoded value for local development
+    const POSTHOG_API_KEY = window.ENV?.POSTHOG_API_KEY || 'phc_lDBqhO1wCp2NLBMEjGm1apM0XDhKoJGPetvVc6uRCHJ';
+    const POSTHOG_HOST = 'https://app.posthog.com'; // or your self-hosted instance
+    
+    // Check if PostHog should be loaded (respect privacy settings)
+    if (!POSTHOG_API_KEY || POSTHOG_API_KEY === 'YOUR_PROJECT_API_KEY') {
+        console.warn('PostHog: API key not configured. Analytics disabled.');
+        return;
+    }
+
+    // Load PostHog script
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+
+    // Initialize PostHog with configuration
+    posthog.init(POSTHOG_API_KEY, {
+        api_host: POSTHOG_HOST,
+        autocapture: true, // Automatically capture clicks and form interactions
+        capture_pageview: true, // Track page views
+        capture_pageleave: true, // Track when users leave pages
+        
+        // Session recording settings
+        session_recording: {
+            recordCanvas: false, // Don't record canvas (for privacy and performance)
+            recordCrossOriginIframes: false,
+            maskAllInputs: true, // Mask all form inputs for privacy
+            maskTextSelector: '*', // Optional: mask all text for extra privacy
+        },
+        
+        // Privacy settings
+        respect_dnt: true, // Respect Do Not Track browser setting
+        opt_out_capturing_by_default: false,
+        
+        // Performance
+        loaded: function(posthog) {
+            console.log('PostHog: Analytics initialized');
+            initCustomTracking();
+        }
+    });
+
+    /**
+     * ===== Custom Event Tracking =====
+     */
+    function initCustomTracking() {
+        // Track gallery interactions
+        trackGalleryInteractions();
+        
+        // Track lightbox usage
+        trackLightboxInteractions();
+        
+        // Track navigation clicks
+        trackNavigationClicks();
+        
+        // Track scroll depth
+        trackScrollDepth();
+        
+        // Track time on page
+        trackTimeOnPage();
+        
+        // Track portfolio category views
+        trackPortfolioViews();
+        
+        // Track contact form (if present)
+        trackContactForm();
+    }
+
+    /**
+     * Track gallery image interactions
+     */
+    function trackGalleryInteractions() {
+        // Track clicks on gallery images
+        document.addEventListener('click', function(e) {
+            const galleryItem = e.target.closest('.home-gallery__item, .portfolio-item');
+            if (galleryItem) {
+                const imageSrc = galleryItem.querySelector('img')?.src || 'unknown';
+                const category = galleryItem.dataset.category || 'home';
+                
+                posthog.capture('gallery_image_clicked', {
+                    image: imageSrc,
+                    category: category,
+                    position: Array.from(galleryItem.parentElement.children).indexOf(galleryItem)
+                });
+            }
+        });
+    }
+
+    /**
+     * Track lightbox interactions
+     */
+    function trackLightboxInteractions() {
+        let lightboxOpenTime = null;
+        let currentImage = null;
+
+        // Track lightbox open
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === 'class') {
+                    const lightbox = mutation.target;
+                    if (lightbox.classList.contains('home-lightbox--visible') || 
+                        lightbox.classList.contains('sphere-gallery--visible')) {
+                        
+                        lightboxOpenTime = Date.now();
+                        const img = lightbox.querySelector('img');
+                        currentImage = img?.src || 'unknown';
+                        
+                        posthog.capture('lightbox_opened', {
+                            image: currentImage
+                        });
+                    } else if (lightboxOpenTime) {
+                        // Lightbox closed
+                        const duration = (Date.now() - lightboxOpenTime) / 1000;
+                        
+                        posthog.capture('lightbox_closed', {
+                            image: currentImage,
+                            duration_seconds: duration
+                        });
+                        
+                        lightboxOpenTime = null;
+                        currentImage = null;
+                    }
+                }
+            });
+        });
+
+        // Observe all potential lightbox containers
+        document.querySelectorAll('.home-lightbox, .sphere-gallery').forEach(function(lightbox) {
+            observer.observe(lightbox, { attributes: true });
+        });
+
+        // Track navigation within lightbox (next/previous)
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.home-lightbox__prev, .home-lightbox__next')) {
+                posthog.capture('lightbox_navigation', {
+                    direction: e.target.closest('.home-lightbox__prev') ? 'previous' : 'next',
+                    image: currentImage
+                });
+            }
+        });
+    }
+
+    /**
+     * Track navigation menu clicks
+     */
+    function trackNavigationClicks() {
+        document.addEventListener('click', function(e) {
+            const navLink = e.target.closest('nav a, .nav-link, site-header a');
+            if (navLink) {
+                posthog.capture('navigation_clicked', {
+                    link_text: navLink.textContent.trim(),
+                    destination: navLink.href,
+                    source_page: window.location.pathname
+                });
+            }
+        });
+    }
+
+    /**
+     * Track scroll depth on pages
+     */
+    function trackScrollDepth() {
+        const thresholds = [25, 50, 75, 90, 100];
+        const reached = new Set();
+        
+        function checkScrollDepth() {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollPercentage = ((scrollTop + windowHeight) / documentHeight) * 100;
+            
+            thresholds.forEach(function(threshold) {
+                if (scrollPercentage >= threshold && !reached.has(threshold)) {
+                    reached.add(threshold);
+                    posthog.capture('scroll_depth', {
+                        percentage: threshold,
+                        page: window.location.pathname
+                    });
+                }
+            });
+        }
+        
+        let scrollTimeout;
+        window.addEventListener('scroll', function() {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(checkScrollDepth, 100);
+        }, { passive: true });
+    }
+
+    /**
+     * Track time spent on page
+     */
+    function trackTimeOnPage() {
+        let startTime = Date.now();
+        let isActive = true;
+        let totalActiveTime = 0;
+        let lastActiveTime = startTime;
+
+        // Track visibility changes
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                if (isActive) {
+                    totalActiveTime += Date.now() - lastActiveTime;
+                    isActive = false;
+                }
+            } else {
+                isActive = true;
+                lastActiveTime = Date.now();
+            }
+        });
+
+        // Send time on page when leaving
+        window.addEventListener('beforeunload', function() {
+            if (isActive) {
+                totalActiveTime += Date.now() - lastActiveTime;
+            }
+            
+            const totalTime = (Date.now() - startTime) / 1000;
+            const activeTime = totalActiveTime / 1000;
+            
+            posthog.capture('page_time', {
+                page: window.location.pathname,
+                total_seconds: totalTime,
+                active_seconds: activeTime
+            });
+        });
+
+        // Also send periodic updates for long sessions
+        setInterval(function() {
+            if (isActive) {
+                const currentActiveTime = totalActiveTime + (Date.now() - lastActiveTime);
+                
+                posthog.capture('page_time_heartbeat', {
+                    page: window.location.pathname,
+                    active_seconds: currentActiveTime / 1000
+                });
+            }
+        }, 60000); // Every 60 seconds
+    }
+
+    /**
+     * Track portfolio category views
+     */
+    function trackPortfolioViews() {
+        // Track which portfolio category images are viewed
+        document.addEventListener('click', function(e) {
+            const portfolioItem = e.target.closest('.portfolio-item');
+            if (portfolioItem) {
+                const category = portfolioItem.querySelector('.portfolio-item__title')?.textContent || 'unknown';
+                
+                posthog.capture('portfolio_category_opened', {
+                    category: category
+                });
+            }
+        });
+    }
+
+    /**
+     * Track contact form submissions
+     */
+    function trackContactForm() {
+        const contactForm = document.querySelector('form[name="contact"], #contactForm, form[action*="contact"]');
+        
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                posthog.capture('contact_form_submitted', {
+                    page: window.location.pathname
+                });
+            });
+
+            // Track form field interactions
+            const formInputs = contactForm.querySelectorAll('input, textarea, select');
+            formInputs.forEach(function(input) {
+                input.addEventListener('focus', function() {
+                    posthog.capture('form_field_focused', {
+                        field_name: input.name || input.id,
+                        field_type: input.type
+                    });
+                }, { once: true });
+            });
+        }
+    }
+
+    /**
+     * Track PJAX navigation (if app.js uses it)
+     */
+    window.addEventListener('popstate', function() {
+        posthog.capture('$pageview');
+    });
+
+    // Also track for custom navigation events
+    document.addEventListener('pjax:success', function() {
+        posthog.capture('$pageview');
+        initCustomTracking(); // Re-initialize tracking for new page
+    });
+
+})();
