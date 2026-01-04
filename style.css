@@ -120,8 +120,9 @@ site-header, site-footer { display: block; }
   top: 0;
   z-index: 80;
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
+  gap: var(--space-md);
   padding: var(--space-md) var(--space-lg);
   background: var(--header-bg);
   backdrop-filter: blur(12px);
@@ -166,8 +167,57 @@ site-header, site-footer { display: block; }
   font-weight: 600;
 }
 
-.sound-toggle {
+/* Header actions container */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
   justify-self: end;
+}
+
+/* Hide mobile actions on desktop */
+.header-actions--mobile {
+  display: none;
+}
+
+/* Show desktop actions */
+.header-actions--desktop {
+  display: flex;
+}
+
+/* Language toggle button */
+.lang-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: var(--btn-secondary-bg);
+  border: 1px solid var(--border);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  text-decoration: none;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.lang-toggle:hover {
+  background: var(--btn-secondary-hover);
+  border-color: var(--border-hover);
+}
+.lang-icon {
+  font-size: 1.125rem;
+  line-height: 1;
+}
+.lang-code {
+  font-weight: 600;
+  font-family: monospace;
+  font-size: 0.8125rem;
+  letter-spacing: 0.05em;
+}
+
+/* Sound toggle button */
+.sound-toggle {
   background: var(--btn-secondary-bg);
   border: 1px solid var(--border);
   padding: var(--space-sm) var(--space-md);
@@ -276,9 +326,25 @@ site-header, site-footer { display: block; }
     border-radius: 0;
   }
 
-  /* Mobile: remove rounded corners from header button too */
+  /* Mobile: remove rounded corners from header actions */
+  .header-actions--mobile {
+    display: flex;
+    gap: 0;
+    width: 100%;
+    flex-direction: column;
+    margin-top: var(--space-lg);
+  }
+  
+  .header-actions--desktop {
+    display: none;
+  }
+  
+  .lang-toggle,
   .sound-toggle {
     border-radius: 0;
+    width: 100%;
+    justify-content: center;
+    padding: var(--space-md) var(--space-lg);
   }
   /* Overlay when menu is open */
   .menu-overlay {

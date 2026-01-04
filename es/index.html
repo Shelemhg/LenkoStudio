@@ -27,7 +27,7 @@
     ============================================================================
 -->
 <!doctype html>
-<html lang="en">
+<html lang="es">
     <head>
         <!-- ===== META TAGS ===== -->
         <!-- Character encoding and viewport settings -->
@@ -74,13 +74,15 @@
 
     
 
+    
+
         
         <!-- Favicon -->
-        <link rel="icon" type="image/png" href="media/Logo.png" />
+        <link rel="icon" type="image/png" href="../media/Logo.png" />
 
         <!-- Page title and description -->
         <title>Lenko Studio</title>
-        <meta name="description" content="Lenko Studio — Cinematic photo and video. Book a shoot, explore work, and discover ADAM for creators." />
+        <meta name="description" content="Lenko Studio — Fotografía y video cinematográfico. Reserva una sesión, explora nuestro trabajo y descubre ADAM para creadores." />
 
 
         <!-- ===== FONT PRELOADING ===== -->
@@ -136,27 +138,27 @@
         
         <!-- ===== STYLESHEETS ===== -->
         <!-- Global styles and design tokens -->
-        <link rel="stylesheet" href="style.css?v=20251230a" />
+        <link rel="stylesheet" href="../style.css?v=20251230a" />
         
         <!-- Gallery-specific masonry layout styles -->
-        <link rel="stylesheet" href="css/home-gallery.css?v=20251230a" />
+        <link rel="stylesheet" href="../css/home-gallery.css?v=20251230a" />
         
         
         <!-- ===== SCRIPTS ===== -->
         <!-- Web components for header/footer (deferred to avoid render blocking) -->
-        <script src="js/components.js?v=20251230a" defer></script>
+        <script src="../js/components.js?v=20251230a" defer></script>
     </head>
 
 
     <body class="home-gallery-page">
         <!-- ===== ACCESSIBILITY ===== -->
         <!-- Skip link allows keyboard users to jump directly to main content -->
-        <a class="skip-link" href="#main" id="skip-to-content">Skip to content</a>
+        <a class="skip-link" href="#main" id="skip-to-content">Saltar al contenido</a>
 
         
         <!-- ===== HEADER ===== -->
         <!-- Reusable navigation component, 'current' attribute highlights active page -->
-        <site-header current="home" lang="en"></site-header>
+        <site-header current="home" lang="es"></site-header>
 
 
         <!-- ===== MAIN CONTENT ===== -->
@@ -197,7 +199,7 @@
                             html += `
                                 <button type="button" class="home-gallery__item" data-index="${idx}" aria-label="Open image">
                                     <img class="home-gallery__img" 
-                                         src="media/home/${img}" 
+                                         src="../media/home/${img}" 
                                          alt="Gallery image" 
                                          loading="${isFirst ? 'eager' : 'lazy'}" 
                                          ${isFirst ? 'fetchpriority="high"' : ''}
@@ -250,15 +252,15 @@
 
         <!-- ===== FOOTER ===== -->
         <!-- Reusable footer component with contact info and social links -->
-        <site-footer lang="en"></site-footer>
+        <site-footer lang="es"></site-footer>
 
 
         <!-- ===== PAGE SCRIPTS ===== -->
         <!-- Gallery initialization and lightbox functionality -->
-        <script src="js/home-gallery.js?v=20251230a" defer></script>
+        <script src="../js/home-gallery.js?v=20251230a" defer></script>
         
         <!-- Global app logic: PJAX navigation and audio controls -->
-        <script src="app.js?v=20251230a" defer></script>        
+        <script src="../app.js?v=20251230a" defer></script>        
         <!-- Analytics and user tracking -->
-        <script src="js/analytics.js?v=20260103" defer></script>    </body>
+        <script src="../js/analytics.js?v=20260103" defer></script>    </body>
 </html>

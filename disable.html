@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disable Analytics Tracking - Lenko Studio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+        .status {
+            font-size: 18px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+        .status.disabled {
+            background: #dcfce7;
+            color: #166534;
+            border: 2px solid #86efac;
+        }
+        .status.enabled {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #fca5a5;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        button.enable {
+            background: #dc2626;
+        }
+        button.enable:hover {
+            background: #b91c1c;
+        }
+        .info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f3f4f6;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+        .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon" id="icon"></div>
+        <h1>Analytics Control Panel</h1>
+        <div class="status" id="status">Checking status...</div>
+        
+        <div id="controls">
+            <button id="disableBtn" onclick="disableTracking()">Disable Analytics</button>
+            <button class="enable" id="enableBtn" onclick="enableTracking()">Enable Analytics</button>
+        </div>
+
+        <div class="info">
+            <strong>What this does:</strong><br>
+            This page controls analytics tracking for your device across all Lenko Studio sites 
+            (lenkostudio.com and adam.lenkostudio.com). When disabled, your visits won't be tracked 
+            in analytics reports. This setting is saved in your browser and persists across sessions.
+        </div>
+    </div>
+
+    <script>
+        const TRACKING_FLAG = 'lenko_disable_analytics';
+        
+        function checkStatus() {
+            const isDisabled = localStorage.getItem(TRACKING_FLAG) === 'true';
+            const statusEl = document.getElementById('status');
+            const iconEl = document.getElementById('icon');
+            const disableBtn = document.getElementById('disableBtn');
+            const enableBtn = document.getElementById('enableBtn');
+            
+            if (isDisabled) {
+                statusEl.textContent = ' Analytics tracking is currently DISABLED on this device';
+                statusEl.className = 'status disabled';
+                iconEl.textContent = '';
+                disableBtn.style.display = 'none';
+                enableBtn.style.display = 'inline-block';
+            } else {
+                statusEl.textContent = ' Analytics tracking is currently ENABLED on this device';
+                statusEl.className = 'status enabled';
+                iconEl.textContent = '';
+                disableBtn.style.display = 'inline-block';
+                enableBtn.style.display = 'none';
+            }
+        }
+        
+        function disableTracking() {
+            localStorage.setItem(TRACKING_FLAG, 'true');
+            
+            // Visual feedback
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = ' Success! Analytics tracking has been disabled on this device.';
+            statusEl.className = 'status disabled';
+            
+            setTimeout(checkStatus, 2000);
+        }
+        
+        function enableTracking() {
+            localStorage.removeItem(TRACKING_FLAG);
+            
+            // Visual feedback
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = ' Analytics tracking has been re-enabled on this device.';
+            statusEl.className = 'status enabled';
+            
+            setTimeout(checkStatus, 2000);
+        }
+        
+        // Check status on load
+        checkStatus();
+    </script>
+</body>
+</html>

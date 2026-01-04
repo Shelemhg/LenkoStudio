@@ -1,0 +1,12 @@
+# Cloudflare Pages Build Configuration
+
+# Build command (runs during deployment)
+python scripts/generate_i18n.py
+
+# Build output directory
+/
+
+# Environment variables (none needed for basic setup)
+
+# Optional: Add these as environment variables if needed in the future
+# PYTHON_VERSION=3.11

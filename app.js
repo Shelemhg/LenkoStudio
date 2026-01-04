@@ -54,6 +54,7 @@
 
   const AUDIO_ID = 'ambientAudio';
   const TOGGLE_ID = 'soundToggle';
+  const TOGGLE_MOBILE_ID = 'soundToggleMobile';
 
   function $all(selector, root = document) {
     return Array.from(root.querySelectorAll(selector));
@@ -153,15 +154,25 @@
     }
 
     function updateToggleButton(enabled) {
-      const button = document.getElementById(TOGGLE_ID);
-      if (!button) {
+      const buttons = [
+        document.getElementById(TOGGLE_ID),
+        document.getElementById(TOGGLE_MOBILE_ID)
+      ].filter(Boolean);
+      
+      if (buttons.length === 0) {
         return;
       }
 
-      const label = enabled ? 'Sound On' : 'Sound Off';
-      button.textContent = label;
-      button.setAttribute('aria-pressed', enabled ? 'true' : 'false');
-      button.setAttribute('aria-label', label);
+      buttons.forEach(button => {
+        // Get translated labels from data attributes (set by component)
+        const labelOn = button.dataset.labelOn || 'Sound On';
+        const labelOff = button.dataset.labelOff || 'Sound Off';
+        const label = enabled ? labelOn : labelOff;
+        
+        button.textContent = label;
+        button.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+        button.setAttribute('aria-label', label);
+      });
     }
 
     // Audio Fading Strategy:
@@ -226,23 +237,29 @@
     }
 
     function bindToggleOnce() {
-      const button = document.getElementById(TOGGLE_ID);
-      if (!button) {
+      const buttons = [
+        document.getElementById(TOGGLE_ID),
+        document.getElementById(TOGGLE_MOBILE_ID)
+      ].filter(Boolean);
+      
+      if (buttons.length === 0) {
         return;
       }
 
-      // Prevent duplicate bindings across PJAX navigations.
-      if (button.dataset.audioBound === 'true') {
-        return;
-      }
-      button.dataset.audioBound = 'true';
+      buttons.forEach(button => {
+        // Prevent duplicate bindings across PJAX navigations.
+        if (button.dataset.audioBound === 'true') {
+          return;
+        }
+        button.dataset.audioBound = 'true';
 
-      // Set initial UI state.
-      updateToggleButton(getEnabled());
+        // Set initial UI state.
+        updateToggleButton(getEnabled());
 
-      button.addEventListener('click', () => {
-        const nextEnabled = button.getAttribute('aria-pressed') !== 'true';
-        enable(nextEnabled);
+        button.addEventListener('click', () => {
+          const nextEnabled = button.getAttribute('aria-pressed') !== 'true';
+          enable(nextEnabled);
+        });
       });
     }
 

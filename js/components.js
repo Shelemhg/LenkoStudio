@@ -23,32 +23,78 @@ class SiteHeader extends HTMLElement {
     // and initialize all interactive behaviors.
     connectedCallback() {
         const currentPage = this.getAttribute('current') || '';
+        const lang = this.getAttribute('lang') || 'en';
+        
+        // Determine if we're in a language subdirectory
+        const isInSubdir = lang !== 'en';
+        // For navigation links within the same language, no prefix needed
+        // pathPrefix is empty for all navigation links (portfolio.html, about.html, etc.)
+        // This keeps Spanish → Spanish and English → English
+        const pathPrefix = '';
+        
+        // For assets (CSS, JS) we need ../ when in Spanish subdirectory
+        const assetPrefix = isInSubdir ? '../' : '';
+        
+        // Get translations based on language
+        const t = this.getTranslations(lang);
 
         const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
-        const soundLabel = soundEnabled ? 'Sound On' : 'Sound Off';
+        const soundLabel = soundEnabled ? t.sound_on : t.sound_off;
+        
+        // Language switcher: determine alternate language URL
+        const altLang = lang === 'en' ? 'es' : 'en';
+        const altLangLabel = lang === 'en' ? t.switch_to_spanish : t.switch_to_english;
+        const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+        const altLangUrl = lang === 'en' 
+            ? `es/${currentPath}` 
+            : `../${currentPath}`;
 
         this.innerHTML = `
             <header class="site-header" role="banner">
                 <!-- Hamburger menu button: 3 spans transform into an X when open.
                      CSS handles the animation via .is-open class on parent nav. -->
-                <button class="menu-toggle" type="button" aria-expanded="false" aria-label="Toggle menu" aria-controls="primaryNav">
+                <button class="menu-toggle" type="button" aria-expanded="false" aria-label="${t.menu_toggle}" aria-controls="primaryNav">
                     <span></span>
                     <span></span>
                     <span></span>
                 </button>
 
-                <nav id="primaryNav" class="site-nav" aria-label="Primary" aria-hidden="false">
-                    <a class="brand" href="index.html"${currentPage === 'home' ? ' aria-current="page"' : ''}>Lenko Studio</a>
+                <nav id="primaryNav" class="site-nav" aria-label="${t.primary_nav}" aria-hidden="false">
+                    <a class="brand" href="${pathPrefix}index.html"${currentPage === 'home' ? ' aria-current="page"' : ''}>${t.brand}</a>
 
                     <ul class="nav-list">
-                        <li><a href="portfolio.html"${currentPage === 'portfolio' ? ' aria-current="page"' : ''}>Portfolio</a></li>
-                        <li><a href="about.html"${currentPage === 'about' ? ' aria-current="page"' : ''}>About</a></li>
-                        <li><a href="contact.html"${currentPage === 'contact' ? ' aria-current="page"' : ''}>Contact</a></li>
-                        <li><a class="adam-link" href="https://adam.lenkostudio.com" target="_blank" rel="noopener">For Creators — ADAM</a></li>
+                        <li><a href="${pathPrefix}portfolio.html"${currentPage === 'portfolio' ? ' aria-current="page"' : ''}>${t.portfolio}</a></li>
+                        <li><a href="${pathPrefix}about.html"${currentPage === 'about' ? ' aria-current="page"' : ''}>${t.about}</a></li>
+                        <li><a href="${pathPrefix}contact.html"${currentPage === 'contact' ? ' aria-current="page"' : ''}>${t.contact}</a></li>
+                        <li><a class="adam-link" href="https://adam.lenkostudio.com" target="_blank" rel="noopener">${t.for_creators}</a></li>
                     </ul>
+
+                    <!-- Mobile: Actions inside nav for sliding panel -->
+                    <div class="header-actions header-actions--mobile">
+                        <a href="${altLangUrl}" class="lang-toggle" aria-label="${t.language}: ${altLangLabel}" title="${altLangLabel}">
+                            <span class="lang-icon">🌐</span>
+                            <span class="lang-code">${altLang.toUpperCase()}</span>
+                        </a>
+                        <button id="soundToggleMobile" class="sound-toggle" type="button" 
+                                aria-pressed="${soundEnabled ? 'true' : 'false'}" 
+                                aria-label="${soundLabel}"
+                                data-label-on="${t.sound_on}"
+                                data-label-off="${t.sound_off}">${soundLabel}</button>
+                    </div>
                 </nav>
 
-                <button id="soundToggle" class="sound-toggle" type="button" aria-pressed="${soundEnabled ? 'true' : 'false'}" aria-label="${soundLabel}">${soundLabel}</button>
+                <!-- Desktop: Actions outside nav -->
+                <div class="header-actions header-actions--desktop">
+                    <a href="${altLangUrl}" class="lang-toggle" aria-label="${t.language}: ${altLangLabel}" title="${altLangLabel}">
+                        <span class="lang-icon">🌐</span>
+                        <span class="lang-code">${altLang.toUpperCase()}</span>
+                    </a>
+                    <button id="soundToggle" class="sound-toggle" type="button" 
+                            aria-pressed="${soundEnabled ? 'true' : 'false'}" 
+                            aria-label="${soundLabel}"
+                            data-label-on="${t.sound_on}"
+                            data-label-off="${t.sound_off}">${soundLabel}</button>
+                </div>
             </header>
 
             <div class="menu-overlay" aria-hidden="true"></div>
@@ -281,6 +327,41 @@ class SiteHeader extends HTMLElement {
             }
         });
     }
+
+    // Get translations for the current language
+    getTranslations(lang) {
+        const translations = {
+            en: {
+                brand: 'Lenko Studio',
+                portfolio: 'Portfolio',
+                about: 'About',
+                contact: 'Contact',
+                for_creators: 'For Creators — ADAM',
+                menu_toggle: 'Toggle menu',
+                primary_nav: 'Primary',
+                sound_on: 'Sound On',
+                sound_off: 'Sound Off',
+                language: 'Language',
+                switch_to_spanish: 'Español',
+                switch_to_english: 'English'
+            },
+            es: {
+                brand: 'Lenko Studio',
+                portfolio: 'Portafolio',
+                about: 'Acerca de',
+                contact: 'Contacto',
+                for_creators: 'Para Creadores — ADAM',
+                menu_toggle: 'Alternar menú',
+                primary_nav: 'Principal',
+                sound_on: 'Sonido Activado',
+                sound_off: 'Sonido Desactivado',
+                language: 'Idioma',
+                switch_to_spanish: 'Español',
+                switch_to_english: 'English'
+            }
+        };
+        return translations[lang] || translations.en;
+    }
 }
 
 // ============================================
@@ -290,18 +371,37 @@ class SiteHeader extends HTMLElement {
 // Just renders consistent footer markup across all pages.
 class SiteFooter extends HTMLElement {
     connectedCallback() {
+        const lang = this.getAttribute('lang') || 'en';
+        const t = this.getTranslations(lang);
+        
         this.innerHTML = `
             <footer class="site-footer" role="contentinfo">
                 <div class="footer-inner">
-                    <p>© <span id="year"></span> Lenko Studio</p>
+                    <p>© <span id="year"></span> ${t.rights}</p>
 
                     <div class="social">
-                        <a href="https://www.instagram.com/lenkostudio/" target="_blank" rel="noopener">Instagram</a>
-                        <a href="https://www.facebook.com/LenkoStudio/" target="_blank" rel="noopener">Facebook</a>
+                        <a href="https://www.instagram.com/lenkostudio/" target="_blank" rel="noopener">${t.instagram}</a>
+                        <a href="https://www.facebook.com/LenkoStudio/" target="_blank" rel="noopener">${t.facebook}</a>
                     </div>
                 </div>
             </footer>
         `;
+    }
+
+    getTranslations(lang) {
+        const translations = {
+            en: {
+                rights: 'Lenko Studio',
+                instagram: 'Instagram',
+                facebook: 'Facebook'
+            },
+            es: {
+                rights: 'Lenko Studio',
+                instagram: 'Instagram',
+                facebook: 'Facebook'
+            }
+        };
+        return translations[lang] || translations.en;
     }
 }
 

@@ -1,0 +1,57 @@
+{
+  "site": {
+    "title": "Lenko Studio",
+    "tagline": "Fotografía y video cinematográfico",
+    "brand": "Lenko Studio"
+  },
+  "nav": {
+    "home": "Inicio",
+    "portfolio": "Portafolio",
+    "about": "Acerca de",
+    "contact": "Contacto",
+    "project": "Proyecto",
+    "for_creators": "Para Creadores — ADAM",
+    "menu_toggle": "Alternar menú",
+    "primary_nav": "Principal",
+    "sound_on": "Sonido Activado",
+    "sound_off": "Sonido Desactivado",
+    "language": "Idioma",
+    "switch_to_spanish": "Español",
+    "switch_to_english": "English"
+  },
+  "project": {
+    "title": "Lenko Studio",
+    "cta_explore": "Explorar Portafolio",
+    "cta_book": "Reservar Sesión"
+  },
+  "about": {
+    "title": "Acerca de — Lenko Studio",
+    "heading": "Acerca de Nosotros"
+  },
+  "contact": {
+    "title": "Contacto — Lenko Studio",
+    "heading": "Contacto"
+  },
+  "portfolio": {
+    "title": "Portafolio — Lenko Studio",
+    "heading": "Portafolio"
+  },
+  "footer": {
+    "rights": "Lenko Studio",
+    "instagram": "Instagram",
+    "facebook": "Facebook"
+  },
+  "meta": {
+    "description": "Lenko Studio — Fotografía y video cinematográfico. Reserva una sesión, explora nuestro trabajo y descubre ADAM para creadores.",
+    "project_title": "Proyecto",
+    "about_description": "Conoce el viaje, filosofía y enfoque de Lenko Studio en fotografía y videografía cinematográfica.",
+    "contact_description": "Ponte en contacto con Lenko Studio para reservar una sesión o consultar sobre nuestros servicios.",
+    "portfolio_description": "Explora el portafolio de trabajos de fotografía y videografía cinematográfica de Lenko Studio."
+  },
+  "accessibility": {
+    "skip_link": "Saltar al contenido",
+    "gallery_label": "Galería",
+    "banner": "banner",
+    "contentinfo": "contentinfo"
+  }
+}

@@ -1,0 +1,39 @@
+page,address,status,tag,id,en,es
+index,/index.html,active,a,skip-to-content,Skip to content,Saltar al contenido
+about,/about.html,active,h1,about-page-title,About Us,Acerca de Nosotros
+about,/about.html,active,h2,our-story,Our Story,Nuestra Historia
+about,/about.html,active,p,story-p1,"Lenko Studio, a distinct style. From the busy streets of Manhattan to Upstate New York, Lenko Studio began with a different concept. We later moved to Mexico and evolved, offering a service shaped by the style and experiences of the world's capital. Deep emotions, rich colors, and naturally elegant posing are the signature of our work.","Lenko Studio, a distinct style. From the busy streets of Manhattan to Upstate New York, Lenko Studio began with a different concept. We later moved to Mexico and evolved, offering a service shaped by the style and experiences of the world's capital. Deep emotions, rich colors, and naturally elegant posing are the signature of our work."
+about,/about.html,active,p,story-p2,"Lenko Studio Weddings. Every service is built on a close, attentive relationship with our clients to ensure expectations are exceeded. We preserve one of life's most important moments in a relaxed and natural way—telling your story from beginning to end while we capture the highlights and the small, meaningful details of your day. These memories are crafted to be treasures for a lifetime.","Lenko Studio Weddings. Every service is built on a close, attentive relationship with our clients to ensure expectations are exceeded. We preserve one of life's most important moments in a relaxed and natural way?telling your story from beginning to end while we capture the highlights and the small, meaningful details of your day. These memories are crafted to be treasures for a lifetime."
+about,/about.html,active,h2,approach-values,Approach & Values,Enfoque y Valores
+about,/about.html,active,li,approach-calm,Calm direction: Relaxed sessions that keep you present and comfortable.,Calm direction: Relaxed sessions that keep you present and comfortable.
+about,/about.html,active,li,approach-color,"Editorial color: Rich, cinematic tones with natural light whenever possible.","Editorial color: Rich, cinematic tones with natural light whenever possible."
+about,/about.html,active,li,approach-story,Story first: Honest storytelling that balances iconic moments and subtle details.,Story first: Honest storytelling that balances iconic moments and subtle details.
+about,/about.html,active,li,approach-collab,Close collaboration: We plan with you so expectations aren't just met—they're exceeded.,Close collaboration: We plan with you so expectations aren't just met?they're exceeded.
+about,/about.html,active,li,approach-global,"Mexico City roots, global reach: Based in CDMX; we happily travel.","Mexico City roots, global reach: Based in CDMX; we happily travel."
+about,/about.html,active,h2,what-we-offer,What We Offer,Lo Que Ofrecemos
+about,/about.html,active,li,offer-weddings,"Weddings: From proposals and ""Save the Date"" to ceremony coverage and ""Trash the Dress"".","Weddings: From proposals and ""Save the Date"" to ceremony coverage and ""Trash the Dress""."
+about,/about.html,active,li,offer-portraits,"Portraits: Editorial portraits for individuals, couples, and teams.","Portraits: Editorial portraits for individuals, couples, and teams."
+about,/about.html,active,li,offer-projects,Projects: Brand films and visual stories with cinematic polish.,Projects: Brand films and visual stories with cinematic polish.
+about,/about.html,active,a,cta-book,Book a Shoot,Reservar Sesi?n
+contact,/contact.html,active,h1,contact-page-title,Contact,Contacto
+contact,/contact.html,active,p,contact-intro,"Ready to book, ask a question, or share a concept? Reach us anytime by email or WhatsApp.","?Listo para reservar, hacer una pregunta o compartir un concepto? Cont?ctanos en cualquier momento por correo electr?nico o WhatsApp."
+contact,/contact.html,active,h2,contact-methods,Get in Touch,Ponte en Contacto
+contact,/contact.html,active,h3,contact-email-label,Email,Correo Electr?nico
+contact,/contact.html,active,p,email-desc,"Best for detailed requests, references, and longer notes.","Mejor para solicitudes detalladas, referencias y notas m?s largas."
+contact,/contact.html,active,h3,contact-whatsapp-label,WhatsApp,WhatsApp
+contact,/contact.html,active,p,whatsapp-desc,Best for quick questions and fast coordination.,Mejor para preguntas r?pidas y coordinaci?n r?pida.
+contact,/contact.html,active,h2,before-you-message,What to Include,Qu? Incluir
+contact,/contact.html,active,li,contact-type,"Type of shoot (portraits, fashion, editorial, etc.)","Tipo de sesi?n (retratos, moda, editorial, etc.)"
+contact,/contact.html,active,li,contact-date,Preferred date(s) and location,Fecha(s) y ubicaci?n preferidas
+contact,/contact.html,active,li,contact-refs,Any moodboard / references (links are perfect),Cualquier moodboard / referencias (los enlaces son perfectos)
+contact,/contact.html,active,li,contact-use,How you want to use the photos (personal / brand / campaign),C?mo quieres usar las fotos (personal / marca / campa?a)
+contact,/contact.html,active,p,contact-reply,We reply as soon as possible—include your timezone if you're traveling.,Respondemos lo antes posible?incluye tu zona horaria si est?s viajando.
+portfolio,/portfolio.html,active,button,resetPictures,Reset pictures,Reset pictures
+portfolio,/portfolio.html,active,h2,category-fashion,Fashion,Moda
+portfolio,/portfolio.html,active,h2,category-conceptual,Conceptual,Conceptual
+portfolio,/portfolio.html,active,h2,category-beauty,Beauty,Belleza
+portfolio,/portfolio.html,active,h2,category-glamour,Glamour,Glamour
+portfolio,/portfolio.html,active,h2,category-editorial,Editorial,Editorial
+portfolio,/portfolio.html,active,h2,category-lingerie,Lingerie,Lencer?a
+project,/project.html,active,h1,introTitle,Lenko Studio,Lenko Studio
+project,/project.html,active,a,ctaExplore,Explore Portfolio,Explorar Portafolio

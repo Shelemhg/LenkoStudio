@@ -1,0 +1,57 @@
+{
+  "site": {
+    "title": "Lenko Studio",
+    "tagline": "Cinematic photo and video",
+    "brand": "Lenko Studio"
+  },
+  "nav": {
+    "home": "Home",
+    "portfolio": "Portfolio",
+    "about": "About",
+    "contact": "Contact",
+    "project": "Project",
+    "for_creators": "For Creators — ADAM",
+    "menu_toggle": "Toggle menu",
+    "primary_nav": "Primary",
+    "sound_on": "Sound On",
+    "sound_off": "Sound Off",
+    "language": "Language",
+    "switch_to_spanish": "Español",
+    "switch_to_english": "English"
+  },
+  "project": {
+    "title": "Lenko Studio",
+    "cta_explore": "Explore Portfolio",
+    "cta_book": "Book a Shoot"
+  },
+  "about": {
+    "title": "About — Lenko Studio",
+    "heading": "About Us"
+  },
+  "contact": {
+    "title": "Contact — Lenko Studio",
+    "heading": "Contact"
+  },
+  "portfolio": {
+    "title": "Portfolio — Lenko Studio",
+    "heading": "Portfolio"
+  },
+  "footer": {
+    "rights": "Lenko Studio",
+    "instagram": "Instagram",
+    "facebook": "Facebook"
+  },
+  "meta": {
+    "description": "Lenko Studio — Cinematic photo and video. Book a shoot, explore work, and discover ADAM for creators.",
+    "project_title": "Project",
+    "about_description": "Learn about Lenko Studio's journey, philosophy, and approach to cinematic photography and videography.",
+    "contact_description": "Get in touch with Lenko Studio to book a shoot or inquire about our services.",
+    "portfolio_description": "Explore Lenko Studio's portfolio of cinematic photography and videography work."
+  },
+  "accessibility": {
+    "skip_link": "Skip to content",
+    "gallery_label": "Gallery",
+    "banner": "banner",
+    "contentinfo": "contentinfo"
+  }
+}
