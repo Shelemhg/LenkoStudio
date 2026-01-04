@@ -868,17 +868,12 @@ window.SphereGallery = (() => {
         behavior: 'auto' // Instant
     });
 
-    // FORCE PARALLAX STATE
-    // We calculate the exact parallax transform based on where the item *actually* ended up.
-    // This handles cases where the item couldn't be perfectly centered (e.g. near top/bottom of page).
-    const finalItemRect = itemToUpdate.getBoundingClientRect();
-    const progress = (viewportHeight - finalItemRect.top) / (viewportHeight + finalItemRect.height);
-    const parallaxY = progress * -10; // Matches the -10 multiplier in portfolio.js
-
+    // RESET IMAGE TRANSFORM
+    // Clear any old parallax transform so the image displays correctly.
+    // The parallax system will recalculate on next scroll event.
     if (targetImg) {
-        // Disable transition to ensure immediate application
         targetImg.style.transition = 'none';
-        targetImg.style.transform = `translateY(${parallaxY}%)`;
+        targetImg.style.transform = 'none';
     }
     
     // 4. Animate to Target
