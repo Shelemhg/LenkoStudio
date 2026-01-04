@@ -41,7 +41,7 @@ body.home-gallery-page {
   margin: 0 auto;
 }
 
-.home-gallery__columns {
+.home-gallery__grid {
   display: grid;
   /* MASONRY LAYOUT - 2 COLUMNS MOBILE, 3 DESKTOP
      Mobile (default): 2 columns provides optimal viewing on small screens -
@@ -50,15 +50,17 @@ body.home-gallery-page {
      wider screens while maintaining comfortable image sizes. This creates
      a Pinterest-style masonry layout where images of varying heights are
      distributed across columns, avoiding the rigid uniformity of traditional
-     grids and creating more visual interest. */
+     grids and creating more visual interest.
+     
+     GRID-AUTO-FLOW: column dense ensures images fill columns evenly from
+     top to bottom, then left to right. This mimics masonry behavior without
+     needing JavaScript or hardcoded column containers. */
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-flow: column dense;
   gap: var(--space-lg);
-}
-
-.home-gallery__column {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-lg);
+  /* Set explicit rows based on number of images and columns
+     For 24 images: 2 cols = 12 rows, 3 cols = 8 rows */
+  grid-template-rows: repeat(12, auto);
 }
 
 .home-gallery__item {
@@ -223,12 +225,9 @@ body.home-gallery-page {
 
 /* Desktop layouts */
 @media (min-width: 1024px) {
-  .home-gallery__columns {
+  .home-gallery__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10rem;
-  }
-  
-  .home-gallery__column {
+    grid-template-rows: repeat(8, auto);
     gap: 10rem;
   }
 }
