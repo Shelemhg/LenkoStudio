@@ -352,9 +352,21 @@ site-header, site-footer { display: block; }
   .lang-toggle,
   .sound-toggle {
     border-radius: 0;
-    width: 100%;
     justify-content: center;
     padding: var(--space-md) var(--space-lg);
+  }
+
+  .lang-toggle {
+    width: 100%;
+  }
+
+  .sound-toggle {
+    width: auto;
+    min-width: 74px;
+    border-radius: calc(var(--radius-sm) / 2);
+    align-self: center;
+    justify-self: end;
+    padding: var(--space-xxs) var(--space-sm);
   }
   /* Overlay when menu is open */
   .menu-overlay {
