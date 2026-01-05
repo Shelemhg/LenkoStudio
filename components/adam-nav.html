@@ -1,0 +1,55 @@
+<header class="site-header global-nav adam-nav" role="banner">
+  <div class="nav-inner">
+    <a class="global-nav-brand" href="/adam/">ADAM</a>
+    <button class="global-nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="global-nav-panel" aria-label="Primary">
+      <ul class="global-nav-list">
+        <li><a href="adam-features.html">Features</a></li>
+        <li><a href="/adam/#how-it-works">How it Works</a></li>
+        <li><a href="adam-pricing.html">Pricing</a></li>
+        <li><a href="adam-about.html">About</a></li>
+        <li><a href="adam-simulator.html">Simulator</a></li>
+        <li><a class="adam-nav-link" href="/adam/#waitlist">Get Started</a></li>
+      </ul>
+    </nav>
+    <a href="/" class="back-to-lenko-btn">← Back to Lenko Studio</a>
+  </div>
+</header>
+
+<div class="global-nav-overlay" aria-hidden="true"></div>
+
+<style>
+.adam-nav .back-to-lenko-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  background-color: #ffffff;
+  color: #000;
+  border: 2px solid #000;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+.adam-nav .back-to-lenko-btn:hover {
+  background-color: #000;
+  color: #fff;
+  transform: translateX(-4px);
+}
+
+@media (max-width: 768px) {
+  .adam-nav .back-to-lenko-btn {
+    display: none;
+  }
+}
+</style>

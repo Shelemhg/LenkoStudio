@@ -16,16 +16,16 @@ FEATURES:
     • Skip link for keyboard navigation
 
 PAGE STRUCTURE:
-    1. Header with navigation (via site-header component)
+    1. Header with navigation (server-injected by _worker.js)
     2. Main content area with:
        - Page title and introduction
        - Contact methods section (email + WhatsApp cards)
        - Information guidelines section
-    3. Footer (via site-footer component)
+    3. Footer (server-injected by _worker.js)
 
 DEPENDENCIES:
     • style.css — Global styles and contact page-specific styles
-    • js/components.js — Web components (site-header, site-footer)
+    • js/nav.js — Navigation behavior (markup injected by _worker.js)
     • app.js — Global application logic
 
 ACCESSIBILITY NOTES:
@@ -64,7 +64,8 @@ LAST UPDATED: 2025-01-03
         <link rel="stylesheet" href="style.css?v=20251230a" />
 
         <!-- Web components loader (deferred to not block page rendering) -->
-        <script src="js/components.js?v=20251230a" defer></script>
+        <!-- Nav behavior (hamburger + overlay). Markup is injected server-side by _worker.js -->
+        <script src="js/nav.js?v=20260104a" defer></script>
     </head>
 
 
@@ -78,7 +79,8 @@ LAST UPDATED: 2025-01-03
         <a class="skip-link" href="#main">Skip to content</a>
 
         <!-- Site header with navigation — 'current' attribute highlights Contact in nav -->
-        <site-header current="contact"></site-header>
+        <!-- HEADER (Server-Injected): _worker.js replaces this with partials/nav.html -->
+        <div data-partial="nav"></div>
 
 
         <!-- ================================================================= -->
@@ -162,7 +164,8 @@ LAST UPDATED: 2025-01-03
         <!-- ================================================================= -->
 
         <!-- Site footer with social links and legal pages (privacy, terms) -->
-        <site-footer></site-footer>
+        <!-- FOOTER (Server-Injected): _worker.js replaces this with partials/footer.html -->
+        <div data-partial="footer"></div>
 
 
         <!-- ================================================================= -->

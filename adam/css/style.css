@@ -97,6 +97,7 @@ button { font: inherit; color: inherit; }
   transform: translateY(-150%);
 }
 .skip-link:focus { transform: translateY(0); outline: 2px solid var(--focus); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
 
 /* Visually hidden text (screen-reader only) */
 .sr-only {
@@ -109,204 +110,6 @@ button { font: inherit; color: inherit; }
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
-}
-
-/* 4) Header / Navigation ---------------------------------------------------- */
-/* Avoid `display: contents` for better assistive-tech compatibility. */
-site-header, site-footer { display: block; }
-
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 80;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  padding: var(--space-md) var(--space-lg);
-  background: var(--header-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--header-border);
-  transition: all 0.3s ease;
-}
-.site-nav { display: flex; align-items: center; gap: var(--space-lg); }
-.brand { 
-  font-weight: 700; 
-  letter-spacing: 0.03em; 
-  font-size: 1.125rem;
-  transition: color 0.2s ease;
-}
-.brand:hover {
-  color: var(--accent);
-  text-decoration: none;
-}
-.nav-list {
-  list-style: none; margin: 0; padding: 0;
-  display: flex; gap: var(--space-sm); overflow-x: auto;
-  scrollbar-width: none;
-}
-.nav-list::-webkit-scrollbar { display: none; }
-.nav-list a { 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-sm) var(--space-md); 
-  border-radius: var(--radius-sm); 
-  white-space: nowrap;
-  transition: all 0.2s ease;
-  font-size: 0.9375rem;
-  min-height: 44px;
-}
-.nav-list a:hover { 
-  background: var(--btn-secondary-hover); 
-  text-decoration: none; 
-}
-.nav-list a[aria-current="page"] {
-  background: var(--btn-secondary-bg);
-  color: var(--accent);
-}
-.adam-link { 
-  color: var(--accent); 
-  font-weight: 600;
-}
-
-.sound-toggle {
-  justify-self: end;
-  background: var(--btn-secondary-bg);
-  border: 1px solid var(--border);
-  padding: var(--space-sm) var(--space-md);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.875rem;
-}
-.sound-toggle:hover { 
-  background: var(--btn-secondary-hover);
-  border-color: var(--border-hover);
-}
-
-/* Mobile hamburger menu */
-.menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  padding: var(--space-sm);
-  cursor: pointer;
-  position: relative;
-  z-index: 96;
-  width: 44px;
-  height: 44px;
-}
-.menu-toggle span {
-  position: absolute;
-  left: 10px;
-  right: 10px;
-  top: 50%;
-  height: 2px;
-  background: var(--fg);
-  transform-origin: center;
-  transition: transform 0.25s ease, opacity 0.2s ease;
-}
-
-/* Hamburger default (3 lines) */
-.menu-toggle span:nth-child(1) { transform: translateY(-8px); }
-.menu-toggle span:nth-child(2) { transform: translateY(0); }
-.menu-toggle span:nth-child(3) { transform: translateY(8px); }
-
-/* Hamburger open (X centered) */
-.menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: rotate(45deg); }
-.menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-.menu-toggle[aria-expanded="true"] span:nth-child(3) { transform: rotate(-45deg); }
-
-@media (max-width: 768px) {
-  .site-header {
-    grid-template-columns: auto 1fr auto;
-  }
-  .menu-toggle {
-    display: block;
-    order: -1;
-  }
-  .site-nav {
-    position: fixed;
-    top: 0;
-    left: -100%;
-    width: 80%;
-    max-width: 320px;
-    height: 100vh;
-    background: var(--bg-elevated);
-    padding: var(--space-3xl) 0;
-    transition: left 0.3s ease;
-    z-index: 90;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-2xl);
-  }
-
-  /* Mobile menu: make the brand feel like a big button */
-  .site-nav .brand {
-    width: 100%;
-    display: block;
-    padding: var(--space-lg) var(--space-lg);
-    margin-top: var(--space-lg);
-  }
-
-  /* Keep menu readable and consistent */
-  .site-nav,
-  .site-nav a,
-  .site-nav .brand {
-    color: var(--fg);
-  }
-  .site-nav.is-open {
-    left: 0;
-    box-shadow: var(--shadow-lg);
-  }
-  .brand {
-    font-size: 1.5rem;
-  }
-  .nav-list {
-    flex-direction: column;
-    width: 100%;
-    gap: var(--space-sm);
-  }
-  .nav-list a {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding: var(--space-lg) var(--space-lg);
-    font-size: 1.25rem;
-    line-height: 1.2;
-    min-height: 64px;
-    border-radius: 0;
-  }
-
-  /* Mobile: remove rounded corners from header button too */
-  .sound-toggle {
-    border-radius: 0;
-  }
-  /* Overlay when menu is open */
-  .menu-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    /* Must sit UNDER the header/menu so it doesn't cover the panel */
-    z-index: 70;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-  }
-  .menu-overlay.is-visible {
-    opacity: 1;
-    pointer-events: auto;
-  }
-  /* On reduced motion, ensure overlay is never invisible by default */
-  @media (prefers-reduced-motion: reduce) {
-    .menu-overlay:not(.is-visible) {
-      display: none;
-    }
-  }
 }
 
 /* 5) Hero (video, scrim, content) ------------------------------------------ */
@@ -465,6 +268,10 @@ body.stage-2 .intro-title:hover {
   text-decoration: none;
 }
 
+.hero-ctas .cta.primary { 
+  color: rgba(255,255,255,0.9); 
+}
+
 /* 7) Floating CTA ----------------------------------------------------------- */
 .floating-cta {
   position: fixed; 
@@ -514,6 +321,13 @@ body.stage-0 .intro-title {
   animation: none;
 }
 
+@keyframes titleFade { 
+  from { opacity: 0; transform: scale(0.96); } 
+  to { opacity: 1; transform: scale(1); } 
+}
+
+body.stage-1 .hero-ctas { pointer-events: auto; }
+
 body.stage-2 .hero-ctas { 
   pointer-events: auto;
 }
@@ -521,6 +335,10 @@ body.stage-2 .intro-title {
   opacity: 1; 
   pointer-events: auto; 
 }
+
+/* Title: opacity flash on first click (dip then return) */
+.title-opacity-flash { animation: titleOpacityFlash 1s ease; }
+@keyframes titleOpacityFlash { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
 /* 9) Footer ----------------------------------------------------------------- */
 .site-footer { border-top: 1px solid var(--border); margin-top: var(--space-3xl); }
@@ -541,6 +359,62 @@ body.stage-2 .intro-title {
 }
 .social a:hover {
   color: var(--accent);
+}
+
+/* ADAM Teaser Section */
+.adam-teaser {
+  padding: var(--space-2xl) var(--space-lg);
+  max-width: 960px;
+  margin: 0 auto;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+.adam-teaser h2 {
+  font-size: 1.25rem;
+  margin: 0 0 var(--space-lg);
+  color: var(--fg);
+}
+.adam-insights {
+  display: grid;
+  gap: var(--space-md);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-bottom: var(--space-lg);
+}
+.adam-insights-group {
+  display: grid;
+  gap: var(--space-sm);
+}
+.adam-insight-bar {
+  height: 36px;
+  background: var(--btn-secondary-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  position: relative;
+  overflow: hidden;
+}
+.adam-insight-bar label {
+  position: absolute;
+  left: var(--space-md);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.9rem;
+  z-index: 1;
+  font-weight: 500;
+  margin: 0;
+}
+.adam-insight-bar-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--accent), #60a5fa);
+  transition: width 0.6s ease;
+}
+.adam-teaser .muted {
+  margin-top: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+.adam-teaser p:last-child {
+  margin: 0;
 }
 
 /* 10) Page Content Shells --------------------------------------------------- */
@@ -579,6 +453,35 @@ body.stage-2 .intro-title {
 .muted { 
   color: var(--fg-muted); 
 }
+
+/* Work page — original buttons copied -------------------------------------- */
+.work-ctas { display: grid; gap: 12px; width: min(720px, 92vw); margin: 24px auto 0; }
+.work-ctas .button {
+  color:#fff;
+  border:none;
+  position:relative;
+  height:3rem;
+  font-size:1.2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+  padding: 1rem;
+}
+.work-ctas .button:hover {
+  background:#fff;
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+.work-ctas .button:before,.work-ctas .button:after{
+  content:'';
+  position:absolute;
+  height:2px;
+  width:0;
+  background:#fff;
+  transition:400ms ease all;
+}
+.work-ctas .button:before { top:0; right:0; }
+.work-ctas .button:after { bottom:0; left:0; }
+.work-ctas .button:hover:before, .work-ctas .button:hover:after{ width:100%; }
 
 /* 11) Forms ----------------------------------------------------------------- */
 label { 
@@ -619,11 +522,27 @@ button[type="submit"], .btn {
 }
 
 /* Inline form feedback (replaces disruptive alerts) */
+.form-status {
+  margin: var(--space-sm) 0 0;
+  color: var(--fg-muted);
+  min-height: 1.2em;
+}
 button[type="submit"]:hover, .btn:hover { 
   background: var(--accent-hover);
   border-color: var(--accent-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
+}
+
+/* 14) Page-specific utility classes --------------------------------------- */
+.direct-contact {
+  margin-top: 20px;
+}
+
+.whatsapp-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* Contact page layout */
@@ -642,6 +561,12 @@ button[type="submit"]:hover, .btn:hover {
 }
 
 /* Pricing page layout (moved from inline <style>) */
+.tiers {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
 .card {
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -657,24 +582,13 @@ button[type="submit"]:hover, .btn:hover {
 
 /* 12) Reduced Motion -------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
-  /* Keep animations off, but allow transitions.
-     Mobile browsers / battery-saver reduced-motion can disable animations;
-     if we also force transitions off, the intro overlay disappears instantly. */
-  * { animation: none !important; }
+  * { animation: none !important; transition: none !important; }
 }
 
 /* Page Load Animation */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
-}
-
-/* On mobile devices, start at opacity: 1 to avoid reduced-motion issues */
-@media (max-width: 768px) {
-  @keyframes fadeIn {
-    from { opacity: 1; }
-    to { opacity: 1; }
-  }
 }
 
 body {
@@ -696,3 +610,179 @@ html {
 @media (min-width: 768px) {
   .intro-title { font-size: 4rem; }
 }
+
+/* _________________________ Mobile BUTTONS _____________________________________________ */
+@media (max-width: 999px) {
+  .work-ctas .button {
+    color:#fff;
+    border:none;
+    position:relative;
+    height:3rem;
+    font-size:1.2em;
+    cursor:pointer;
+    transition:800ms ease all;
+    outline:none;
+    padding: 1rem;
+  }
+  .work-ctas .button:hover {
+    background:#fff;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  }
+  .work-ctas .button:before,.work-ctas .button:after{
+    content:'';
+    position:absolute;
+    top:0;
+    right:0;
+    height:2px;
+    width:0;
+    transition:400ms ease all;
+  }
+  .work-ctas .button:after{
+    right:inherit;
+    top:inherit;
+    left:0;
+    bottom:0;
+  }
+  .work-ctas .button:hover:before,.work-ctas .button:hover:after{
+    width:100%;
+    transition:800ms ease all;
+  }
+  .work-ctas .button:active{
+    color:#fff;
+  }
+
+  /* Weddings button (mobile) */
+  .work-ctas .weddings-btn {
+    background:#D0253C;
+  }
+  .work-ctas .weddings-btn:hover{
+    color:#D0253C;
+  }
+  .work-ctas .weddings-btn:before,.work-ctas .weddings-btn:after{
+    background: #D0253C;
+  }
+  .work-ctas .weddings-btn:active{
+    background:#D0253C;
+  }
+
+  /* Portraits button (mobile) */
+  .work-ctas .portraits-btn {
+    background:#2f2a50;
+  }
+  .work-ctas .portraits-btn:hover{
+    color:#2f2a50;
+  }
+  .work-ctas .portraits-btn:before,.work-ctas .portraits-btn:after{
+    background: #2f2a50;
+  }
+  .work-ctas .portraits-btn:active{
+    background:#2f2a50;
+  }
+
+  /* Projects button (mobile) */
+  .work-ctas .projects-btn {
+    background:#f4572A;
+  }
+  .work-ctas .projects-btn:hover{
+    color:#f4572A;
+  }
+  .work-ctas .projects-btn:before,.work-ctas .projects-btn:after{
+    background: #f4572A;
+  }
+  .work-ctas .projects-btn:active{
+    background:#f4572A;
+  }
+}
+
+/* _________________________ Desktop BUTTONS _____________________________________________ */
+@media (min-width: 1000px) {
+  .work-ctas .button {
+    color:#fff;
+    border:none;
+    position:relative;
+    height:60px;
+    font-size:1.6em;
+    padding:0 2em;
+    cursor:pointer;
+    transition:800ms ease all;
+    outline:none;
+  }
+  .work-ctas .button:hover {
+    background:#fff;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  }
+  .work-ctas .button:before,.work-ctas .button:after{
+    content:'';
+    position:absolute;
+    top:0;
+    right:0;
+    height:2px;
+    width:0;
+    transition:400ms ease all;
+  }
+  .work-ctas .button:after{
+    right:inherit;
+    top:inherit;
+    left:0;
+    bottom:0;
+  }
+  .work-ctas .button:hover:before,.work-ctas .button:hover:after{
+    width:100%;
+    transition:800ms ease all;
+  }
+  .work-ctas .button:active{
+    color:#fff;
+  }
+
+  /* Weddings button (desktop) */
+  .work-ctas .weddings-btn {
+    background:#D0253C;
+  }
+  .work-ctas .weddings-btn:hover{
+    color:#D0253C;
+  }
+  .work-ctas .weddings-btn:before,.work-ctas .weddings-btn:after{
+    background: #D0253C;
+  }
+  .work-ctas .weddings-btn:active{
+    background:#D0253C;
+  }
+
+  /* Portraits button (desktop) */
+  .work-ctas .portraits-btn {
+    background:#2f2a50;
+  }
+  .work-ctas .portraits-btn:hover{
+    color:#2f2a50;
+  }
+  .work-ctas .portraits-btn:before,.work-ctas .portraits-btn:after{
+    background: #2f2a50;
+  }
+  .work-ctas .portraits-btn:active{
+    background:#2f2a50;
+  }
+
+  /* Projects button (desktop) */
+  .work-ctas .projects-btn {
+    background:#f4572A;
+  }
+  .work-ctas .projects-btn:hover{
+    color:#f4572A;
+  }
+  .work-ctas .projects-btn:before,.work-ctas .projects-btn:after{
+    background: #f4572A;
+  }
+  .work-ctas .projects-btn:active{
+    background:#f4572A;
+  }
+}
+
+/* Work page buttons — visibility boost (equal glow + thicker lines) */
+.work-ctas .button:before,
+.work-ctas .button:after { height: 3px; }
+.work-ctas .weddings-btn:before,
+.work-ctas .weddings-btn:after { box-shadow: 0 0 8px #D0253C; }
+.work-ctas .portraits-btn:before,
+.work-ctas .portraits-btn:after { background: #6c63a8; box-shadow: 0 0 8px #6c63a8; }
+.work-ctas .projects-btn:before,
+.work-ctas .projects-btn:after { box-shadow: 0 0 8px #f4572A; }

@@ -1,0 +1,993 @@
+<!doctype html>
+<!--
+==============================================================================
+ADAM - Features Page
+==============================================================================
+
+PURPOSE:
+    Detailed showcase of ADAM's core platform capabilities. Converts visitors
+    who need more information before signing up (mid-funnel content).
+
+TARGET AUDIENCE:
+    - Creators researching growth tools (comparison shopping)
+    - Technical users who want to understand "how it works"
+    - Users referred from ads/social who need education
+
+PAGE SECTIONS:
+    1. Features Hero
+       - Overview headline emphasizing key benefit
+       - Brief summary of platform capabilities
+
+    2. First-Hour Alerts
+       - Explains ADAM's predictive early-warning system
+       - Shows how creators can salvage underperforming content
+       - Visual demonstration of alert workflow
+
+    3. Experiments Engine
+       - A/B testing for TikTok content
+       - Data-driven decision making
+       - Compare strategies scientifically
+
+    4. AI Coach
+       - Personalized recommendations based on account data
+       - Natural language explanations (not just metrics)
+       - Growth roadmap generation
+
+    5. Missions System
+       - Gamified challenges to maintain consistency
+       - Research-backed growth tactics
+       - Progress tracking and rewards
+
+    6. Research Foundation
+       - Credibility builder: Features based on academic research
+       - Links to sources (transparency)
+       - Differentiates from competitors making unsubstantiated claims
+
+    7. Feature Comparison Table
+       - ADAM vs manual analysis vs other tools
+       - Clear competitive advantages
+
+    8. CTA Section
+       - Trial offer: "Try all features free for 7 days"
+       - No credit card required (reduces friction)
+
+CONVERSION STRATEGY:
+    - Addresses "how does it work?" objection
+    - Provides proof (research citations)
+    - Shows concrete examples (screenshots, videos)
+    - Multiple CTAs throughout (every 2-3 sections)
+
+DESIGN NOTES:
+    - Feature illustrations/icons for visual learners
+    - Expandable sections on mobile (progressive disclosure)
+    - Smooth scroll animations (Intersection Observer)
+
+DEPENDENCIES:
+    - css/adam-styles.css (design system)
+    - css/global-nav.css (navigation)
+    - js/global-nav.js (navigation functionality)
+    - js/components.js (header/footer)
+    - app.js (PJAX navigation)
+
+==============================================================================
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Alternate language versions for SEO -->
+    <link rel="alternate" hreflang="en" href="adam-features.html" />
+    <link rel="alternate" hreflang="es" href="es/adam-features.html" />
+    <link rel="alternate" hreflang="x-default" href="adam-features.html" />
+
+
+
+    <link rel="icon" type="image/png" href="media/Logo.png" />
+    <title>Features - ADAM TikTok AI Growth Manager</title>
+    <meta name="description" content="Explore ADAM's powerful features: First-hour alerts, experiments engine, AI coach, missions, and research-backed growth strategies for TikTok creators." />
+    <link rel="stylesheet" href="css/adam-styles.css" />
+    <link rel="stylesheet" href="css/global-nav.css" />
+    <style>
+      /* Page-specific styles */
+      .features-hero {
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(ellipse at top, #0f172a 0%, #020617 100%);
+        padding: var(--space-12) var(--space-6);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .features-hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: 
+          radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+          radial-gradient(circle at 70% 60%, rgba(6, 182, 212, 0.06) 0%, transparent 40%);
+        animation: slowRotate 60s linear infinite;
+      }
+      
+      @keyframes slowRotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      
+      .features-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 800px;
+      }
+      
+      .features-hero h1 {
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 800;
+        background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: var(--space-4);
+        letter-spacing: -0.02em;
+      }
+      
+      .features-hero p {
+        font-size: var(--text-xl);
+        color: var(--adam-text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      
+      /* Feature Section Deep Dive */
+      .feature-deep-section {
+        padding: var(--space-16) 0;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        position: relative;
+      }
+      
+      .feature-deep-section:nth-child(even) {
+        background: rgba(15, 23, 42, 0.5);
+      }
+      
+      .feature-deep-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-12);
+        align-items: center;
+      }
+      
+      @media (max-width: 768px) {
+        .feature-deep-grid {
+          grid-template-columns: 1fr;
+        }
+        .feature-deep-grid.reverse .feature-visual {
+          order: -1;
+        }
+      }
+      
+      .feature-content h2 {
+        font-size: var(--text-3xl);
+        margin-bottom: var(--space-4);
+        color: var(--adam-text-primary);
+      }
+      
+      .feature-content h2 .highlight {
+        color: var(--adam-primary);
+      }
+      
+      .feature-content > p {
+        font-size: var(--text-lg);
+        color: var(--adam-text-secondary);
+        margin-bottom: var(--space-6);
+        line-height: 1.7;
+      }
+      
+      .feature-benefits {
+        list-style: none;
+        margin: 0 0 var(--space-6) 0;
+        padding: 0;
+      }
+      
+      .feature-benefits li {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-3);
+        margin-bottom: var(--space-4);
+        color: var(--adam-text-primary);
+      }
+      
+      .feature-benefits li::before {
+        content: '✓';
+        color: var(--adam-success);
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      
+      .feature-visual {
+        position: relative;
+      }
+      
+      .feature-visual-card {
+        background: var(--adam-surface);
+        border: 1px solid var(--adam-border);
+        border-radius: 16px;
+        padding: var(--space-6);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .feature-visual-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--adam-primary), var(--adam-secondary));
+      }
+      
+      /* Psychology Callout */
+      .psychology-callout {
+        background: rgba(59, 130, 246, 0.1);
+        border-left: 4px solid var(--adam-primary);
+        padding: var(--space-4) var(--space-5);
+        border-radius: 0 8px 8px 0;
+        margin: var(--space-6) 0;
+      }
+      
+      .psychology-callout h4 {
+        font-size: var(--text-sm);
+        color: var(--adam-primary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: var(--space-2);
+      }
+      
+      .psychology-callout p {
+        color: var(--adam-text-secondary);
+        font-size: var(--text-sm);
+        margin: 0;
+      }
+      
+      /* Mock UI Elements */
+      .mock-alert {
+        background: rgba(244, 63, 94, 0.1);
+        border: 1px solid rgba(244, 63, 94, 0.3);
+        border-radius: 12px;
+        padding: var(--space-4);
+        margin-bottom: var(--space-4);
+      }
+      
+      .mock-alert-header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        margin-bottom: var(--space-2);
+      }
+      
+      .mock-alert-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--adam-accent);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+      }
+      
+      .mock-alert-title {
+        font-weight: 600;
+        color: var(--adam-text-primary);
+      }
+      
+      .mock-alert-time {
+        font-size: var(--text-sm);
+        color: var(--adam-text-muted);
+        margin-left: auto;
+      }
+      
+      .mock-alert-body {
+        color: var(--adam-text-secondary);
+        font-size: var(--text-sm);
+      }
+      
+      .mock-metric {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--space-3) 0;
+        border-bottom: 1px solid var(--adam-border);
+      }
+      
+      .mock-metric:last-child {
+        border-bottom: none;
+      }
+      
+      .mock-metric-label {
+        color: var(--adam-text-muted);
+        font-size: var(--text-sm);
+      }
+      
+      .mock-metric-value {
+        font-weight: 600;
+        color: var(--adam-text-primary);
+      }
+      
+      .mock-metric-value.positive {
+        color: var(--adam-success);
+      }
+      
+      .mock-metric-value.negative {
+        color: var(--adam-accent);
+      }
+      
+      /* Experiments Visual */
+      .experiment-visual {
+        display: flex;
+        gap: var(--space-4);
+      }
+      
+      .experiment-variant {
+        flex: 1;
+        background: var(--adam-surface);
+        border: 1px solid var(--adam-border);
+        border-radius: 12px;
+        padding: var(--space-4);
+        text-align: center;
+      }
+      
+      .experiment-variant.winner {
+        border-color: var(--adam-success);
+        background: rgba(16, 185, 129, 0.1);
+      }
+      
+      .variant-label {
+        font-size: var(--text-sm);
+        color: var(--adam-text-muted);
+        margin-bottom: var(--space-2);
+      }
+      
+      .variant-thumbnail {
+        width: 100%;
+        aspect-ratio: 9/16;
+        background: linear-gradient(135deg, var(--adam-surface-elevated), var(--adam-bg-dark));
+        border-radius: 8px;
+        margin-bottom: var(--space-3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+      }
+      
+      .variant-stat {
+        font-size: var(--text-2xl);
+        font-weight: 700;
+        color: var(--adam-text-primary);
+      }
+      
+      .winner .variant-stat {
+        color: var(--adam-success);
+      }
+      
+      .variant-stat-label {
+        font-size: var(--text-sm);
+        color: var(--adam-text-muted);
+      }
+      
+      /* Mission Visual */
+      .mission-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      
+      .mission-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        padding: var(--space-4);
+        background: var(--adam-surface);
+        border-radius: 12px;
+        margin-bottom: var(--space-3);
+        transition: all var(--duration-base) var(--ease-out);
+      }
+      
+      .mission-item:hover {
+        transform: translateX(4px);
+        background: var(--adam-surface-elevated);
+      }
+      
+      .mission-check {
+        width: 24px;
+        height: 24px;
+        border: 2px solid var(--adam-border);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      
+      .mission-item.completed .mission-check {
+        background: var(--adam-success);
+        border-color: var(--adam-success);
+        color: white;
+      }
+      
+      .mission-text {
+        flex: 1;
+      }
+      
+      .mission-text h4 {
+        font-size: var(--text-base);
+        color: var(--adam-text-primary);
+        margin-bottom: 2px;
+      }
+      
+      .mission-text p {
+        font-size: var(--text-sm);
+        color: var(--adam-text-muted);
+        margin: 0;
+      }
+      
+      .mission-xp {
+        background: rgba(59, 130, 246, 0.2);
+        color: var(--adam-primary);
+        padding: var(--space-1) var(--space-3);
+        border-radius: 99px;
+        font-size: var(--text-sm);
+        font-weight: 600;
+      }
+      
+      /* Compare Table */
+      .compare-section {
+        padding: var(--space-16) 0;
+        background: var(--adam-bg-dark);
+      }
+      
+      .compare-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: var(--space-8);
+      }
+      
+      .compare-table th,
+      .compare-table td {
+        padding: var(--space-4);
+        text-align: left;
+        border-bottom: 1px solid var(--adam-border);
+      }
+      
+      .compare-table th {
+        color: var(--adam-text-muted);
+        font-weight: 600;
+        font-size: var(--text-sm);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      
+      .compare-table td {
+        color: var(--adam-text-primary);
+      }
+      
+      .compare-table td:first-child {
+        font-weight: 500;
+      }
+      
+      .compare-table .check {
+        color: var(--adam-success);
+        font-size: 1.25rem;
+      }
+      
+      .compare-table .x {
+        color: var(--adam-text-muted);
+        font-size: 1.25rem;
+      }
+      
+      .compare-table .adam-col {
+        background: rgba(59, 130, 246, 0.05);
+      }
+      
+      /* CTA Section */
+      .features-cta {
+        padding: var(--space-16) 0;
+        text-align: center;
+        background: linear-gradient(180deg, var(--adam-bg-dark) 0%, #0f172a 100%);
+      }
+      
+      .features-cta h2 {
+        font-size: var(--text-3xl);
+        margin-bottom: var(--space-4);
+      }
+      
+      .features-cta p {
+        color: var(--adam-text-secondary);
+        font-size: var(--text-lg);
+        max-width: 500px;
+        margin: 0 auto var(--space-8);
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    
+    <!-- Header -->
+    <div id="global-nav-container"></div>
+
+    <main id="main" role="main">
+      
+      <!-- Hero -->
+      <section class="features-hero">
+        <div class="features-hero-content">
+          <h1 id="features-hero-title">Features Built for Growth</h1>
+          <p id="features-hero-subtitle">Every feature in ADAM is designed around one question: "What should I do next?" Here's how we turn data into action.</p>
+        </div>
+      </section>
+
+      <!-- Feature 1: First-Hour Alerts -->
+      <section class="feature-deep-section" id="first-hour">
+        <div class="adam-container">
+          <div class="feature-deep-grid">
+            <div class="feature-content">
+              <h2>⚡ <span class="highlight">First-Hour Alerts</span></h2>
+              <p>
+                TikTok's algorithm makes decisions fast. The first 30-120 minutes after you post 
+                determine whether your video gets pushed to the For You Page or dies in obscurity.
+              </p>
+              <ul class="feature-benefits">
+                <li><strong>Velocity tracking:</strong> We monitor views, likes, shares, and comments in real-time during the critical window</li>
+                <li><strong>Instant alerts:</strong> Get notified the moment your video underperforms your baseline</li>
+                <li><strong>Action prompts:</strong> Specific suggestions (share to story, engage with comments, cross-post) to boost velocity</li>
+                <li><strong>Baseline comparison:</strong> See how this video compares to your typical first-hour performance</li>
+              </ul>
+              
+              <div class="psychology-callout">
+                <h4>🧠 The Science</h4>
+                <p>Research shows TikTok's recommendation system heavily weights early engagement signals. Videos that hit velocity thresholds in the first hour are 4.7x more likely to reach 100K+ views. (Source: ACM Digital Library, 2024)</p>
+              </div>
+            </div>
+            <div class="feature-visual">
+              <div class="feature-visual-card">
+                <div class="mock-alert">
+                  <div class="mock-alert-header">
+                    <div class="mock-alert-icon">⚠️</div>
+                    <span class="mock-alert-title">Low First-Hour Velocity</span>
+                    <span class="mock-alert-time">12 min ago</span>
+                  </div>
+                  <div class="mock-alert-body">
+                    Your "Morning Routine" video is at 45% of your typical first-hour views. Consider sharing to your story or engaging with early commenters.
+                  </div>
+                </div>
+                <div class="mock-metric">
+                  <span class="mock-metric-label">Views (first hour)</span>
+                  <span class="mock-metric-value negative">234 (-55%)</span>
+                </div>
+                <div class="mock-metric">
+                  <span class="mock-metric-label">Engagement Rate</span>
+                  <span class="mock-metric-value positive">8.2% (+12%)</span>
+                </div>
+                <div class="mock-metric">
+                  <span class="mock-metric-label">Share Rate</span>
+                  <span class="mock-metric-value">2.1%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feature 2: Experiments Engine -->
+      <section class="feature-deep-section" id="experiments">
+        <div class="adam-container">
+          <div class="feature-deep-grid reverse">
+            <div class="feature-visual">
+              <div class="feature-visual-card">
+                <h3 style="margin-bottom: var(--space-4); font-size: var(--text-lg);">Experiment: Hook Style Test</h3>
+                <div class="experiment-visual">
+                  <div class="experiment-variant">
+                    <div class="variant-label">Variant A</div>
+                    <div class="variant-thumbnail">🎤</div>
+                    <div class="variant-stat">2.3%</div>
+                    <div class="variant-stat-label">Engagement</div>
+                  </div>
+                  <div class="experiment-variant winner">
+                    <div class="variant-label">Variant B ✓</div>
+                    <div class="variant-thumbnail">🎬</div>
+                    <div class="variant-stat">4.8%</div>
+                    <div class="variant-stat-label">Engagement</div>
+                  </div>
+                </div>
+                <div style="margin-top: var(--space-4); padding: var(--space-3); background: rgba(16,185,129,0.1); border-radius: 8px;">
+                  <p style="margin: 0; font-size: var(--text-sm); color: var(--adam-success);">
+                    <strong>Result:</strong> "Action-first" hooks outperform "question" hooks by 109% for your audience.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="feature-content">
+              <h2>🧪 <span class="highlight">Experiments Engine</span></h2>
+              <p>
+                Stop guessing. Start testing. ADAM's experiments engine turns your content creation 
+                into a structured learning process that compounds over time.
+              </p>
+              <ul class="feature-benefits">
+                <li><strong>Hypothesis library:</strong> Choose from proven test ideas (hooks, thumbnails, timing, formats) or create your own</li>
+                <li><strong>Structured measurement:</strong> Track results at 1h, 6h, 24h, and 72h windows</li>
+                <li><strong>Statistical rigor:</strong> We tell you when results are significant vs. noise</li>
+                <li><strong>Learning memory:</strong> Every experiment adds to your personal playbook</li>
+              </ul>
+              
+              <div class="psychology-callout">
+                <h4>🧠 The Science</h4>
+                <p>Netflix's A/B testing research shows that sequential monitoring with pre-defined windows reduces false positives by 60%. We use the same methodology, adapted for creator content. (Source: Netflix TechBlog, 2024)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feature 3: Missions & Gamification -->
+      <section class="feature-deep-section" id="missions">
+        <div class="adam-container">
+          <div class="feature-deep-grid">
+            <div class="feature-content">
+              <h2>🎮 <span class="highlight">Missions & Rewards</span></h2>
+              <p>
+                Consistency is the #1 predictor of TikTok growth. ADAM's mission system uses 
+                evidence-based habit formation techniques to make consistency feel like a game.
+              </p>
+              <ul class="feature-benefits">
+                <li><strong>Weekly missions:</strong> Clear, achievable goals tailored to your growth stage</li>
+                <li><strong>XP & coins:</strong> Earn rewards for actions that correlate with actual growth</li>
+                <li><strong>Streaks:</strong> Visual progress tracking that builds momentum</li>
+                <li><strong>Smart prompts:</strong> Timely reminders based on your optimal posting schedule</li>
+              </ul>
+              
+              <div class="psychology-callout">
+                <h4>🧠 The Science</h4>
+                <p>A systematic review of 62 digital behavior change interventions found that goal-setting, self-monitoring, prompts/cues, and reinforcement are the most effective techniques for habit formation. ADAM implements all four. (Source: J Med Internet Res, 2024)</p>
+              </div>
+            </div>
+            <div class="feature-visual">
+              <div class="feature-visual-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+                  <h3 style="margin: 0; font-size: var(--text-lg);">This Week's Missions</h3>
+                  <span style="background: var(--adam-primary); color: white; padding: 4px 12px; border-radius: 99px; font-size: var(--text-sm);">5/8 Complete</span>
+                </div>
+                <ul class="mission-list">
+                  <li class="mission-item completed">
+                    <div class="mission-check">✓</div>
+                    <div class="mission-text">
+                      <h4>Post 3 videos this week</h4>
+                      <p>Consistency builds audience trust</p>
+                    </div>
+                    <span class="mission-xp">+50 XP</span>
+                  </li>
+                  <li class="mission-item completed">
+                    <div class="mission-check">✓</div>
+                    <div class="mission-text">
+                      <h4>Try a new hook style</h4>
+                      <p>Based on your experiment results</p>
+                    </div>
+                    <span class="mission-xp">+75 XP</span>
+                  </li>
+                  <li class="mission-item">
+                    <div class="mission-check"></div>
+                    <div class="mission-text">
+                      <h4>Post during peak hour</h4>
+                      <p>Your best time: 6-8 PM</p>
+                    </div>
+                    <span class="mission-xp">+25 XP</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feature 4: AI Coach -->
+      <section class="feature-deep-section" id="ai-coach">
+        <div class="adam-container">
+          <div class="feature-deep-grid reverse">
+            <div class="feature-visual">
+              <div class="feature-visual-card">
+                <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
+                  <div style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--adam-primary), var(--adam-secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center;">🤖</div>
+                  <div>
+                    <div style="font-weight: 600;">ADAM Coach</div>
+                    <div style="font-size: var(--text-sm); color: var(--adam-text-muted);">Your AI strategy partner</div>
+                  </div>
+                </div>
+                
+                <div style="background: var(--adam-bg-dark); border-radius: 12px; padding: var(--space-4); margin-bottom: var(--space-3);">
+                  <p style="margin: 0; color: var(--adam-text-secondary); font-size: var(--text-sm);">
+                    <strong style="color: var(--adam-text-primary);">You:</strong> Why did my dance video perform 3x better than my talking videos?
+                  </p>
+                </div>
+                
+                <div style="background: rgba(59,130,246,0.1); border-radius: 12px; padding: var(--space-4);">
+                  <p style="margin: 0; color: var(--adam-text-secondary); font-size: var(--text-sm);">
+                    <strong style="color: var(--adam-primary);">ADAM:</strong> Looking at your data, your dance videos have 23% higher completion rate in the first 3 seconds. This matters because TikTok's algorithm prioritizes retention. Your talking videos have strong engagement (comments +15%), but lower initial hook—consider opening with movement even in talking videos.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="feature-content">
+              <h2>💬 <span class="highlight">AI Coach</span></h2>
+              <p>
+                Ask questions. Get answers grounded in YOUR data, not generic advice. 
+                ADAM's AI coach explains the "why" behind every recommendation.
+              </p>
+              <ul class="feature-benefits">
+                <li><strong>Data-grounded:</strong> Every answer references your actual metrics and baselines</li>
+                <li><strong>Honest uncertainty:</strong> When we don't know, we say so—no fake confidence</li>
+                <li><strong>Research-backed:</strong> Recommendations cite TikTok's creative best practices and academic research</li>
+                <li><strong>Context-aware:</strong> Understands your niche, posting history, and past experiments</li>
+              </ul>
+              
+              <div class="psychology-callout">
+                <h4>🧠 The Science</h4>
+                <p>We follow TikTok's official "Creative Codes": Hook viewers in 3 seconds, use native style, and create for sound-on. Our AI coach translates these principles into specific actions for your content. (Source: TikTok For Business, 2024)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feature 5: Growth Predictions -->
+      <section class="feature-deep-section" id="predictions">
+        <div class="adam-container">
+          <div class="feature-deep-grid">
+            <div class="feature-content">
+              <h2>📈 <span class="highlight">Calibrated Predictions</span></h2>
+              <p>
+                See where you're headed—with honest confidence intervals. ADAM's predictions 
+                are calibrated against real outcomes, so you know when to trust them.
+              </p>
+              <ul class="feature-benefits">
+                <li><strong>Early velocity → 24h forecast:</strong> Predict final reach from first-hour signals</li>
+                <li><strong>Weekly projections:</strong> See expected follower growth based on current trajectory</li>
+                <li><strong>Confidence bands:</strong> Wide when uncertain, narrow when confident</li>
+                <li><strong>Calibration tracking:</strong> We track our prediction accuracy over time</li>
+              </ul>
+              
+              <div class="psychology-callout">
+                <h4>🧠 The Science</h4>
+                <p>Research shows early engagement metrics (first 1-6 hours) correlate 0.7+ with 24-hour performance. ADAM uses this correlation for forecasting, with explicit uncertainty quantification. (Source: ACM SIGKDD, 2023)</p>
+              </div>
+            </div>
+            <div class="feature-visual">
+              <div class="feature-visual-card">
+                <h3 style="margin-bottom: var(--space-4); font-size: var(--text-lg);">24-Hour Forecast</h3>
+                <div style="height: 150px; background: linear-gradient(180deg, rgba(59,130,246,0.2) 0%, transparent 100%); border-radius: 8px; display: flex; align-items: flex-end; justify-content: center; padding: var(--space-4); margin-bottom: var(--space-4);">
+                  <div style="text-align: center;">
+                    <div style="font-size: var(--text-3xl); font-weight: 700; color: var(--adam-text-primary);">12K - 18K</div>
+                    <div style="font-size: var(--text-sm); color: var(--adam-text-muted);">Predicted views (80% confidence)</div>
+                  </div>
+                </div>
+                <div class="mock-metric">
+                  <span class="mock-metric-label">Current (2h)</span>
+                  <span class="mock-metric-value">3,241 views</span>
+                </div>
+                <div class="mock-metric">
+                  <span class="mock-metric-label">Velocity</span>
+                  <span class="mock-metric-value positive">+34% above baseline</span>
+                </div>
+                <div class="mock-metric">
+                  <span class="mock-metric-label">Model confidence</span>
+                  <span class="mock-metric-value">High (r²=0.82)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feature 6: Content Strategy -->
+      <section class="feature-deep-section" id="strategy">
+        <div class="adam-container">
+          <div class="feature-deep-grid reverse">
+            <div class="feature-visual">
+              <div class="feature-visual-card">
+                <h3 style="margin-bottom: var(--space-4); font-size: var(--text-lg);">Your Content Playbook</h3>
+                <div style="margin-bottom: var(--space-4);">
+                  <div style="font-size: var(--text-sm); color: var(--adam-text-muted); margin-bottom: var(--space-2);">Best Posting Times</div>
+                  <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+                    <span style="background: var(--adam-success); color: white; padding: 4px 10px; border-radius: 6px; font-size: var(--text-sm);">6-8 PM</span>
+                    <span style="background: rgba(16,185,129,0.3); color: var(--adam-success); padding: 4px 10px; border-radius: 6px; font-size: var(--text-sm);">10-11 AM</span>
+                    <span style="background: var(--adam-surface-elevated); padding: 4px 10px; border-radius: 6px; font-size: var(--text-sm); color: var(--adam-text-muted);">2-4 PM</span>
+                  </div>
+                </div>
+                <div style="margin-bottom: var(--space-4);">
+                  <div style="font-size: var(--text-sm); color: var(--adam-text-muted); margin-bottom: var(--space-2);">Top Performing Formats</div>
+                  <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+                    <span style="background: rgba(59,130,246,0.2); color: var(--adam-primary); padding: 4px 10px; border-radius: 6px; font-size: var(--text-sm);">Dance +127%</span>
+                    <span style="background: rgba(59,130,246,0.1); color: var(--adam-primary); padding: 4px 10px; border-radius: 6px; font-size: var(--text-sm);">Duet +43%</span>
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size: var(--text-sm); color: var(--adam-text-muted); margin-bottom: var(--space-2);">Hook Quality Score</div>
+                  <div style="display: flex; align-items: center; gap: var(--space-3);">
+                    <div style="flex: 1; height: 8px; background: var(--adam-surface-elevated); border-radius: 4px; overflow: hidden;">
+                      <div style="width: 78%; height: 100%; background: linear-gradient(90deg, var(--adam-primary), var(--adam-secondary));"></div>
+                    </div>
+                    <span style="font-weight: 600; color: var(--adam-text-primary);">78/100</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="feature-content">
+              <h2>🎬 <span class="highlight">Content Strategy</span></h2>
+              <p>
+                Your personalized playbook, built from your own data. Stop copying 
+                generic advice—discover what actually works for YOUR audience.
+              </p>
+              <ul class="feature-benefits">
+                <li><strong>Best posting times:</strong> Calculated from your audience's engagement patterns</li>
+                <li><strong>Format performance:</strong> See which content types drive the most growth</li>
+                <li><strong>Hook quality scoring:</strong> Rate your first 3 seconds against your best performers</li>
+                <li><strong>Content pillars:</strong> Identify your strongest themes and topics</li>
+              </ul>
+              
+              <div class="psychology-callout">
+                <h4>🧠 The Science</h4>
+                <p>TikTok's official creative guidance emphasizes: "Hook in the first 3 seconds, maintain pacing, and use trending sounds." We score your content against these principles using completion rate and engagement data.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Comparison Table -->
+      <section class="compare-section">
+        <div class="adam-container">
+          <h2 class="adam-section-title">ADAM vs. Generic Analytics</h2>
+          <p class="adam-section-subtitle">
+            We're not another dashboard. Here's what makes ADAM different.
+          </p>
+          
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Generic Tools</th>
+                <th class="adam-col">ADAM</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Shows metrics</td>
+                <td><span class="check">✓</span></td>
+                <td class="adam-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Tells you what to DO with metrics</td>
+                <td><span class="x">✗</span></td>
+                <td class="adam-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>First-hour velocity alerts</td>
+                <td><span class="x">✗</span></td>
+                <td class="adam-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Structured A/B testing</td>
+                <td><span class="x">✗</span></td>
+                <td class="adam-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Learning memory (personalized)</td>
+                <td><span class="x">✗</span></td>
+                <td class="adam-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Gamified missions for consistency</td>
+                <td><span class="x">✗</span></td>
+                <td class="adam-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>AI coach grounded in YOUR data</td>
+                <td><span class="x">✗</span></td>
+                <td class="adam-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Calibrated predictions with confidence</td>
+                <td><span class="x">✗</span></td>
+                <td class="adam-col"><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td>Research-backed recommendations</td>
+                <td><span class="x">✗</span></td>
+                <td class="adam-col"><span class="check">✓</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Final CTA -->
+      <section class="features-cta">
+        <div class="adam-container">
+          <h2 id="features-cta-title">Ready to Stop Guessing?</h2>
+          <p id="features-cta-subtitle">Join 2,847+ creators who are growing with confidence, not confusion.</p>
+          <a href="index.html#waitlist" class="adam-btn-primary adam-btn-large" id="features-cta-join-beta">Join Free Beta</a>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer adam-footer" role="contentinfo">
+      <div class="adam-container">
+        <div class="adam-footer-grid">
+          <div class="adam-footer-col">
+            <h4>Product</h4>
+            <ul>
+              <li><a href="adam-features.html">Features</a></li>
+              <li><a href="adam-pricing.html">Pricing</a></li>
+              <li><a href="index.html#demo-preview">Demo</a></li>
+            </ul>
+          </div>
+          <div class="adam-footer-col">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="adam-about.html">About</a></li>
+              <li><a href="mailto:hello@lenkostudio.com">Contact</a></li>
+            </ul>
+          </div>
+          <div class="adam-footer-col">
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="privacy.html">Privacy</a></li>
+              <li><a href="terms.html">Terms</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="adam-footer-bottom">
+          <p>© 2025 Lenko Studio. All rights reserved.</p>
+          <p class="adam-footer-tagline">Built with ❤️ for TikTok creators</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // =====================================================================
+      // NAVIGATION
+      // =====================================================================
+      // This site uses the injected global nav from `js/global-nav.js`.
+      // Do NOT add legacy menu toggles (`.mobile-menu-toggle`, `.nav-list`) here.
+
+      // Scroll animations
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, observerOptions);
+      
+      document.querySelectorAll('.feature-deep-grid').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'all 0.6s ease-out';
+        observer.observe(el);
+      });
+    </script>
+    <script src="js/global-nav.js"></script>
+    <!-- Analytics and user tracking -->
+    <script src="js/analytics.js?v=20260103" defer></script>
+  </body>
+</html>

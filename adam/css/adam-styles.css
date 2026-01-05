@@ -1,0 +1,4196 @@
+/* ============================================================================
+   ADAM-STYLES.CSS: Main Design System Stylesheet
+   ============================================================================
+
+   PURPOSE:
+       Core styling for ADAM TikTok AI Growth Manager website. Implements a
+       comprehensive design system based on cognitive psychology research and
+       modern web design principles.
+
+   DESIGN PHILOSOPHY:
+       1. Psychology-Driven
+          - Color choices based on trust/clarity research (blue)
+          - Typography scale uses Major Third ratio (1.250) for hierarchy
+          - Shadows create depth perception (card metaphor)
+          - Animation timing matches human perception thresholds
+
+       2. Design Token System
+          - All values defined as CSS custom properties (CSS variables)
+          - Easy theme customization and consistency
+          - Single source of truth for brand identity
+
+       3. Mobile-First Responsive
+          - Base styles target mobile (320px+)
+          - Progressive enhancement for larger screens
+          - Breakpoints: 768px (tablet), 1024px (desktop), 1440px (large)
+
+       4. Accessibility First
+          - High contrast ratios (WCAG AAA where possible)
+          - Focus states clearly visible
+          - Semantic HTML structure
+          - Screen reader friendly
+
+   COLOR PALETTE RATIONALE:
+       Primary Blue (#3b82f6): Trust, clarity, professionalism
+       Cyan (#06b6d4): Innovation, future-focused, tech
+       Rose Accent (#f43f5e): Energy, action, calls-to-action
+       Dark Background (#020617): Premium feel, reduces eye strain
+
+   TYPOGRAPHY SYSTEM:
+       Scale: 1.250 (Major Third)
+       - Creates harmonious visual hierarchy
+       - Each step is 25% larger than previous
+       - Range: 0.64rem (10px) to 3.815rem (61px)
+       - Base: 1rem (16px) for body text
+
+   SPACING SYSTEM:
+       Base unit: 4px
+       - All spacing multiples of 4 for visual consistency
+       - Range: 4px (--space-1) to 128px (--space-16)
+       - Aligns with 8-point grid system
+
+   ANIMATION PRINCIPLES:
+       - Fast (150ms): Micro-interactions (hover, focus)
+       - Base (250ms): Standard transitions (color, size)
+       - Slow (400ms): Complex animations (slide, fade)
+       - Slower (600ms): Page transitions
+       - Uses ease-out for natural deceleration
+
+   FILE STRUCTURE:
+       1. Design Tokens (CSS custom properties)
+       2. Base Resets & Typography
+       3. Layout Utilities
+       4. Component Styles (buttons, cards, forms)
+       5. Page-Specific Styles
+       6. Responsive Media Queries
+
+   USAGE:
+       Linked in <head> of all HTML pages:
+       <link rel="stylesheet" href="css/adam-styles.css">
+
+   DEPENDENCIES:
+       - Inter font (Google Fonts or system fallback)
+       - CSS Grid and Flexbox support
+       - CSS Custom Properties (CSS variables)
+
+   ============================================================================ */
+
+
+/* ========================================================================== */
+/* 1) DESIGN TOKENS                                                           */
+/* ========================================================================== */
+/*
+   WHY CSS custom properties?
+   - Live theme switching possible
+   - Easy brand updates (change once, applies everywhere)
+   - Better than SASS variables (work at runtime, not compile-time)
+   - Cascade with specificity (can override in specific contexts)
+*/
+
+:root {
+    /* ------------------------------------------------------------------------ */
+    /* PRIMARY BRAND COLORS - "Interstellar" Palette                           */
+    /* ------------------------------------------------------------------------ */
+    /*
+       Psychology research shows:
+       - Blue: Most universally trusted color, associated with competence
+       - Cyan: Evokes innovation and technology
+       - Rose: Creates urgency without aggression (better than red)
+    */
+    --adam-primary: #3b82f6;      /* Bright Blue - Trust, Clarity */
+    --adam-secondary: #06b6d4;    /* Cyan - Innovation, Future */
+    --adam-accent: #f43f5e;       /* Rose - Energy, Action (distinct from purple) */
+  
+    /* Aliases for consistency across codebase */
+    --color-primary: #3b82f6;
+    --color-secondary: #06b6d4;
+    --color-accent: #f43f5e;
+  
+    /* ------------------------------------------------------------------------ */
+    /* SEMANTIC COLORS - Feedback States                                       */
+    /* ------------------------------------------------------------------------ */
+    /*
+       Standard UI feedback colors following web conventions.
+       Users have learned associations: green = good, red = error, etc.
+    */
+    --adam-success: #10b981;      /* Emerald - Positive outcomes */
+    --adam-warning: #f59e0b;      /* Amber - Caution, review needed */
+    --adam-danger: #ef4444;       /* Red - Errors, destructive actions */
+    --adam-info: #0ea5e9;         /* Sky Blue - Neutral information */
+  
+    /* ------------------------------------------------------------------------ */
+    /* NEUTRALS - Deep Space Theme                                             */
+    /* ------------------------------------------------------------------------ */
+    /*
+       WHY dark backgrounds?
+       - Reduces eye strain in low-light environments
+       - Premium, modern aesthetic
+       - Makes colors pop (higher perceived contrast)
+       - Popular with tech-savvy audience
+    */
+    --adam-bg-dark: #020617;      /* Rich Black/Slate - Primary background */
+    --adam-bg-light: #f8fafc;     /* Light mode (if implemented) */
+    --adam-surface: #0f172a;      /* Dark Slate - Card backgrounds */
+    --adam-surface-elevated: #1e293b; /* Elevated cards, modals */
+    --adam-border: #1e293b;       /* Subtle borders */
+    --adam-text-primary: #f8fafc; /* High contrast text */
+    --adam-text-secondary: #94a3b8; /* Secondary/muted text */
+    --adam-text-muted: #64748b;   /* Tertiary text, hints */
+  
+    /* ------------------------------------------------------------------------ */
+    /* INTERACTIVE STATES                                                      */
+    /* ------------------------------------------------------------------------ */
+    /*
+       State changes must be visually obvious for usability.
+       Hover/focus states improve perceived responsiveness.
+    */
+    --adam-hover: #1e293b;        /* Background on hover */
+    --adam-active: #334155;       /* Background when pressed */
+    --adam-focus: #3b82f6;        /* Focus ring color */
+    --adam-glow: rgba(59, 130, 246, 0.5); /* Glow effect for primary actions */
+  
+    /* ------------------------------------------------------------------------ */
+    /* TYPOGRAPHY SCALE - Major Third (1.250 ratio)                            */
+    /* ------------------------------------------------------------------------ */
+    /*
+       WHY 1.250?
+       - Creates harmonious visual hierarchy
+       - Not too aggressive (like 1.5 Golden Ratio)
+       - Not too subtle (like 1.125 Minor Third)
+       - Each step is clearly distinguishable
+       
+       Formula: size = base * (1.250 ^ step)
+       
+       Usage guide:
+       --text-xs: Tiny labels, legal text
+       --text-sm: Form labels, captions
+       --text-base: Body paragraphs (optimal reading size)
+       --text-lg: Emphasized body text
+       --text-xl: Subheadings
+       --text-2xl: Section titles
+       --text-3xl: Page titles
+       --text-4xl: Hero headlines
+       --text-5xl: Massive hero text (use sparingly)
+    */
+    --text-xs: 0.64rem;           /* 10.24px - tiny labels */
+    --text-sm: 0.8rem;            /* 12.8px - small text */
+    --text-base: 1rem;            /* 16px - body text (optimal for reading) */
+    --text-lg: 1.25rem;           /* 20px - large body */
+    --text-xl: 1.563rem;          /* 25px - subheadings */
+    --text-2xl: 1.953rem;         /* 31.25px - section titles */
+    --text-3xl: 2.441rem;         /* 39px - page titles */
+    --text-4xl: 3.052rem;         /* 48.8px - hero text */
+    --text-5xl: 3.815rem;         /* 61px - massive hero */
+  
+    /* ------------------------------------------------------------------------ */
+    /* SPACING SYSTEM - 4px base unit                                          */
+    /* ------------------------------------------------------------------------ */
+    /*
+       WHY 4px base?
+       - Aligns with 8-point grid system (industry standard)
+       - Creates visual rhythm and consistency
+       - Easy mental math (multiples of 4)
+       - Works well across all screen sizes
+       
+       Usage guide:
+       --space-1 to --space-4: Tight spacing (padding, gaps)
+       --space-5 to --space-8: Medium spacing (margins, sections)
+       --space-10 to --space-16: Large spacing (page sections, hero areas)
+    */
+    --space-1: 0.25rem;           /* 4px */
+    --space-2: 0.5rem;            /* 8px */
+    --space-3: 0.75rem;           /* 12px */
+    --space-4: 1rem;              /* 16px */
+    --space-5: 1.5rem;            /* 24px */
+    --space-6: 2rem;              /* 32px */
+    --space-8: 3rem;              /* 48px */
+    --space-10: 4rem;             /* 64px */
+    --space-12: 6rem;             /* 96px */
+    --space-16: 8rem;             /* 128px */
+  
+    /* ------------------------------------------------------------------------ */
+    /* ANIMATION DURATIONS - Research-Based Timing                             */
+    /* ------------------------------------------------------------------------ */
+    /*
+       WHY these specific durations?
+       - Based on Material Design motion research
+       - <100ms: Feels instant (unnoticeable)
+       - 100-300ms: Perceived as immediate but smooth
+       - 300-500ms: Clearly animated, still feels responsive
+       - >500ms: Feels slow, only for page transitions
+       
+       General rule: Faster for simple properties (color, opacity),
+       slower for complex transforms (position, scale)
+    */
+    --duration-fast: 150ms;       /* Micro-interactions (hover, focus) */
+    --duration-base: 250ms;       /* Standard transitions (most UI changes) */
+    --duration-slow: 400ms;       /* Complex animations (slide, fade) */
+    --duration-slower: 600ms;     /* Page transitions (PJAX) */
+  
+    /* ------------------------------------------------------------------------ */
+    /* EASING FUNCTIONS - Natural Motion Curves                                */
+    /* ------------------------------------------------------------------------ */
+    /*
+       WHY custom easing?
+       - Linear easing feels robotic and unnatural
+       - Ease-out mimics physical deceleration (most common choice)
+       - Ease-in-out for reversible animations
+       - Bounce/spring for playful interactions (use sparingly)
+       
+       Visualization tool: cubic-bezier.com
+    */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);           /* Smooth deceleration */
+    --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);       /* Balanced */
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Elastic bounce */
+    --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Spring effect */
+  
+    /* ------------------------------------------------------------------------ */
+    /* SHADOWS - Depth Hierarchy                                               */
+    /* ------------------------------------------------------------------------ */
+    /*
+       WHY shadows?
+       - Create depth perception (card metaphor)
+       - Indicate interactive elements (elevated = clickable)
+       - Guide visual hierarchy (higher = more important)
+       
+       Usage guide:
+       --shadow-sm: Subtle elevation (form inputs)
+       --shadow-base: Standard cards
+       --shadow-md: Hover state, dropdowns
+       --shadow-lg: Modals, popovers
+       --shadow-xl: High-priority overlays
+       --shadow-glow: Interactive focus/glow effects
+    */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-base: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.4);
+}
+
+
+/* ========================================================================== */
+/* 2) BASE RESETS & TYPOGRAPHY                                               */
+/* ========================================================================== */
+/*
+   WHY reset?
+   - Browsers have inconsistent default styles
+   - Resets create predictable starting point
+   - Easier cross-browser compatibility
+*/
+
+* {
+    box-sizing: border-box; /* Width includes padding and border (more intuitive) */
+    margin: 0;              /* Remove default margins */
+    padding: 0;             /* Remove default padding */
+}
+
+html {
+    scroll-behavior: smooth; /* Smooth scrolling for anchor links */
+    font-size: 16px;         /* Base font size (1rem = 16px) */
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6; /* Optimal for body text readability (research-based) */
+    color: var(--adam-text-primary);
+    background: var(--adam-bg-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: var(--space-4);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 3) Layout Utilities ------------------------------------------------------ */
+.adam-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-5);
+}
+
+.adam-container-narrow {
+  max-width: 720px;
+}
+
+.adam-section {
+  padding: var(--space-12) 0;
+  position: relative;
+}
+
+.adam-section-title {
+  font-size: var(--text-3xl);
+  text-align: center;
+  margin-bottom: var(--space-4);
+  background: linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.adam-section-subtitle {
+  font-size: var(--text-lg);
+  text-align: center;
+  color: var(--adam-text-secondary);
+  max-width: 600px;
+  margin: 0 auto var(--space-8);
+}
+
+/* 4) Header & Navigation --------------------------------------------------- */
+/* NOTE: This site uses the injected global nav.
+   Nav styling lives in `css/global-nav.css` (single source of truth). */
+
+/* 5) Buttons --------------------------------------------------------------- */
+.adam-btn-primary,
+.adam-btn-secondary {
+  font-family: inherit;
+  font-size: var(--text-base);
+  font-weight: 600;
+  padding: var(--space-4) var(--space-6);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--duration-base) var(--ease-out);
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.adam-btn-primary {
+  background: linear-gradient(135deg, var(--adam-primary) 0%, var(--adam-secondary) 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+}
+
+.adam-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(59, 130, 246, 0.5);
+}
+
+.adam-btn-primary:active {
+  transform: translateY(0);
+}
+
+.adam-btn-secondary {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--adam-text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+}
+
+.adam-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--adam-text-primary);
+  transform: translateY(-2px);
+}
+
+.adam-btn-large {
+  padding: var(--space-5) var(--space-8);
+  font-size: var(--text-lg);
+}
+
+/* 6) Challenge Section ----------------------------------------------------- */
+.adam-challenge-section {
+  background: linear-gradient(180deg, var(--adam-bg-dark) 0%, #1e1b4b 100%);
+}
+
+.adam-challenge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.adam-challenge-card {
+  background: var(--adam-surface);
+  border: 2px solid transparent;
+  border-radius: 16px;
+  padding: var(--space-6);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--duration-base) var(--ease-out);
+  position: relative;
+  overflow: hidden;
+}
+
+.adam-challenge-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--adam-primary), var(--adam-accent));
+  opacity: 0;
+  transition: opacity var(--duration-base) var(--ease-out);
+  z-index: 0;
+}
+
+.adam-challenge-card:hover,
+.adam-challenge-card.active {
+  border-color: var(--ai-electric);
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px -10px rgba(0, 243, 255, 0.3);
+}
+
+.adam-challenge-card.selected {
+  border-color: var(--ai-electric);
+  box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(0, 243, 255, 0.05));
+  cursor: default;
+  pointer-events: none;
+  transform: scale(1.05);
+}
+
+.adam-challenge-card.selected .adam-challenge-icon {
+  text-shadow: 0 0 15px var(--ai-electric);
+}
+
+.adam-challenge-card.selected h3 {
+  color: var(--ai-electric);
+}
+
+.adam-challenge-card.active::before {
+  opacity: 0.1;
+}
+
+.adam-challenge-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: var(--space-4);
+  position: relative;
+  z-index: 1;
+}
+
+.adam-challenge-card h3 {
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-3);
+  position: relative;
+  z-index: 1;
+}
+
+.adam-challenge-card p {
+  color: var(--adam-text-muted);
+  font-size: var(--text-sm);
+  position: relative;
+  z-index: 1;
+}
+
+.adam-challenge-response {
+  animation: fadeInUp 0.6s var(--ease-out);
+}
+
+.adam-response-card {
+  background: var(--adam-surface);
+  border-radius: 16px;
+  padding: var(--space-8);
+  border: 1px solid var(--adam-border);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.adam-response-card h3 {
+  color: var(--adam-accent);
+  margin-bottom: var(--space-5);
+}
+
+.adam-response-card ul {
+  list-style: none;
+  margin: var(--space-5) 0;
+}
+
+.adam-response-card li {
+  padding-left: var(--space-5);
+  margin-bottom: var(--space-3);
+  position: relative;
+}
+
+.adam-response-card li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--adam-success);
+  font-weight: bold;
+}
+
+/* 7) Trust Bar ------------------------------------------------------------- */
+.adam-trust-bar {
+  background: rgba(30, 41, 59, 0.5);
+  padding: var(--space-8) 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.adam-trust-badges {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-8);
+  flex-wrap: wrap;
+}
+
+.adam-trust-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--adam-text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.adam-badge-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--adam-success);
+}
+
+/* 8) Value Props ----------------------------------------------------------- */
+.adam-value-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-6);
+}
+
+.adam-value-card {
+  background: var(--adam-surface);
+  border-radius: 16px;
+  padding: var(--space-8);
+  border: 1px solid var(--adam-border);
+  transition: all var(--duration-base) var(--ease-out);
+  position: relative;
+}
+
+.adam-value-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--adam-primary);
+  box-shadow: var(--shadow-lg);
+}
+
+.adam-value-card-featured {
+  border: 2px solid var(--adam-accent);
+  background: linear-gradient(135deg, var(--adam-surface) 0%, rgba(236, 72, 153, 0.05) 100%);
+}
+
+.adam-value-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-4);
+}
+
+.adam-value-card h3 {
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-4);
+}
+
+.adam-value-card p {
+  color: var(--adam-text-secondary);
+  margin-bottom: var(--space-5);
+  line-height: 1.7;
+}
+
+.adam-value-list {
+  list-style: none;
+}
+
+.adam-value-list li {
+  padding-left: var(--space-5);
+  margin-bottom: var(--space-3);
+  position: relative;
+  color: var(--adam-text-secondary);
+}
+
+.adam-value-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--adam-accent);
+  font-weight: bold;
+}
+
+.adam-featured-badge {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  background: var(--adam-accent);
+  color: white;
+  padding: var(--space-2) var(--space-4);
+  border-radius: 20px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* 9) Growth Predictor ------------------------------------------------------ */
+.adam-predictor-section {
+  background: linear-gradient(180deg, #1e1b4b 0%, var(--adam-bg-dark) 100%);
+}
+
+.adam-predictor-card {
+  background: var(--adam-surface);
+  border-radius: 16px;
+  padding: var(--space-8);
+  max-width: 700px;
+  margin: 0 auto;
+  border: 1px solid var(--adam-border);
+}
+
+.adam-predictor-form {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.adam-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.adam-form-group label {
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: var(--adam-text-secondary);
+}
+
+.adam-form-group input,
+.adam-form-group select {
+  width: 100%;
+  padding: var(--space-4);
+  border-radius: 8px;
+  border: 1px solid var(--adam-border);
+  background: rgba(15, 23, 42, 0.5);
+  color: var(--adam-text-primary);
+  font-size: var(--text-base);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.adam-form-group input:focus,
+.adam-form-group select:focus {
+  outline: none;
+  border-color: var(--adam-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.adam-predictor-results {
+  margin-top: var(--space-8);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--adam-border);
+  animation: fadeInUp 0.6s var(--ease-out);
+}
+
+.adam-predictor-results h3 {
+  text-align: center;
+  color: var(--adam-accent);
+  margin-bottom: var(--space-6);
+}
+
+.adam-predictor-chart {
+  margin-bottom: var(--space-6);
+  min-height: 200px;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 8px;
+  padding: var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--adam-text-muted);
+}
+
+.adam-predictor-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+
+.adam-predictor-stat {
+  text-align: center;
+  padding: var(--space-4);
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 8px;
+}
+
+.adam-predictor-stat-highlight {
+  background: rgba(236, 72, 153, 0.1);
+  border: 2px solid var(--adam-accent);
+}
+
+.adam-predictor-stat .stat-label {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--adam-text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.adam-predictor-stat .stat-value {
+  display: block;
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--adam-text-primary);
+}
+
+.adam-predictor-stat-highlight .stat-value {
+  color: var(--adam-accent);
+}
+
+/* 10) Features Grid -------------------------------------------------------- */
+.adam-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+.adam-feature-card {
+  background: var(--adam-surface);
+  border-radius: 16px;
+  padding: var(--space-6);
+  border: 1px solid var(--adam-border);
+  transition: all var(--duration-base) var(--ease-out);
+}
+
+.adam-feature-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--adam-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.adam-feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-4);
+}
+
+.adam-feature-card h3 {
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-3);
+}
+
+.adam-feature-card p {
+  color: var(--adam-text-secondary);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-4);
+  line-height: 1.6;
+}
+
+.adam-link {
+  color: var(--adam-accent);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.adam-link:hover {
+  gap: var(--space-3);
+  text-decoration: underline;
+}
+
+/* 11) Pricing -------------------------------------------------------------- */
+.adam-pricing-section {
+  background: linear-gradient(180deg, var(--adam-bg-dark) 0%, #1e1b4b 100%);
+}
+
+.adam-pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-6);
+  max-width: 1000px;
+  margin: 0 auto var(--space-8);
+}
+
+.adam-pricing-card {
+  background: var(--adam-surface);
+  border-radius: 16px;
+  padding: var(--space-8);
+  border: 2px solid var(--adam-border);
+  transition: all var(--duration-base) var(--ease-out);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.adam-pricing-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--adam-primary);
+  box-shadow: var(--shadow-lg);
+}
+
+.adam-pricing-card-popular {
+  border-color: var(--adam-accent);
+  background: linear-gradient(135deg, var(--adam-surface) 0%, rgba(236, 72, 153, 0.05) 100%);
+  transform: scale(1.05);
+}
+
+.adam-pricing-card-popular:hover {
+  transform: scale(1.05) translateY(-4px);
+}
+
+.adam-popular-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--adam-accent);
+  color: white;
+  padding: var(--space-2) var(--space-5);
+  border-radius: 20px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.adam-pricing-card h3 {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--space-4);
+  text-align: center;
+}
+
+.adam-price {
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.price-amount {
+  font-size: var(--text-4xl);
+  font-weight: 800;
+  color: var(--adam-accent);
+}
+
+.price-period {
+  color: var(--adam-text-muted);
+  font-size: var(--text-sm);
+}
+
+.adam-pricing-features {
+  list-style: none;
+  margin-bottom: var(--space-6);
+  flex-grow: 1;
+}
+
+.adam-pricing-features li {
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--adam-text-secondary);
+  font-size: var(--text-sm);
+}
+
+.adam-pricing-features li:last-child {
+  border-bottom: none;
+}
+
+.adam-pricing-features strong {
+  color: var(--adam-text-primary);
+}
+
+/* 12) Demo Section --------------------------------------------------------- */
+.adam-demo-section {
+  background: rgba(30, 41, 59, 0.5);
+}
+
+.adam-demo-video {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.adam-video-placeholder {
+  aspect-ratio: 16 / 9;
+  background: var(--adam-surface);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  border: 1px solid var(--adam-border);
+}
+
+.adam-play-icon {
+  width: 64px;
+  height: 64px;
+  color: var(--adam-accent);
+}
+
+.adam-video-placeholder p {
+  color: var(--adam-text-muted);
+}
+
+/* 13) Waitlist Section ----------------------------------------------------- */
+.adam-waitlist-section {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.adam-waitlist-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 30% 50%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 70% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%);
+}
+
+.adam-waitlist-form {
+  position: relative;
+  z-index: 2;
+}
+
+.adam-form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-5);
+}
+
+.adam-form-note {
+  text-align: center;
+  color: var(--adam-text-muted);
+  font-size: var(--text-sm);
+  margin-top: var(--space-4);
+}
+
+/* 14) Success Message ------------------------------------------------------ */
+.adam-success-message {
+  background: var(--adam-surface);
+  border-radius: 16px;
+  padding: var(--space-8);
+  text-align: center;
+  border: 2px solid var(--adam-success);
+  animation: fadeInUp 0.6s var(--ease-out);
+}
+
+.adam-success-icon {
+  width: 64px;
+  height: 64px;
+  color: var(--adam-success);
+  margin: 0 auto var(--space-4);
+}
+
+.adam-success-message h3 {
+  color: var(--adam-success);
+  margin-bottom: var(--space-4);
+}
+
+.adam-waitlist-position {
+  font-size: var(--text-lg);
+  color: var(--adam-text-secondary);
+  margin: var(--space-5) 0;
+}
+
+.adam-waitlist-position strong {
+  color: var(--adam-accent);
+  font-size: var(--text-2xl);
+}
+
+.adam-share-buttons {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--adam-border);
+}
+
+.adam-share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  margin: var(--space-2);
+  border-radius: 8px;
+  background: var(--adam-primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all var(--duration-base) var(--ease-out);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.adam-share-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.adam-share-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* 15) Footer --------------------------------------------------------------- */
+.adam-footer {
+  background: var(--adam-bg-dark);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--space-10) 0 var(--space-6);
+}
+
+.adam-footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-8);
+  margin-bottom: var(--space-8);
+}
+
+.adam-footer-col h4 {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--adam-text-secondary);
+  margin-bottom: var(--space-4);
+}
+
+.adam-footer-col ul {
+  list-style: none;
+}
+
+.adam-footer-col li {
+  margin-bottom: var(--space-3);
+}
+
+.adam-footer-col a {
+  color: var(--adam-text-muted);
+  font-size: var(--text-sm);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.adam-footer-col a:hover {
+  color: var(--adam-accent);
+}
+
+.adam-footer-bottom {
+  text-align: center;
+  padding-top: var(--space-6);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--adam-text-muted);
+  font-size: var(--text-sm);
+}
+
+.adam-footer-tagline {
+  margin-top: var(--space-2);
+  color: var(--adam-text-muted);
+}
+
+/* 16) Utilities ------------------------------------------------------------ */
+.adam-cta-center {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-8);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 17) Responsive Design ---------------------------------------------------- */
+/* 18) Scroll Animations ---------------------------------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s var(--ease-out);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: all 0.8s var(--ease-out);
+}
+
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: all 0.8s var(--ease-out);
+}
+
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.6s var(--ease-out);
+}
+
+.reveal-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Staggered animations */
+.stagger-1 { transition-delay: 0.1s; }
+.stagger-2 { transition-delay: 0.2s; }
+.stagger-3 { transition-delay: 0.3s; }
+.stagger-4 { transition-delay: 0.4s; }
+.stagger-5 { transition-delay: 0.5s; }
+.stagger-6 { transition-delay: 0.6s; }
+
+/* 21) Interactive Particles Background ------------------------------------- */
+.particles-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--adam-primary);
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: float 15s infinite ease-in-out;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.3;
+  }
+  25% {
+    transform: translateY(-100px) translateX(50px);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-50px) translateX(-30px);
+    opacity: 0.3;
+  }
+  75% {
+    transform: translateY(-150px) translateX(20px);
+    opacity: 0.4;
+  }
+}
+
+/* 22) Glowing Elements ----------------------------------------------------- */
+.glow-effect {
+  position: relative;
+}
+
+.glow-effect::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, var(--adam-primary), var(--adam-secondary));
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  filter: blur(15px);
+  transition: opacity var(--duration-base) var(--ease-out);
+}
+
+.glow-effect:hover::after {
+  opacity: 0.5;
+}
+
+/* 23) Testimonial Carousel ------------------------------------------------- */
+.testimonials-section {
+  padding: var(--space-16) 0;
+  background: linear-gradient(180deg, var(--adam-bg-dark) 0%, rgba(15, 23, 42, 0.5) 100%);
+  overflow: hidden;
+}
+
+.testimonial-track {
+  display: flex;
+  gap: var(--space-6);
+  animation: scroll 30s linear infinite;
+  width: max-content;
+}
+
+.testimonial-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.testimonial-card {
+  flex-shrink: 0;
+  width: 350px;
+  background: var(--adam-surface);
+  border: 1px solid var(--adam-border);
+  border-radius: 16px;
+  padding: var(--space-6);
+  transition: all var(--duration-base) var(--ease-out);
+}
+
+.testimonial-card:hover {
+  border-color: var(--adam-primary);
+  transform: translateY(-4px);
+}
+
+.testimonial-quote {
+  font-size: var(--text-base);
+  color: var(--adam-text-secondary);
+  line-height: 1.7;
+  margin-bottom: var(--space-4);
+  font-style: italic;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.testimonial-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--adam-primary), var(--adam-secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.testimonial-info {
+  flex: 1;
+}
+
+.testimonial-name {
+  font-weight: 600;
+  color: var(--adam-text-primary);
+  font-size: var(--text-sm);
+}
+
+.testimonial-handle {
+  font-size: var(--text-sm);
+  color: var(--adam-text-muted);
+}
+
+.testimonial-stats {
+  text-align: right;
+}
+
+.testimonial-growth {
+  font-weight: 700;
+  color: var(--adam-success);
+  font-size: var(--text-lg);
+}
+
+.testimonial-period {
+  font-size: var(--text-xs);
+  color: var(--adam-text-muted);
+}
+
+/* 24) Interactive Counter -------------------------------------------------- */
+.counter-animated {
+  display: inline-block;
+  min-width: 3ch;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 25) Tooltip Styles ------------------------------------------------------- */
+[data-tooltip] {
+  position: relative;
+  cursor: help;
+}
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background: var(--adam-surface-elevated);
+  color: var(--adam-text-primary);
+  padding: var(--space-2) var(--space-3);
+  border-radius: 8px;
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all var(--duration-fast) var(--ease-out);
+  z-index: 100;
+}
+
+[data-tooltip]:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* 26) Progress Bar --------------------------------------------------------- */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--adam-surface);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--adam-primary), var(--adam-secondary));
+  border-radius: 4px;
+  transition: width 1s var(--ease-out);
+}
+
+/* 27) Typing Animation ----------------------------------------------------- */
+.typing-text {
+  border-right: 2px solid var(--adam-primary);
+  animation: blink 0.8s infinite;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+@keyframes blink {
+  0%, 50% { border-color: var(--adam-primary); }
+  51%, 100% { border-color: transparent; }
+}
+
+
+/* =========================================
+   13) Interactive How-It-Works Visuals
+   ========================================= */
+
+/* Step Tabs Navigation */
+.adam-steps-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.adam-step-tabs {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-6);
+  margin-bottom: var(--space-10);
+  position: relative;
+}
+
+.adam-step-tabs::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  z-index: 0;
+}
+
+.adam-step-tab {
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: var(--space-5) var(--space-8);
+  border-radius: 16px;
+  color: var(--adam-text-muted);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  min-width: 160px;
+  backdrop-filter: blur(10px);
+  z-index: 1;
+}
+
+.adam-step-tab:hover {
+  background: rgba(30, 41, 59, 0.6);
+  transform: translateY(-5px);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.adam-step-tab.active {
+  background: rgba(15, 23, 42, 0.8);
+  border-color: var(--adam-secondary);
+  color: #fff;
+  box-shadow: 
+    0 10px 30px -10px rgba(6, 182, 212, 0.3),
+    0 0 0 1px rgba(6, 182, 212, 0.2) inset;
+  transform: translateY(-5px) scale(1.05);
+}
+
+.adam-step-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 20%;
+  width: 60%;
+  height: 2px;
+  background: var(--adam-secondary);
+  box-shadow: 0 0 15px var(--adam-secondary);
+  border-radius: 2px;
+}
+
+.step-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  opacity: 0.5;
+  letter-spacing: 1px;
+  transition: all 0.3s;
+}
+
+.adam-step-tab.active .step-number {
+  color: var(--adam-secondary);
+  opacity: 1;
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+}
+
+.step-title {
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+}
+
+.adam-step-tab.active .step-title {
+  background: linear-gradient(135deg, #fff, var(--adam-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Step Panels */
+.adam-step-panel {
+  display: none;
+  animation: fadeInSlideUp 0.6s ease-out;
+}
+
+.adam-step-panel.active {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: var(--space-10);
+  align-items: center;
+}
+
+@keyframes fadeInSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Content Styling */
+.step-content h3 {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-4);
+  color: #fff;
+}
+
+.step-content p {
+  color: var(--adam-text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: var(--space-6);
+  line-height: 1.7;
+}
+
+.adam-check-list {
+  list-style: none;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.adam-check-list li {
+  padding-left: 2.5rem;
+  position: relative;
+  color: var(--adam-text-primary);
+  font-weight: 500;
+}
+
+.adam-check-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: -2px;
+  color: var(--adam-bg-dark);
+  font-weight: 900;
+  background: var(--adam-success);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+/* Common Container */
+.interactive-visual {
+  width: 100%;
+  height: 300px;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Step 1: Pipeline */
+.pipeline-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.pipeline-icon {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.pipeline-icon.active {
+  background: var(--adam-primary);
+  border-color: var(--adam-accent);
+  box-shadow: 0 0 20px var(--adam-primary);
+  transform: scale(1.1);
+}
+
+.pipeline-connector {
+  width: 100px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  position: relative;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.pipeline-flow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--adam-accent), transparent);
+  transform: translateX(-100%);
+}
+
+.pipeline-container.syncing .pipeline-flow {
+  animation: flowData 1.5s infinite linear;
+}
+
+@keyframes flowData {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.sync-btn {
+  margin-top: 20px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.sync-btn:hover {
+  background: var(--adam-primary);
+}
+
+/* Step 2: Scanner */
+.scanner-container {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 4px;
+  padding: 20px;
+}
+
+.scan-node {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  transition: background 0.3s, transform 0.3s;
+}
+
+.scan-node.scanned {
+  background: var(--adam-accent);
+  box-shadow: 0 0 10px var(--adam-accent);
+  transform: scale(1.1);
+}
+
+.scanner-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--adam-success);
+  box-shadow: 0 0 15px var(--adam-success);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.interactive-visual:hover .scanner-line {
+  opacity: 1;
+}
+
+/* Step 3: Growth Chart */
+.growth-visual {
+  width: 80%;
+  height: 60%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.growth-bar {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px 4px 0 0;
+  transition: height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+
+.growth-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: linear-gradient(to top, var(--adam-primary), var(--adam-accent));
+  opacity: 0.8;
+  border-radius: 4px 4px 0 0;
+}
+
+.growth-controls {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.growth-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+}
+
+.growth-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--adam-accent);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--adam-accent);
+}
+
+.growth-label {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--adam-text-secondary);
+}
+
+/* 3D Tilt Effect */
+.tilt-card {
+  transform-style: preserve-3d;
+  transform: perspective(1000px);
+}
+
+.tilt-content {
+  transform: translateZ(20px);
+}
+
+
+/* =========================================
+   14) Interactive Pipeline Visualization
+   ========================================= */
+
+.interactive-visual {
+  width: 100%;
+  min-height: 350px;
+  background: rgba(15, 23, 42, 0.8);
+  border-radius: 16px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.interactive-visual::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Pipeline 3D Scene */
+.pipeline-3d-scene {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  perspective: 1000px;
+  margin-bottom: 2rem;
+}
+
+.pipeline-source, .pipeline-destination {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tiktok-logo-3d, .adam-logo-3d {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s var(--ease-spring);
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tiktok-logo-3d:hover, .adam-logo-3d:hover {
+  transform: rotateY(15deg) rotateX(-5deg) scale(1.05);
+}
+
+.adam-logo-3d {
+  background: linear-gradient(145deg, rgba(59, 130, 246, 0.3), rgba(6, 182, 212, 0.2));
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 2rem;
+  color: var(--adam-secondary);
+}
+
+.data-pulse, .data-receive {
+  position: absolute;
+  inset: -5px;
+  border-radius: 25px;
+  border: 2px solid var(--adam-secondary);
+  opacity: 0;
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+.pipeline-label {
+  font-size: 0.85rem;
+  color: var(--adam-text-secondary);
+  font-weight: 500;
+}
+
+/* Data Flow Animation */
+.pipeline-flow-container {
+  width: 150px;
+  height: 40px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.pipeline-tube {
+  position: absolute;
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.pipeline-tube::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.3), transparent);
+  animation: tube-glow 2s ease-in-out infinite;
+}
+
+@keyframes tube-glow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.data-stream {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.data-packet {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--adam-secondary);
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--adam-secondary), 0 0 30px rgba(6, 182, 212, 0.5);
+  opacity: 0;
+  animation: packet-flow 2s ease-in-out infinite;
+  animation-delay: var(--delay);
+}
+
+@keyframes packet-flow {
+  0% { left: 0; opacity: 0; transform: scale(0.5); }
+  10% { opacity: 1; transform: scale(1); }
+  90% { opacity: 1; transform: scale(1); }
+  100% { left: 100%; opacity: 0; transform: scale(0.5); }
+}
+
+.encryption-shield {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.2rem;
+  background: rgba(16, 185, 129, 0.2);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* Pipeline Stats */
+.pipeline-stats {
+  display: flex;
+  gap: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.pipeline-stats .stat-item {
+  text-align: center;
+}
+
+.pipeline-stats .stat-value {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--adam-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.pipeline-stats .stat-label {
+  font-size: 0.75rem;
+  color: var(--adam-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sync-demo-btn, .scan-demo-btn, .growth-demo-btn {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, var(--adam-primary), var(--adam-secondary));
+  border: none;
+  border-radius: 30px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s var(--ease-spring);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.sync-demo-btn:hover, .scan-demo-btn:hover, .growth-demo-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+/* =========================================
+   15) Neural Network Visualization
+   ========================================= */
+
+.neural-scan-visual {
+  position: relative;
+}
+
+#neural-canvas {
+  width: 100%;
+  height: 200px;
+  position: relative;
+  z-index: 1;
+}
+
+.scan-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.scan-line {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, 
+    transparent, 
+    var(--adam-secondary), 
+    var(--adam-secondary), 
+    transparent
+  );
+  box-shadow: 0 0 20px var(--adam-secondary), 0 0 40px var(--adam-secondary);
+  opacity: 0;
+}
+
+.neural-scan-visual.scanning .scan-line {
+  opacity: 1;
+  animation: scan-sweep 2s ease-in-out forwards;
+}
+
+@keyframes scan-sweep {
+  0% { left: -5%; }
+  100% { left: 105%; }
+}
+
+.pattern-discoveries {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 90%;
+  max-width: 350px;
+}
+
+.discovery-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 10px;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s var(--ease-out);
+}
+
+.discovery-item.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.discovery-icon {
+  font-size: 1.2rem;
+}
+
+.discovery-text {
+  font-size: 0.85rem;
+  color: var(--adam-text-primary);
+}
+
+/* =========================================
+   16) Growth Trajectory Visualization
+   ========================================= */
+
+.growth-trajectory-visual {
+  padding: 1.5rem;
+}
+
+.trajectory-chart {
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.trajectory-svg {
+  width: 100%;
+  height: 200px;
+}
+
+.trajectory-path {
+  stroke-linecap: round;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+}
+
+.trajectory-path.animated {
+  animation: draw-path 2s ease-out forwards;
+}
+
+@keyframes draw-path {
+  to { stroke-dashoffset: 0; }
+}
+
+.trajectory-fill {
+  opacity: 0;
+  transition: opacity 1s ease-out 0.5s;
+}
+
+.trajectory-fill.animated {
+  opacity: 1;
+}
+
+.trajectory-dot {
+  opacity: 0;
+}
+
+.trajectory-dot.animated {
+  opacity: 1;
+  animation: move-dot 2s ease-out forwards;
+}
+
+@keyframes move-dot {
+  0% { cx: 0; cy: 180; }
+  100% { cx: 400; cy: 20; }
+}
+
+.trajectory-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--adam-text-secondary);
+  margin-top: 0.5rem;
+}
+
+.trajectory-legend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--adam-text-secondary);
+}
+
+.legend-line {
+  width: 20px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.legend-line.without {
+  background: rgba(148, 163, 184, 0.5);
+}
+
+.legend-line.with {
+  background: var(--adam-secondary);
+}
+
+.growth-milestones {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 1.5rem;
+}
+
+.milestone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.5s var(--ease-out);
+}
+
+.milestone.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.milestone-marker {
+  width: 12px;
+  height: 12px;
+  background: var(--adam-secondary);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--adam-secondary);
+}
+
+.milestone-label {
+  font-size: 0.7rem;
+  color: var(--adam-text-secondary);
+  text-align: center;
+  max-width: 80px;
+}
+
+/* =========================================
+   17) First-Hour Velocity Simulator
+   ========================================= */
+
+.velocity-demo-section {
+  background: linear-gradient(180deg, var(--adam-bg-dark) 0%, rgba(15, 23, 42, 0.5) 50%, var(--adam-bg-dark) 100%);
+}
+
+.velocity-simulator {
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 20px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.simulator-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.video-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.video-thumbnail {
+  width: 60px;
+  height: 80px;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.video-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.video-title {
+  font-weight: 600;
+  color: var(--adam-text-primary);
+}
+
+.video-time {
+  font-size: 0.85rem;
+  color: var(--adam-text-secondary);
+}
+
+.velocity-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--adam-text-secondary);
+}
+
+.status-indicator.waiting {
+  animation: pulse-status 2s ease-in-out infinite;
+}
+
+.status-indicator.good {
+  background: var(--adam-success);
+  box-shadow: 0 0 10px var(--adam-success);
+}
+
+.status-indicator.warning {
+  background: var(--adam-warning);
+  box-shadow: 0 0 10px var(--adam-warning);
+  animation: pulse-status 1s ease-in-out infinite;
+}
+
+.status-indicator.danger {
+  background: var(--adam-danger);
+  box-shadow: 0 0 10px var(--adam-danger);
+  animation: pulse-status 0.5s ease-in-out infinite;
+}
+
+@keyframes pulse-status {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.status-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Timeline */
+.velocity-timeline {
+  position: relative;
+  margin-bottom: 2rem;
+  padding-top: 1rem;
+}
+
+.timeline-track {
+  height: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.timeline-progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--adam-success), var(--adam-secondary));
+  border-radius: 6px;
+  transition: width 0.5s ease-out, background 0.3s;
+}
+
+.timeline-critical-zone {
+  position: absolute;
+  left: 25%;
+  width: 50%;
+  top: -4px;
+  bottom: -4px;
+  border: 2px dashed rgba(245, 158, 11, 0.5);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.timeline-markers {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+.timeline-markers .marker {
+  font-size: 0.75rem;
+  color: var(--adam-text-secondary);
+}
+
+.timeline-markers .marker.critical {
+  color: var(--adam-warning);
+  font-weight: 600;
+}
+
+.critical-label {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: var(--adam-warning);
+  background: rgba(245, 158, 11, 0.1);
+  padding: 0.2rem 0.75rem;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+/* Metric Cards with 3D Rings */
+.velocity-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s var(--ease-out);
+}
+
+.metric-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+.metric-3d-container {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  perspective: 500px;
+}
+
+.metric-ring {
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: ring-float 4s ease-in-out infinite;
+}
+
+@keyframes ring-float {
+  0%, 100% { transform: rotateX(10deg) rotateY(0deg); }
+  50% { transform: rotateX(10deg) rotateY(5deg); }
+}
+
+.metric-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ring-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 6;
+}
+
+.ring-progress {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 283;
+  stroke-dashoffset: 283;
+  transition: stroke-dashoffset 1s var(--ease-out);
+}
+
+.views-ring { stroke: var(--adam-primary); }
+.engagement-ring { stroke: var(--adam-secondary); }
+.completion-ring { stroke: var(--adam-success); }
+
+.metric-value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--adam-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-label {
+  font-size: 0.8rem;
+  color: var(--adam-text-secondary);
+  font-weight: 500;
+}
+
+.metric-velocity {
+  font-size: 0.75rem;
+  color: var(--adam-success);
+  font-weight: 600;
+}
+
+/* Alert Panel */
+.adam-alert-panel {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(245, 158, 11, 0.1));
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  animation: alert-pulse 2s ease-in-out infinite;
+}
+
+@keyframes alert-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
+  50% { box-shadow: 0 0 20px 5px rgba(239, 68, 68, 0.1); }
+}
+
+.alert-icon {
+  font-size: 2rem;
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.alert-content {
+  flex: 1;
+}
+
+.alert-content h4 {
+  color: var(--adam-danger);
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.alert-content p {
+  color: var(--adam-text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.alert-actions {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.alert-actions li {
+  font-size: 0.85rem;
+  color: var(--adam-text-primary);
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.alert-actions li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--adam-secondary);
+}
+
+.alert-action-btn {
+  padding: 0.75rem 1.5rem;
+  background: var(--adam-danger);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.alert-action-btn:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+/* Simulator Controls */
+.simulator-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.sim-btn {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, var(--adam-primary), var(--adam-secondary));
+  border: none;
+  border-radius: 30px;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s var(--ease-spring);
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+}
+
+.sim-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4);
+}
+
+.sim-btn.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+.sim-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.simulator-note {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--adam-text-muted);
+}
+
+/* =========================================
+   17b) Velocity Time Graph (New Design)
+   ========================================= */
+
+.velocity-graph-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 24px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+/* Scenario Toggle Buttons */
+.scenario-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.scenario-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  color: var(--adam-text-secondary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-out);
+}
+
+.scenario-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.scenario-btn.active {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.2));
+  border-color: var(--adam-secondary);
+  color: var(--adam-text-primary);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+}
+
+.scenario-btn[data-scenario="without"].active {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(245, 158, 11, 0.1));
+  border-color: #ef4444;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+}
+
+.scenario-btn[data-scenario="compare"].active {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.1));
+  border-color: #8b5cf6;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+}
+
+.scenario-icon {
+  font-size: 1.2rem;
+}
+
+/* Graph Container */
+.velocity-graph {
+  margin-bottom: 2rem;
+}
+
+.graph-container {
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  grid-template-rows: 1fr auto;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Y-Axis */
+.y-axis {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-right: 0.75rem;
+}
+
+.y-label {
+  font-size: 0.7rem;
+  color: var(--adam-text-muted);
+  transform: rotate(-90deg);
+  white-space: nowrap;
+  margin-bottom: 2rem;
+  margin-top: 1rem;
+}
+
+.y-ticks {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  font-size: 0.75rem;
+  color: var(--adam-text-secondary);
+  text-align: right;
+}
+
+/* Graph Area */
+.graph-area {
+  position: relative;
+  height: 300px;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.graph-grid, .velocity-curves {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Critical Zone Background */
+.critical-zone-bg {
+  position: absolute;
+  left: 25%;
+  width: 25%;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(245, 158, 11, 0) 0%,
+    rgba(245, 158, 11, 0.1) 20%,
+    rgba(245, 158, 11, 0.1) 80%,
+    rgba(245, 158, 11, 0) 100%
+  );
+  border-left: 1px dashed rgba(245, 158, 11, 0.3);
+  border-right: 1px dashed rgba(245, 158, 11, 0.3);
+}
+
+/* Curve Animations */
+.curve-group {
+  transition: opacity 0.5s ease-out;
+}
+
+.curve-line {
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+}
+
+.curve-group.animate .curve-line {
+  animation: draw-curve 2s ease-out forwards;
+}
+
+.curve-group.visible .curve-line {
+  stroke-dashoffset: 0;
+}
+
+@keyframes draw-curve {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.curve-fill {
+  opacity: 0;
+  transition: opacity 0.5s ease-out 0.5s;
+}
+
+.curve-group.animate .curve-fill,
+.curve-group.visible .curve-fill {
+  opacity: 1;
+}
+
+/* Data Points */
+.data-point {
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.curve-group.animate .data-point,
+.curve-group.visible .data-point {
+  opacity: 1;
+}
+
+.data-point:hover {
+  transform: scale(1.5);
+}
+
+.intervention-point {
+  stroke-dasharray: 4 2;
+  animation: intervention-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes intervention-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Intervention Marker */
+.intervention-marker {
+  transition: opacity 0.5s ease-out;
+}
+
+.intervention-marker text {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Traveling Dot */
+.traveling-dot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--adam-secondary);
+  border-radius: 50%;
+  box-shadow: 0 0 20px var(--adam-secondary), 0 0 40px rgba(6, 182, 212, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.traveling-dot.animating {
+  opacity: 1;
+  animation: dot-glow 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes dot-glow {
+  from { box-shadow: 0 0 10px var(--adam-secondary); }
+  to { box-shadow: 0 0 25px var(--adam-secondary), 0 0 50px rgba(6, 182, 212, 0.5); }
+}
+
+/* Tooltip */
+.graph-tooltip {
+  position: absolute;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  pointer-events: none;
+  z-index: 20;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.tooltip-time {
+  font-size: 0.7rem;
+  color: var(--adam-text-muted);
+}
+
+.tooltip-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--adam-text-primary);
+}
+
+/* X-Axis */
+.x-axis {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.x-ticks {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.75rem;
+  color: var(--adam-text-secondary);
+}
+
+.x-ticks .critical-marker {
+  color: var(--adam-warning);
+  font-weight: 600;
+}
+
+.x-label {
+  font-size: 0.75rem;
+  color: var(--adam-text-muted);
+}
+
+.critical-zone-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--adam-warning);
+  background: rgba(245, 158, 11, 0.1);
+  padding: 0.35rem 0.75rem;
+  border-radius: 12px;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--adam-warning);
+  border-radius: 50%;
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.5; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Graph Legend */
+.graph-legend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: opacity 0.3s;
+}
+
+.legend-line {
+  width: 24px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.legend-line.without {
+  background: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+.legend-line.with {
+  background: #06b6d4;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+}
+
+.legend-text {
+  font-size: 0.8rem;
+  color: var(--adam-text-secondary);
+}
+
+/* Outcome Comparison Cards */
+.outcome-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.outcome-card {
+  padding: 1.5rem;
+  border-radius: 16px;
+  transition: all 0.4s var(--ease-out);
+}
+
+.without-outcome {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.with-outcome {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(6, 182, 212, 0.05));
+  border: 1px solid rgba(6, 182, 212, 0.2);
+}
+
+.outcome-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.outcome-icon {
+  font-size: 1.5rem;
+}
+
+.outcome-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--adam-text-primary);
+}
+
+.outcome-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.outcome-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-value.negative {
+  color: #ef4444;
+}
+
+.stat-value.positive {
+  color: #06b6d4;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--adam-text-muted);
+}
+
+.outcome-description {
+  font-size: 0.85rem;
+  color: var(--adam-text-secondary);
+  line-height: 1.5;
+}
+
+/* Graph Controls */
+.graph-controls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.play-graph-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, var(--adam-primary), var(--adam-secondary));
+  border: none;
+  border-radius: 30px;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-spring);
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+}
+
+.play-graph-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4);
+}
+
+.play-graph-btn .btn-icon {
+  font-size: 1rem;
+}
+
+/* Responsive - consolidated at end of file */
+/* =========================================
+   18) 3D Card Hover Effects
+   ========================================= */
+
+.adam-feature-card,
+.adam-value-card,
+.adam-challenge-card {
+  transform-style: preserve-3d;
+  transition: transform 0.5s var(--ease-out);
+}
+
+.adam-feature-card:hover,
+.adam-value-card:hover {
+  transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateZ(10px);
+}
+
+.adam-challenge-card:hover {
+  transform: perspective(1000px) rotateX(-5deg) scale(1.02);
+}
+
+/* Depth layers inside cards */
+.adam-feature-icon,
+.adam-value-icon,
+.adam-challenge-icon {
+  transform: translateZ(30px);
+  transition: transform 0.3s var(--ease-out);
+}
+
+.adam-feature-card:hover .adam-feature-icon,
+.adam-value-card:hover .adam-value-icon {
+  transform: translateZ(50px) scale(1.1);
+}
+
+/* =========================================
+   19) Hero 3D Dashboard Preview
+   ========================================= */
+
+.hero-dashboard-preview {
+  margin-top: 4rem;
+  perspective: 1500px;
+  animation: fadeInUp 1s ease-out 0.8s backwards;
+}
+
+.dashboard-3d-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  transform-style: preserve-3d;
+  animation: dashboard-float 6s ease-in-out infinite;
+}
+
+@keyframes dashboard-float {
+  0%, 100% { 
+    transform: rotateX(5deg) rotateY(-5deg) translateY(0); 
+  }
+  50% { 
+    transform: rotateX(8deg) rotateY(-8deg) translateY(-10px); 
+  }
+}
+
+.dashboard-card {
+  background: rgba(15, 23, 42, 0.95);
+  border-radius: 16px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  backdrop-filter: blur(20px);
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  transition: all 0.4s var(--ease-out);
+}
+
+.dashboard-card.main-card {
+  padding: 1.5rem;
+  transform: translateZ(40px);
+}
+
+.dashboard-card.side-card {
+  position: absolute;
+  padding: 1rem;
+  width: 200px;
+}
+
+.dashboard-card.alert-card {
+  top: -20px;
+  right: -30px;
+  transform: translateZ(60px) rotateY(-10deg);
+  animation: card-pulse 3s ease-in-out infinite;
+  border-color: rgba(6, 182, 212, 0.4);
+}
+
+.dashboard-card.mission-card {
+  bottom: -20px;
+  left: -30px;
+  transform: translateZ(50px) rotateY(10deg);
+  animation: card-pulse 3s ease-in-out infinite 1.5s;
+}
+
+@keyframes card-pulse {
+  0%, 100% { box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5); }
+  50% { box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(59, 130, 246, 0.2); }
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dashboard-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--adam-text-primary);
+}
+
+.dashboard-live {
+  font-size: 0.7rem;
+  color: var(--adam-success);
+  animation: live-pulse 2s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.dashboard-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.mini-metric {
+  text-align: center;
+}
+
+.mini-value {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--adam-text-primary);
+  line-height: 1.2;
+}
+
+.mini-label {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--adam-text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.mini-trend {
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.mini-trend.up {
+  color: var(--adam-success);
+}
+
+.mini-trend.down {
+  color: var(--adam-danger);
+}
+
+.mini-chart {
+  height: 50px;
+  margin-top: 0.5rem;
+}
+
+.mini-chart svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Alert Mini Card */
+.alert-mini {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.alert-icon-mini {
+  font-size: 1.5rem;
+  animation: icon-bounce 2s ease-in-out infinite;
+}
+
+@keyframes icon-bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.alert-text-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.alert-text-mini strong {
+  font-size: 0.8rem;
+  color: var(--adam-secondary);
+}
+
+.alert-text-mini span {
+  font-size: 0.7rem;
+  color: var(--adam-text-secondary);
+}
+
+/* Mission Mini Card */
+.mission-mini {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mission-icon-mini {
+  font-size: 1.5rem;
+}
+
+.mission-text-mini {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.mission-text-mini strong {
+  font-size: 0.8rem;
+  color: var(--adam-text-primary);
+}
+
+.mission-text-mini span {
+  font-size: 0.65rem;
+  color: var(--adam-text-secondary);
+}
+
+.mission-progress-mini {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.mission-bar-mini {
+  height: 100%;
+  background: linear-gradient(90deg, var(--adam-primary), var(--adam-secondary));
+  border-radius: 2px;
+  transition: width 0.5s var(--ease-out);
+}
+
+/* Responsive adjustments */
+/* Mouse parallax effect target */
+.hero-dashboard-preview:hover .dashboard-3d-container {
+  animation-play-state: paused;
+}
+
+/* =========================================
+   14) Holographic Challenge Cards
+   ========================================= */
+
+.holographic-card {
+  position: relative;
+  min-height: 280px;
+  cursor: pointer;
+  overflow: hidden;
+  background: var(--adam-surface);
+  border: 1px solid var(--adam-border);
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.holographic-card:hover {
+  border-color: var(--adam-accent);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Holographic challenge cards: let content drive height, and avoid double-padding.
+   The base `.adam-challenge-card` adds padding, but the holographic variant uses
+   `.card-content` padding instead, so we zero the button padding here. */
+.adam-challenge-card.holographic-card {
+  padding: 0;
+  min-height: 0;
+  height: auto;
+}
+
+.adam-challenge-card.holographic-card .card-content {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: auto;
+}
+
+/* Only the visible side should affect the card height */
+.adam-challenge-card.holographic-card .solution-state {
+  position: absolute;
+  inset: 0;
+}
+
+.adam-challenge-card.holographic-card.revealed .problem-state {
+  position: absolute;
+  inset: 0;
+}
+
+.adam-challenge-card.holographic-card.revealed .solution-state {
+  position: relative;
+  inset: auto;
+}
+
+.card-content {
+  position: absolute;
+  inset: 0;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: opacity 0.3s ease;
+  backface-visibility: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.problem-state {
+  color: #d01b1b;
+  opacity: 1;
+  z-index: 10;
+}
+
+.problem-state p {
+  font-size: 1rem;
+}
+
+.solution-state {
+  opacity: 0;
+  z-index: 20;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
+}
+
+.solution-state h3 {
+  color: var(--adam-accent);
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+  margin-bottom: var(--space-3);
+}
+
+.solution-state .adam-challenge-icon {
+  text-shadow: 0 0 20px rgba(6, 182, 212, 0.6);
+  font-size: 3rem;
+  margin-bottom: var(--space-4);
+}
+
+/* Analysis Grid Effect */
+.analysis-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0;
+  z-index: 15;
+  pointer-events: none;
+}
+
+/* Scan Line */
+.scan-line {
+  position: absolute;
+  top: -20%;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, var(--adam-accent), transparent);
+  opacity: 0;
+  z-index: 25;
+  pointer-events: none;
+  filter: drop-shadow(0 0 10px var(--adam-accent));
+}
+
+/* Active State Animations */
+.holographic-card.analyzing .analysis-grid {
+  animation: flashGrid 0.5s ease-in-out 2;
+  opacity: 1;
+}
+
+.holographic-card.analyzing .problem-state {
+  animation: glitchText 0.3s infinite;
+}
+
+.holographic-card.revealed .scan-line {
+  animation: scanDown 1.5s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+  opacity: 1;
+}
+
+.holographic-card.revealed .problem-state {
+  opacity: 0;
+  transition-delay: 0.75s; /* Halfway through scan */
+}
+
+.holographic-card.revealed .solution-state {
+  opacity: 1;
+  transition-delay: 0.75s;
+}
+
+@keyframes flashGrid {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes scanDown {
+  0% { top: -20%; }
+  100% { top: 120%; }
+}
+
+@keyframes glitchText {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+
+/* =========================================
+   15) AI Agent & Holographic Interaction
+   ========================================= */
+
+.ai-agent-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-8) 0;
+  position: relative;
+  z-index: 10;
+  min-height: 150px;
+  /* Local override for electric colors */
+  --ai-electric: #00f3ff; /* Electric Cyan */
+  --ai-glow: rgba(0, 243, 255, 0.6);
+}
+
+.ai-agent-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ai-core {
+  width: 40px;
+  height: 40px;
+  background: var(--ai-electric);
+  border-radius: 50%;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 0 20px var(--ai-electric);
+  transition: all 0.3s ease;
+}
+
+.ai-core-inner {
+  position: absolute;
+  inset: 2px;
+  background: #fff;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: pulseCore 2s infinite;
+}
+
+.ai-rings {
+  position: absolute;
+  inset: -20px;
+  pointer-events: none;
+}
+
+.ai-ring {
+  position: absolute;
+  border: 1px solid var(--ai-electric);
+  border-radius: 50%;
+  opacity: 0.3;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ring-1 { width: 60px; height: 60px; border-style: dashed; animation: spinRight 10s linear infinite; }
+.ring-2 { width: 80px; height: 80px; border-style: solid; border-width: 1px; border-color: rgba(6, 182, 212, 0.2); animation: spinLeft 15s linear infinite; }
+.ring-3 { width: 100px; height: 100px; border-style: dotted; animation: spinRight 20s linear infinite; }
+
+.ai-status-text {
+  position: absolute;
+  bottom: -40px;
+  font-family: monospace;
+  color: var(--ai-electric);
+  font-size: 0.8rem;
+  opacity: 0.7;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  text-shadow: 0 0 10px var(--ai-glow);
+}
+
+/* Processing State */
+.ai-agent-container.processing .ai-core {
+  transform: scale(1.5);
+  box-shadow: 0 0 50px var(--ai-electric), 0 0 100px var(--adam-primary);
+  background: #fff;
+}
+
+.ai-agent-container.processing .ring-1 { animation-duration: 1s; border-color: #fff; opacity: 0.8; }
+.ai-agent-container.processing .ring-2 { animation-duration: 1.5s; border-color: var(--ai-electric); opacity: 0.6; }
+.ai-agent-container.processing .ring-3 { animation-duration: 2s; border-color: var(--adam-primary); opacity: 0.4; }
+
+.ai-agent-container.processing .ai-status-text {
+  animation: blinkText 0.2s infinite;
+  color: #fff;
+}
+
+/* Solution Output */
+.solution-output-section {
+  min-height: 20px; /* Collapsed initially */
+  display: flex;
+  justify-content: center;
+  perspective: 1000px;
+  margin-bottom: var(--space-8);
+  /* Inherit electric color */
+  --ai-electric: #00f3ff;
+}
+
+.solution-card {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid var(--ai-electric);
+  border-radius: 16px;
+  padding: var(--space-8);
+  max-width: 800px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
+  backdrop-filter: blur(10px);
+  transform-origin: top center;
+  animation: materializeCard 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.solution-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, var(--ai-electric), transparent);
+  animation: scanTop 2s infinite;
+  box-shadow: 0 0 15px var(--ai-electric);
+}
+
+.solution-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: var(--space-4);
+}
+
+.solution-icon {
+  font-size: 2rem;
+  filter: drop-shadow(0 0 10px var(--ai-electric));
+}
+
+.solution-title {
+  color: var(--ai-electric);
+  font-size: 1.5rem;
+  margin: 0;
+  text-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+}
+
+.solution-body {
+  color: var(--adam-text-secondary);
+  line-height: 1.7;
+}
+
+.solution-body strong {
+  color: #fff;
+}
+
+.solution-body ul {
+  margin: var(--space-4) 0;
+  padding-left: var(--space-4);
+}
+
+.solution-body li {
+  margin-bottom: var(--space-2);
+  list-style-type: none;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.solution-body li::before {
+  content: '>';
+  position: absolute;
+  left: 0;
+  color: var(--ai-electric);
+  font-weight: bold;
+  text-shadow: 0 0 5px var(--ai-electric);
+}
+
+/* Ghost Card for Animation */
+.ghost-card {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  transition: all 0.8s cubic-bezier(0.45, 0, 0.55, 1);
+  box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+  background: var(--adam-surface);
+  border: 1px solid var(--ai-electric);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-6);
+}
+
+.ghost-card.shrinking {
+  transform: scale(0.1) !important;
+  opacity: 0;
+}
+
+.ghost-card.returning {
+  transform: scale(1) !important;
+  opacity: 1;
+}
+
+/* Animations */
+@keyframes pulseCore {
+  0%, 100% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes spinRight { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+@keyframes spinLeft { from { transform: translate(-50%, -50%) rotate(360deg); } to { transform: translate(-50%, -50%) rotate(0deg); } }
+
+@keyframes blinkText {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes materializeCard {
+  0% { 
+    opacity: 0;
+    transform: translateY(-50px) scaleX(0.8) perspective(1000px) rotateX(-20deg);
+  }
+  100% { 
+    opacity: 1;
+    transform: translateY(0) scaleX(1) perspective(1000px) rotateX(0);
+  }
+}
+
+@keyframes scanTop {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ############################################################################
+   RESPONSIVE DESIGN - CONSOLIDATED MEDIA QUERIES
+   ############################################################################ */
+
+/* =============================================================================
+   TABLET BREAKPOINT (max-width: 900px)
+   Target: Smaller tablets and landscape phones
+   ============================================================================= */
+
+@media (max-width: 900px) {
+  /* Step Panel Layout */
+  .adam-step-panel.active {
+    grid-template-columns: 1fr;
+  }
+  
+  .adam-step-tabs {
+    flex-direction: row;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: var(--space-4);
+  }
+  
+  .adam-step-tab {
+    min-width: 140px;
+    padding: var(--space-4);
+  }
+}
+
+/* =============================================================================
+   MOBILE BREAKPOINT (max-width: 768px)
+   Target: Phones and small tablets in portrait mode
+   ============================================================================= */
+
+@media (max-width: 768px) {
+  /* --- Design Token Overrides --- */
+  :root {
+    --space-12: 4rem;   /* Reduce large spacing on mobile */
+    --space-10: 3rem;
+    --space-8: 2rem;
+  }
+
+  /* --- Layout & Container --- */
+  .adam-container {
+    padding: 0 var(--space-4);  /* Tighter horizontal padding */
+  }
+  
+  /* --- Typography --- */
+  .adam-section-title {
+    font-size: var(--text-2xl);
+  }
+  
+  .adam-section-subtitle {
+    font-size: var(--text-base);
+  }
+  
+  /* --- Grid Layouts: Stack to Single Column --- */
+  .adam-challenge-grid,
+  .adam-value-grid,
+  .adam-features-grid,
+  .adam-pricing-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  /* --- Pricing Cards --- */
+  .adam-pricing-card-popular {
+    transform: scale(1);  /* Remove scale on mobile */
+  }
+  
+  .adam-pricing-card-popular:hover {
+    transform: translateY(-4px);
+  }
+  
+  /* --- Trust Badges --- */
+  .adam-trust-badges {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  
+  /* --- CTA Group & Buttons --- */
+  .adam-cta-group {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .adam-btn-primary,
+  .adam-btn-secondary {
+    width: 100%;  /* Full-width buttons on mobile */
+  }
+
+  /* --- Velocity Graph Component --- */
+  .velocity-graph-container {
+    padding: 1.5rem 1rem;
+  }
+  
+  .scenario-toggle {
+    gap: 0.5rem;
+  }
+  
+  .scenario-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .scenario-label {
+    display: none;  /* Hide labels, show icons only */
+  }
+  
+  .scenario-icon {
+    font-size: 1.3rem;
+  }
+  
+  .graph-container {
+    grid-template-columns: 35px 1fr;
+  }
+  
+  .graph-area {
+    height: 220px;
+  }
+  
+  .outcome-comparison {
+    grid-template-columns: 1fr;
+  }
+  
+  .graph-legend {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  /* --- Velocity Metrics --- */
+  .velocity-metrics {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+  
+  .metric-3d-container {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .metric-value {
+    font-size: 0.9rem;
+  }
+
+  /* --- Alert Panel --- */
+  .adam-alert-panel {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+  
+  .alert-actions {
+    align-items: center;
+  }
+
+  /* --- Pipeline 3D Scene --- */
+  .pipeline-3d-scene {
+    flex-direction: column;
+  }
+  
+  .pipeline-flow-container {
+    transform: rotate(90deg);
+    width: 100px;
+  }
+
+  /* --- Hero Dashboard Preview --- */
+  .hero-dashboard-preview {
+    margin-top: 2rem;
+    display: none;  /* Hide on mobile for cleaner experience */
+  }
+  
+  .dashboard-card.side-card {
+    display: none;
+  }
+
+  /* --- Holographic Challenge Cards --- */
+  .card-content.problem-state {
+    padding-top: 10px;  /* Remove excessive top padding on mobile */
+    padding-right: 1rem;
+    padding-left: 1rem
+  }
+
+  /* --- AI Agent Section --- */
+  .ai-agent-section {
+    padding-top: var(--space-1);
+    padding-bottom: var(--space-10);
+  }
+}
+
+/* =============================================================================
+   TABLET RANGE (min-width: 769px and max-width: 1024px)
+   Target: Mid-size tablets
+   ============================================================================= */
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Dashboard Side Cards */
+  .dashboard-card.side-card {
+    width: 160px;
+  }
+  
+  .dashboard-card.alert-card {
+    right: -15px;
+  }
+  
+  .dashboard-card.mission-card {
+    left: -15px;
+  }
+}
+
+/* =============================================================================
+   HERO SECTION STYLES
+   Migrated from index.html inline <style> tag
+   ============================================================================= */
+
+/* --------------------------------------------------------------------------- */
+/* DESKTOP & BASE STYLES                                                     */
+/* --------------------------------------------------------------------------- */
+
+.adam-hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+  overflow: hidden;
+  padding: var(--space-6, 2rem);
+}
+
+.adam-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(6, 182, 212, 0.1) 0%, transparent 40%);
+  animation: pulseGradient 10s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGradient {
+  0% { 
+    opacity: 0.5; 
+    transform: scale(1); 
+  }
+  100% { 
+    opacity: 0.8; 
+    transform: scale(1.1); 
+  }
+}
+
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px);
+  }
+  50% {
+    transform: translateY(-10px) translateX(-10px);
+  }
+  75% {
+    transform: translateY(-30px) translateX(5px);
+  }
+}
+
+.adam-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  text-align: center;
+}
+
+.adam-hero h1 {
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 3rem;
+  background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: fadeInUp 0.8s ease-out;
+  letter-spacing: -0.03em;
+}
+
+.adam-hero .subheadline {
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  color: #cbd5e1;
+  margin-bottom: 3rem;
+  line-height: 1.6;
+  animation: fadeInUp 0.8s ease-out 0.2s backwards;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.adam-cta-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeInUp 0.8s ease-out 0.4s backwards;
+}
+
+.adam-stats-bar {
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 5rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  animation: fadeInUp 0.8s ease-out 0.6s backwards;
+}
+
+.adam-stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #3b82f6;
+  display: block;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: bounce 2s infinite;
+  opacity: 0.5;
+}
+
+.scroll-indicator svg {
+  width: 24px;
+  height: 24px;
+  stroke: #94a3b8;
+}
+
+@keyframes bounce {
+  0%, 100% { 
+    transform: translate(-50%, 0); 
+  }
+  50% { 
+    transform: translate(-50%, 10px); 
+  }
+}
+
+/* --------------------------------------------------------------------------- */
+/* MOBILE STYLES (320px - 767px)                                             */
+/* --------------------------------------------------------------------------- */
+/*
+   Mobile-first approach: base styles above are mobile default.
+   Mobile adjustments made here for specific constraints:
+   - Smaller screens need tighter spacing
+   - Touch targets must be min 48px for accessibility
+   - Text must be larger for readability on small devices
+*/
+
+@media (max-width: 767px) {
+  .adam-hero {
+    padding: var(--space-4, 1rem);
+    min-height: auto;
+    padding-top: 6rem;
+    padding-bottom: 3rem;
+  }
+
+  .adam-hero h1 {
+    /* clamp() already handles mobile responsiveness, so no override needed */
+    margin-bottom: 1rem;
+  }
+
+  .adam-hero .subheadline {
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+  }
+
+  .adam-cta-group {
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .adam-cta-group a {
+    width: 100%;
+    padding: 0.75rem 1rem;
+  }
+
+  .adam-stats-bar {
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+  }
+
+  .adam-stat-number {
+    font-size: 1.75rem;
+  }
+
+  .scroll-indicator {
+    bottom: 1rem;
+  }
+
+  .scroll-indicator svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* --------------------------------------------------------------------------- */
+/* TABLET STYLES (768px - 1023px)                                            */
+/* --------------------------------------------------------------------------- */
+/*
+   Tablet transition styles: optimize for medium screens
+   - Balance between mobile and desktop layouts
+   - Touch-friendly interactions
+*/
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .adam-hero {
+    padding: var(--space-6, 2rem);
+  }
+
+  .adam-cta-group {
+    gap: 1.25rem;
+  }
+
+  .adam-stats-bar {
+    gap: 2rem;
+  }
+}
+
+/* --------------------------------------------------------------------------- */
+/* DESKTOP STYLES (1024px+)                                                  */
+/* --------------------------------------------------------------------------- */
+/*
+   Desktop optimization: full-featured layout with all spacing and animations
+   - Wider viewport allows for spacious layouts
+   - All effects and animations fully rendered
+*/
+
+@media (min-width: 1024px) {
+  .adam-hero {
+    padding: var(--space-6, 2rem);
+  }
+
+  .adam-cta-group {
+    gap: 1.5rem;
+  }
+
+  .adam-stats-bar {
+    gap: 3rem;
+  }
+}
+
+/* =============================================================================
+   ACCESSIBILITY: REDUCED MOTION
+   Target: Users who prefer reduced motion
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* =============================================================================
+   PRINT STYLES
+   Target: Printing/PDF generation
+   ============================================================================= */
+
+@media print {
+  .adam-footer,
+  .scroll-indicator,
+  .adam-cta-group,
+  .adam-waitlist-form {
+    display: none !important;
+  }
+}
+
+
+
+
+
+

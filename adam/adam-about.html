@@ -1,0 +1,784 @@
+<!doctype html>
+<!--
+==============================================================================
+ADAM - About Page
+==============================================================================
+
+PURPOSE:
+    Builds trust and emotional connection through authentic storytelling.
+    Humanizes the brand by introducing the team and sharing the origin story.
+
+TARGET AUDIENCE:
+    - Skeptical users researching credibility
+    - Creators who value transparency and authenticity
+    - Users referred from press/social who want to learn more
+    - B2B prospects (agencies) evaluating partnership
+
+WHY THIS PAGE MATTERS:
+    - Trust building: People buy from people, not faceless companies
+    - Differentiation: Most competitors skip founder stories
+    - SEO: Long-form content rich with keywords
+    - Press kit: Journalists often reference About pages
+
+PAGE SECTIONS:
+    1. About Hero
+       - Origin story headline: "Built by creators, for creators"
+       - Establishes credibility through shared experience
+
+    2. The Problem We Saw
+       - Personal narrative: Our own creator struggles
+       - Empathy building (we've been there)
+       - Sets up ADAM as the solution we wish existed
+
+    3. Meet the Team
+       - Founder photos and bios
+       - Credentials and expertise
+       - Makes brand relatable and trustworthy
+
+    4. Our Values
+       - Transparency: Open about methodology
+       - Research-driven: No snake oil, just data
+       - Creator-first: We're not extractive
+       - Community: Building together
+
+    5. Our Mission
+       - Long-term vision beyond profit
+       - "Democratize growth intelligence"
+       - Appeal to values-driven creators
+
+    6. Backed By Research
+       - Academic partnerships
+       - Citations and methodology
+       - Differentiates from competitors making unproven claims
+
+    7. Timeline/Journey
+       - From idea to launch to scale
+       - Shows momentum and progress
+       - Inspires confidence in longevity
+
+    8. Join Us Section
+       - CTA: "Be part of the journey"
+       - Newsletter signup
+       - Community links
+
+STORYTELLING STRATEGY:
+    - Hero's journey structure (struggle → insight → solution)
+    - Vulnerability builds trust (admit our failures)
+    - Concrete details > generic claims
+    - Photos humanize the team
+
+TRUST SIGNALS:
+    - Real photos (not stock images)
+    - LinkedIn profiles linked
+    - Press mentions
+    - Investor/advisor logos (if applicable)
+
+DEPENDENCIES:
+    - css/adam-styles.css (design system)
+    - css/global-nav.css (navigation)
+    - js/global-nav.js (navigation functionality)
+    - js/components.js (header/footer)
+    - app.js (PJAX navigation)
+
+==============================================================================
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Alternate language versions for SEO -->
+    <link rel="alternate" hreflang="en" href="adam-about.html" />
+    <link rel="alternate" hreflang="es" href="es/adam-about.html" />
+    <link rel="alternate" hreflang="x-default" href="adam-about.html" />
+
+
+
+    <link rel="icon" type="image/png" href="media/Logo.png" />
+    <title>About - ADAM TikTok AI Growth Manager</title>
+    <meta name="description" content="Meet the team behind ADAM. We're building the growth tool we wish existed when we started creating content." />
+    <link rel="stylesheet" href="css/adam-styles.css" />
+    <link rel="stylesheet" href="css/global-nav.css" />
+    <style>
+      /* Page-specific styles */
+      .about-hero {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(ellipse at top, #0f172a 0%, #020617 100%);
+        padding: var(--space-12) var(--space-6);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .about-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+          radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.1) 0%, transparent 40%),
+          radial-gradient(circle at 80% 70%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
+      }
+      
+      .about-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 800px;
+      }
+      
+      .about-hero h1 {
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 800;
+        background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: var(--space-6);
+        line-height: 1.1;
+      }
+      
+      .about-hero p {
+        font-size: var(--text-xl);
+        color: var(--adam-text-secondary);
+        line-height: 1.7;
+      }
+      
+      /* Story Section */
+      .story-section {
+        padding: var(--space-16) 0;
+      }
+      
+      .story-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-12);
+        align-items: center;
+      }
+      
+      @media (max-width: 768px) {
+        .story-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      
+      .story-content h2 {
+        font-size: var(--text-3xl);
+        margin-bottom: var(--space-6);
+        color: var(--adam-text-primary);
+      }
+      
+      .story-content p {
+        font-size: var(--text-lg);
+        color: var(--adam-text-secondary);
+        line-height: 1.8;
+        margin-bottom: var(--space-4);
+      }
+      
+      .story-visual {
+        position: relative;
+      }
+      
+      .founder-card {
+        background: var(--adam-surface);
+        border: 1px solid var(--adam-border);
+        border-radius: 20px;
+        padding: var(--space-8);
+        text-align: center;
+      }
+      
+      .founder-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--adam-primary), var(--adam-secondary));
+        margin: 0 auto var(--space-4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+      }
+      
+      .founder-name {
+        font-size: var(--text-xl);
+        font-weight: 700;
+        color: var(--adam-text-primary);
+        margin-bottom: var(--space-1);
+      }
+      
+      .founder-role {
+        font-size: var(--text-sm);
+        color: var(--adam-text-muted);
+        margin-bottom: var(--space-4);
+      }
+      
+      .founder-bio {
+        font-size: var(--text-sm);
+        color: var(--adam-text-secondary);
+        line-height: 1.7;
+      }
+      
+      .founder-socials {
+        display: flex;
+        justify-content: center;
+        gap: var(--space-4);
+        margin-top: var(--space-4);
+      }
+      
+      .founder-socials a {
+        color: var(--adam-text-muted);
+        transition: color var(--duration-fast) var(--ease-out);
+      }
+      
+      .founder-socials a:hover {
+        color: var(--adam-primary);
+      }
+      
+      /* Values Section */
+      .values-section {
+        padding: var(--space-16) 0;
+        background: rgba(15, 23, 42, 0.5);
+      }
+      
+      .values-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--space-6);
+        margin-top: var(--space-10);
+      }
+      
+      .value-card {
+        background: var(--adam-surface);
+        border: 1px solid var(--adam-border);
+        border-radius: 16px;
+        padding: var(--space-6);
+        transition: all var(--duration-base) var(--ease-out);
+      }
+      
+      .value-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--adam-primary);
+      }
+      
+      .value-icon {
+        font-size: 2.5rem;
+        margin-bottom: var(--space-4);
+      }
+      
+      .value-card h3 {
+        font-size: var(--text-xl);
+        color: var(--adam-text-primary);
+        margin-bottom: var(--space-3);
+      }
+      
+      .value-card p {
+        font-size: var(--text-sm);
+        color: var(--adam-text-secondary);
+        line-height: 1.7;
+      }
+      
+      /* Philosophy Section */
+      .philosophy-section {
+        padding: var(--space-16) 0;
+      }
+      
+      .philosophy-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-8);
+        margin-top: var(--space-10);
+      }
+      
+      @media (max-width: 768px) {
+        .philosophy-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      
+      .philosophy-item {
+        display: flex;
+        gap: var(--space-4);
+      }
+      
+      .philosophy-number {
+        font-size: var(--text-3xl);
+        font-weight: 800;
+        color: var(--adam-primary);
+        opacity: 0.3;
+        line-height: 1;
+      }
+      
+      .philosophy-content h3 {
+        font-size: var(--text-lg);
+        color: var(--adam-text-primary);
+        margin-bottom: var(--space-2);
+      }
+      
+      .philosophy-content p {
+        font-size: var(--text-sm);
+        color: var(--adam-text-secondary);
+        line-height: 1.7;
+      }
+      
+      /* Research Section */
+      .research-section {
+        padding: var(--space-16) 0;
+        background: rgba(15, 23, 42, 0.5);
+      }
+      
+      .research-intro {
+        max-width: 700px;
+        margin: 0 auto var(--space-10);
+        text-align: center;
+      }
+      
+      .research-intro p {
+        font-size: var(--text-lg);
+        color: var(--adam-text-secondary);
+        line-height: 1.7;
+      }
+      
+      .research-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--space-6);
+      }
+      
+      .research-card {
+        background: var(--adam-surface);
+        border: 1px solid var(--adam-border);
+        border-radius: 12px;
+        padding: var(--space-5);
+      }
+      
+      .research-card-header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        margin-bottom: var(--space-3);
+      }
+      
+      .research-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(59, 130, 246, 0.1);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .research-card h4 {
+        font-size: var(--text-base);
+        color: var(--adam-text-primary);
+        margin: 0;
+      }
+      
+      .research-card p {
+        font-size: var(--text-sm);
+        color: var(--adam-text-secondary);
+        line-height: 1.6;
+        margin-bottom: var(--space-3);
+      }
+      
+      .research-source {
+        font-size: var(--text-xs);
+        color: var(--adam-text-muted);
+        font-style: italic;
+      }
+      
+      /* Tech Stack Section */
+      .tech-section {
+        padding: var(--space-16) 0;
+      }
+      
+      .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--space-4);
+        margin-top: var(--space-8);
+      }
+      
+      .tech-item {
+        background: var(--adam-surface);
+        border: 1px solid var(--adam-border);
+        border-radius: 12px;
+        padding: var(--space-4);
+        text-align: center;
+        transition: all var(--duration-base) var(--ease-out);
+      }
+      
+      .tech-item:hover {
+        border-color: var(--adam-primary);
+        transform: translateY(-2px);
+      }
+      
+      .tech-item span {
+        font-size: var(--text-sm);
+        color: var(--adam-text-secondary);
+      }
+      
+      .tech-item strong {
+        display: block;
+        font-size: var(--text-base);
+        color: var(--adam-text-primary);
+        margin-top: var(--space-1);
+      }
+      
+      /* CTA Section */
+      .about-cta {
+        padding: var(--space-16) 0;
+        text-align: center;
+        background: linear-gradient(180deg, var(--adam-bg-dark) 0%, #0f172a 100%);
+      }
+      
+      .about-cta h2 {
+        font-size: var(--text-3xl);
+        margin-bottom: var(--space-4);
+      }
+      
+      .about-cta p {
+        color: var(--adam-text-secondary);
+        font-size: var(--text-lg);
+        max-width: 500px;
+        margin: 0 auto var(--space-8);
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    
+    <!-- Header -->
+    <div id="global-nav-container"></div>
+
+    <main id="main" role="main">
+      
+      <!-- Hero -->
+      <section class="about-hero">
+        <div class="about-hero-content">
+          <h1 id="about-hero-title">We're Building the Tool We Wish Existed</h1>
+          <p id="about-hero-subtitle">ADAM isn't another analytics dashboard. It's a growth system built by creators, for creators—grounded in research, not guesswork.</p>
+        </div>
+      </section>
+
+      <!-- Story Section -->
+      <section class="story-section">
+        <div class="adam-container">
+          <div class="story-grid">
+            <div class="story-content">
+              <h2 id="about-story-title">The Problem We're Solving</h2>
+              <p>
+                Most creators have access to more data than ever—but less clarity than ever. 
+                TikTok's native analytics show you what happened, but not <em>why</em> it happened 
+                or <em>what to do next</em>.
+              </p>
+              <p>
+                We've watched talented creators burn out trying to "crack the algorithm," 
+                making decisions based on viral myths instead of actual data. They post 
+                randomly, hoping something sticks, instead of running structured experiments.
+              </p>
+              <p>
+                ADAM exists to change that. We convert raw metrics into actionable insights, 
+                help you run real experiments, and build consistency through gamified missions—
+                all backed by academic research on habit formation and content virality.
+              </p>
+            </div>
+            <div class="story-visual">
+              <div class="founder-card">
+                <div class="founder-avatar">👨‍💻</div>
+                <div class="founder-name">Lenko Studio</div>
+                <div class="founder-role">Creator & Builder</div>
+                <p class="founder-bio">
+                  We're a small team obsessed with the intersection of creativity, data, 
+                  and behavior design. We've helped creators grow from 0 to 100K+ followers 
+                  and learned that consistency beats virality every time.
+                </p>
+                <div class="founder-socials">
+                  <a href="https://twitter.com/lenkostudio" target="_blank" rel="noopener" aria-label="Twitter">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+                    </svg>
+                  </a>
+                  <a href="https://instagram.com/lenkostudio" target="_blank" rel="noopener" aria-label="Instagram">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Values Section -->
+      <section class="values-section">
+        <div class="adam-container">
+          <h2 class="adam-section-title" id="about-values-title">What We Believe</h2>
+          <p class="adam-section-subtitle" id="about-values-subtitle">These principles guide every feature we build.</p>
+          
+          <div class="values-grid">
+            <div class="value-card">
+              <div class="value-icon">🎯</div>
+              <h3>Action Over Metrics</h3>
+              <p>Numbers without context are noise. Every data point in ADAM is tied to a specific action you can take. If we can't tell you what to do with it, we don't show it.</p>
+            </div>
+            
+            <div class="value-card">
+              <div class="value-icon">🔬</div>
+              <h3>Research-Backed</h3>
+              <p>We cite our sources. Our habit system is based on behavior change research. Our experiment engine uses Netflix-style sequential testing. No bro science.</p>
+            </div>
+            
+            <div class="value-card">
+              <div class="value-icon">🤝</div>
+              <h3>Honest Uncertainty</h3>
+              <p>We'll never claim to "guarantee virality." When our predictions are uncertain, we say so with explicit confidence intervals. Trust is earned through honesty.</p>
+            </div>
+            
+            <div class="value-card">
+              <div class="value-icon">🎮</div>
+              <h3>Useful Gamification</h3>
+              <p>Rewards should reinforce behaviors that actually drive growth—not just engagement with our app. XP is earned by completing missions that improve your content.</p>
+            </div>
+            
+            <div class="value-card">
+              <div class="value-icon">🔒</div>
+              <h3>Privacy-First</h3>
+              <p>We use TikTok's official API with read-only access. We can't post, delete, or modify your account. Your data is encrypted and never sold.</p>
+            </div>
+            
+            <div class="value-card">
+              <div class="value-icon">📈</div>
+              <h3>Compounding Learning</h3>
+              <p>Every experiment you run, every mission you complete adds to your personal playbook. ADAM gets smarter about YOUR audience over time.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Philosophy Section -->
+      <section class="philosophy-section">
+        <div class="adam-container">
+          <h2 class="adam-section-title">Our Design Philosophy</h2>
+          <p class="adam-section-subtitle">How we think about building growth tools.</p>
+          
+          <div class="philosophy-grid">
+            <div class="philosophy-item">
+              <div class="philosophy-number">01</div>
+              <div class="philosophy-content">
+                <h3>Experiments Beat Intuition</h3>
+                <p>Your intuition about what works is probably wrong 60% of the time. We've seen creators convinced that "X works best" until their experiments proved otherwise. ADAM helps you test assumptions systematically.</p>
+              </div>
+            </div>
+            
+            <div class="philosophy-item">
+              <div class="philosophy-number">02</div>
+              <div class="philosophy-content">
+                <h3>Consistency Beats Virality</h3>
+                <p>One viral video is luck. Consistent posting with iterative improvement is a system. We focus on building habits that compound—not chasing one-hit wonders.</p>
+              </div>
+            </div>
+            
+            <div class="philosophy-item">
+              <div class="philosophy-number">03</div>
+              <div class="philosophy-content">
+                <h3>First Hour Is Everything</h3>
+                <p>TikTok's algorithm makes decisions fast. Videos that hit velocity thresholds in the first 30-120 minutes get pushed to the For You Page. Everything else is secondary.</p>
+              </div>
+            </div>
+            
+            <div class="philosophy-item">
+              <div class="philosophy-number">04</div>
+              <div class="philosophy-content">
+                <h3>Your Playbook, Not Ours</h3>
+                <p>Generic "post at 6pm" advice doesn't account for YOUR audience. ADAM builds a personalized playbook from your own data—what works for you might not work for anyone else.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Research Section -->
+      <section class="research-section">
+        <div class="adam-container">
+          <h2 class="adam-section-title">Built on Research</h2>
+          <div class="research-intro">
+            <p>Every major feature in ADAM is grounded in peer-reviewed research or official platform documentation. Here's some of what informs our design:</p>
+          </div>
+          
+          <div class="research-grid">
+            <div class="research-card">
+              <div class="research-card-header">
+                <div class="research-icon">🧠</div>
+                <h4>Habit Formation</h4>
+              </div>
+              <p>Our mission system implements the 4 most effective techniques for digital behavior change: goal-setting, self-monitoring, prompts/cues, and reinforcement.</p>
+              <div class="research-source">Source: J Med Internet Res, 2024 — Systematic review of 62 digital behavior change interventions</div>
+            </div>
+            
+            <div class="research-card">
+              <div class="research-card-header">
+                <div class="research-icon">📊</div>
+                <h4>A/B Testing</h4>
+              </div>
+              <p>Our experiments engine uses sequential monitoring with pre-defined measurement windows to reduce false positives—the same methodology Netflix uses.</p>
+              <div class="research-source">Source: Netflix TechBlog, 2024 — "Sequential Testing Keeps the World Streaming"</div>
+            </div>
+            
+            <div class="research-card">
+              <div class="research-card-header">
+                <div class="research-icon">📱</div>
+                <h4>TikTok Engagement</h4>
+              </div>
+              <p>Academic analysis of TikTok engagement patterns confirms that early velocity (first-hour metrics) strongly predicts 24-hour performance.</p>
+              <div class="research-source">Source: ACM Digital Library, 2024 — "Analyzing User Engagement with TikTok's Short Format Videos"</div>
+            </div>
+            
+            <div class="research-card">
+              <div class="research-card-header">
+                <div class="research-icon">🎬</div>
+                <h4>Creative Best Practices</h4>
+              </div>
+              <p>TikTok's official "Creative Codes" emphasize: hook in 3 seconds, native style, sound-on design. Our AI coach translates these into specific actions.</p>
+              <div class="research-source">Source: TikTok For Business, 2024 — Official creative guidelines</div>
+            </div>
+            
+            <div class="research-card">
+              <div class="research-card-header">
+                <div class="research-icon">🎮</div>
+                <h4>Gamification</h4>
+              </div>
+              <p>Self-Determination Theory research shows that gamification works best when it supports autonomy, competence, and relatedness—not just points.</p>
+              <div class="research-source">Source: TechTrends/Springer, 2024 — "Advancing Gamification Research"</div>
+            </div>
+            
+            <div class="research-card">
+              <div class="research-card-header">
+                <div class="research-icon">📈</div>
+                <h4>Prediction Calibration</h4>
+              </div>
+              <p>Experimentation platforms combining Bayesian methods with reinforcement learning show improved prediction accuracy—informing our forecasting approach.</p>
+              <div class="research-source">Source: ACM SIGKDD, 2023 — "Experimentation Platforms Meet Reinforcement Learning"</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tech Stack Section -->
+      <section class="tech-section">
+        <div class="adam-container">
+          <h2 class="adam-section-title">Built to Last</h2>
+          <p class="adam-section-subtitle">Modern, reliable technology that scales with you.</p>
+          
+          <div class="tech-grid">
+            <div class="tech-item">
+              <span>Data Source</span>
+              <strong>Official TikTok API</strong>
+            </div>
+            <div class="tech-item">
+              <span>Edge Caching</span>
+              <strong>Cloudflare</strong>
+            </div>
+            <div class="tech-item">
+              <span>Database</span>
+              <strong>PostgreSQL</strong>
+            </div>
+            <div class="tech-item">
+              <span>Security</span>
+              <strong>Bank-Level Encryption</strong>
+            </div>
+            <div class="tech-item">
+              <span>Uptime</span>
+              <strong>99.9% SLA</strong>
+            </div>
+            <div class="tech-item">
+              <span>Data Refresh</span>
+              <strong>Every 30 min</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="about-cta">
+        <div class="adam-container">
+          <h2 id="about-cta-title">Ready to Grow with Confidence?</h2>
+          <p id="about-cta-subtitle">Join thousands of creators who are done guessing and ready to start experimenting.</p>
+          <a href="index.html#waitlist" class="adam-btn-primary adam-btn-large" id="about-cta-join-beta">Join Free Beta</a>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer adam-footer" role="contentinfo">
+      <div class="adam-container">
+        <div class="adam-footer-grid">
+          <div class="adam-footer-col">
+            <h4>Product</h4>
+            <ul>
+              <li><a href="adam-features.html">Features</a></li>
+              <li><a href="adam-pricing.html">Pricing</a></li>
+              <li><a href="index.html#demo-preview">Demo</a></li>
+            </ul>
+          </div>
+          <div class="adam-footer-col">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="adam-about.html">About</a></li>
+              <li><a href="mailto:hello@lenkostudio.com">Contact</a></li>
+            </ul>
+          </div>
+          <div class="adam-footer-col">
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="privacy.html">Privacy</a></li>
+              <li><a href="terms.html">Terms</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="adam-footer-bottom">
+          <p>© 2025 Lenko Studio. All rights reserved.</p>
+          <p class="adam-footer-tagline">Built with ❤️ for TikTok creators</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // =====================================================================
+      // NAVIGATION
+      // =====================================================================
+      // This site uses the injected global nav from `js/global-nav.js`.
+      // Do NOT add legacy menu toggles (`.mobile-menu-toggle`, `.nav-list`) here.
+
+      // Scroll animations
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, observerOptions);
+      
+      document.querySelectorAll('.value-card, .philosophy-item, .research-card').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'all 0.5s ease-out';
+        observer.observe(el);
+      });
+    </script>
+    <script src="js/global-nav.js"></script>
+    <!-- Analytics and user tracking -->
+    <script src="js/analytics.js?v=20260103" defer></script>
+  </body>
+</html>

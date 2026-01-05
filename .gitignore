@@ -3,3 +3,17 @@ media/portfolio_backup/
 __pycache__/
 *.pyc
 .vscode/
+
+# Wrangler
+.wrangler/
+.env.local
+.env.*.local
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db

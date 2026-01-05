@@ -30,7 +30,8 @@
     <link rel="icon" type="image/png" href="media/Logo.png" />
     <title>Lenko Studio — Privacy</title>
     <link rel="stylesheet" href="style.css?v=20251230a" />
-    <script src="js/components.js?v=20251230a" defer></script>
+    <!-- Nav behavior (hamburger + overlay). Markup is injected server-side by _worker.js -->
+    <script src="js/nav.js?v=20260104a" defer></script>
 </head>
 
 <!-- ============================================================================
@@ -42,7 +43,8 @@
     <a class="skip-link" href="#main">Skip to content</a>
 
     <!-- Site navigation header -->
-    <site-header current="privacy"></site-header>
+    <!-- HEADER (Server-Injected): _worker.js replaces this with partials/nav.html -->
+    <div data-partial="nav"></div>
 
 
     <!-- ========================================================================
@@ -247,7 +249,8 @@
 
 
     <!-- Site footer component -->
-    <site-footer></site-footer>
+    <!-- FOOTER (Server-Injected): _worker.js replaces this with partials/footer.html -->
+    <div data-partial="footer"></div>
 
 
     <!-- Main application JavaScript -->

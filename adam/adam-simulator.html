@@ -1,0 +1,241 @@
+<!doctype html>
+<!--
+==============================================================================
+ADAM - Creator Growth Decision Simulator
+==============================================================================
+
+PURPOSE:
+    Interactive simulation that lets creators experiment with growth strategies
+    before committing real time/money. Educational tool that demonstrates how
+    strategic decisions compound over time.
+
+WHAT IT DOES:
+    Users make decisions across multiple chapters (content type, posting schedule,
+    monetization strategy) and see immediate visual feedback on how each choice
+    impacts:
+    - Follower growth trajectory
+    - View counts and engagement
+    - Monthly income and costs
+    - Subscriber base
+
+WHY IT EXISTS:
+    - Reduces risk: Try strategies virtually before implementing
+    - Educational: Shows how decisions compound (some choices look good short-term
+      but hurt long-term)
+    - Lead generation: Engaged users more likely to convert to paid plans
+    - Differentiator: Competitors don't offer this level of interactive experience
+
+TECHNICAL ARCHITECTURE:
+    - Standalone CSS (uses css/style.css, NOT adam-styles.css)
+    - js/simulator.js (1400+ lines of growth simulation logic)
+    - data/simulator.csv (decision scenarios and outcomes)
+    - Chart.js for line chart visualization
+    - Mobile-optimized (responsive layout, touch-friendly)
+
+KEY FEATURES:
+    1. Dynamic Scaling System
+       - Same decision has different impact at 1K vs 100K followers
+       - Uses exponential multipliers for realistic growth
+    
+    2. Visual Feedback
+       - Animated line chart updates after each choice
+       - Decision table shows impact breakdown
+       - Hover preview of potential outcomes
+    
+    3. Replay ability
+       - Users can restart with different starting points
+       - Encourages exploration and learning
+
+NOTE ON CSS:
+    This page intentionally does NOT load adam-styles.css to avoid conflicts.
+    The simulator has its own design system in css/style.css and css/simulator.css.
+
+DEPENDENCIES:
+    - css/style.css (base simulator styles)
+    - css/simulator.css (simulator-specific layout)
+    - css/global-nav.css (navigation)
+    - js/simulator.js (core logic)
+    - js/global-nav.js (navigation)
+    - js/components.js (header/footer)
+    - Chart.js library (chart rendering)
+    - data/simulator.csv (decision scenarios)
+
+==============================================================================
+-->
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Alternate language versions for SEO -->
+    <link rel="alternate" hreflang="en" href="adam-simulator.html" />
+    <link rel="alternate" hreflang="es" href="es/adam-simulator.html" />
+    <link rel="alternate" hreflang="x-default" href="adam-simulator.html" />
+
+
+
+        <link rel="icon" type="image/png" href="media/Logo.png" />
+        
+        <title>Creator Simulator – Adam by Lenko Studio</title>
+        
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&family=Roboto:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+
+        <link rel="stylesheet" href="css/style.css" />
+        <!-- NOTE: adam-styles.css is NOT loaded on simulator page to avoid CSS conflicts -->
+        <!-- The simulator uses style.css CSS variables exclusively -->
+        <link rel="stylesheet" href="css/simulator.css" />
+        <link rel="stylesheet" href="css/global-nav.css" />
+        <meta
+            name="description"
+            content="Test your creator instincts. Make choices, grow your audience, and avoid burnout in this interactive simulator."
+        />
+    </head>
+    <body>
+        <!-- Header - Using global nav -->
+        <div id="global-nav-container"></div>
+        
+        <canvas id="particleCanvas"></canvas>
+        <main id="main" class="simulator-page" role="main">
+            <!-- Sticky Dashboard -->
+            <div class="dashboard-wrapper">
+                <div class="dashboard-panes">
+                    <!-- Graph Pane with Flip -->
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="pane-graph clickable">
+                                    <div class="graph-header">
+                                        <div class="brand-area">
+                                            <span class="sim-logo" id="sim-logo-text">Profile Growth Simulator</span>
+                                        </div>
+                                        <div class="dashboard-controls">
+                                            <button id="btnUndo" class="btn-text" disabled>Undo</button>
+                                            <button id="btnReset" class="btn-text">Reset</button>
+                                        </div>
+                                    </div>
+                                    <div class="pane-label">Followers Growth</div>
+                                    <svg id="growthChart" width="100%" height="100%" preserveAspectRatio="none"></svg>
+                                </div>
+                            </div>
+                            <div class="flip-card-back clickable">
+                                <div class="explanation-content">
+                                    <h3>📈 Growth Chart</h3>
+                                    <p>This chart tracks your follower count progression through each decision you make. Each segment represents a choice's impact on your audience growth.</p>
+                                    <p class="tip">💡 Hover over dots to preview different choice outcomes before committing.</p>
+                                    <p class="tip">👆 Click anywhere to flip back</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Pane with Flip -->
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="pane-data clickable">
+                                    <div class="aspect-table-wrap">
+                                        <table class="aspect-table" aria-label="Current values and decision impacts">
+                                            <tbody id="aspectTableBody"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back clickable">
+                                <div class="explanation-content">
+                                    <h3>📊 Metrics Table</h3>
+                                    <p>This table shows the cumulative impact of all your decisions on key creator metrics.</p>
+                                    <ul>
+                                        <li><strong>TOTAL Row:</strong> Your current overall stats</li>
+                                        <li><strong>Decision Rows:</strong> Individual impact of each choice</li>
+                                        <li><strong>Color Coding:</strong> Green = positive growth, Red = costs/losses</li>
+                                    </ul>
+                                    <p><strong>Key Metrics:</strong></p>
+                                    <ul>
+                                        <li><strong>Followers:</strong> Your audience size</li>
+                                        <li><strong>Views:</strong> Content reach</li>
+                                        <li><strong>Subscribers:</strong> Highly engaged supporters</li>
+                                        <li><strong>Costs:</strong> Investment required</li>
+                                        <li><strong>Income:</strong> Revenue potential</li>
+                                    </ul>
+                                    <p class="tip">👆 Click anywhere to flip back</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scrollable Content -->
+            <div class="simulator-scroll-container">
+                <section class="hero-section" id="simHero">
+                    <div class="hero-inner">
+                        <h1 id="sim-hero-title">Your next 8 decisions shape the next 6 months.</h1>
+                        <p class="hero-sub" id="sim-hero-subtitle">You're posting consistently. Growth is flattening. Today you'll choose what to keep DIY, what to upgrade, and when pro photo/video production actually helps (or hurts).</p>
+                        <div class="follower-input-group">
+                            <label for="startingFollowers" id="sim-followers-label">Current Followers</label>
+                            <input type="number" id="startingFollowers" placeholder="e.g., 5000" min="100" step="100" />
+                        </div>
+                        <button class="btn-primary btn-large" id="startSimBtn" disabled>Start Simulation</button>
+                        <p class="disclaimer" id="sim-disclaimer">Simulator – estimates. Real growth varies.</p>
+                    </div>
+                </section>
+
+                <section class="chapter-container" id="simContent">
+                    <!-- Chapters injected here -->
+                </section>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="site-footer adam-footer" role="contentinfo">
+          <div class="footer-inner">
+            <div class="footer-brand">
+              <strong>ADAM</strong>
+              <p>Your TikTok AI Growth Manager</p>
+            </div>
+            <nav class="footer-nav" aria-label="Footer">
+              <a href="adam-features.html">Features</a>
+              <a href="adam-pricing.html">Pricing</a>
+              <a href="adam-about.html">About</a>
+              <a href="index.html#waitlist">Get Started</a>
+            </nav>
+            <p class="footer-copyright">© <span id="year"></span> Lenko Studio. All rights reserved.</p>
+          </div>
+        </footer>
+
+        <script src="js/simulator.js"></script>
+        <script src="js/global-nav.js"></script>
+        <script>
+          // Initialize immediately after simulator.js loads (synchronous execution)
+          // This mirrors lenkostudio's app.js calling initPageFeatures() at the end
+          
+          (function() {
+            'use strict';
+
+            // =====================================================================
+            // NAVIGATION
+            // =====================================================================
+            // The standardized navigation is injected + controlled by `js/global-nav.js`.
+            // Do NOT bind legacy menu logic here (old `.menu-toggle` / `.site-nav`).
+            
+            // Set current year
+            const yearSpan = document.getElementById('year');
+            if (yearSpan) {
+              yearSpan.textContent = new Date().getFullYear();
+            }
+            
+            // Initialize CreatorSimulator (matching lenkostudio app.js behavior)
+            if (window.CreatorSimulator && typeof window.CreatorSimulator.init === 'function') {
+              window.CreatorSimulator.init();
+            }
+          })();
+        </script>
+        <!-- Analytics and user tracking -->
+        <script src="js/analytics.js?v=20260103" defer></script>
+    </body>
+</html>

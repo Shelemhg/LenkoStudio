@@ -29,7 +29,7 @@ STRUCTURE:
 
 DEPENDENCIES:
     CSS:  style.css (global styles + hero + animations)
-    JS:   components.js (site-header, site-footer web components)
+    JS:   nav.js (nav behavior); markup injected by _worker.js
           home.js (intro sequence, video lazy-load, stage management)
           app.js (PJAX navigation, audio, forms)
 
@@ -90,7 +90,8 @@ LAST MODIFIED: 2026-01-03
     <!-- ===== SCRIPTS ===== -->
     
     <!-- Web components (header/footer) - load early but defer execution -->
-    <script src="js/components.js?v=20251230a" defer></script>
+    <!-- Nav behavior (hamburger + overlay). Markup is injected server-side by _worker.js -->
+    <script src="js/nav.js?v=20260104a" defer></script>
 
 
     <!-- ===== SEO ===== -->
@@ -135,11 +136,12 @@ LAST MODIFIED: 2026-01-03
     <!-- ===== SITE HEADER ===== -->
     
     <!-- 
-        Custom web component (defined in components.js).
+        Server-injected partial (injected by _worker.js).
         Renders navigation bar with logo and menu links.
         "current" attribute highlights the active page.
     -->
-    <site-header current="project"></site-header>
+    <!-- HEADER (Server-Injected): _worker.js replaces this with partials/nav.html -->
+    <div data-partial="nav"></div>
 
 
     <!-- ========================================================================= -->
@@ -238,10 +240,11 @@ LAST MODIFIED: 2026-01-03
     <!-- ========================================================================= -->
 
     <!-- 
-        Custom web component (defined in components.js).
+        Server-injected partial (injected by _worker.js).
         Renders footer with links, social media, and copyright.
     -->
-    <site-footer></site-footer>
+    <!-- FOOTER (Server-Injected): _worker.js replaces this with partials/footer.html -->
+    <div data-partial="footer"></div>
 
 
     <!-- ========================================================================= -->

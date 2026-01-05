@@ -546,6 +546,10 @@
   function initPageFeatures(root = document) {
     updateYear(root);
 
+    // Ensure nav reflects the current URL on initial load.
+    // (Previously handled by the site-header web component.)
+    updateAriaCurrent(window.location.href);
+
     // Ensure the audio toggle always works (header is shared across pages).
     AudioController.init();
 
@@ -588,6 +592,11 @@
     // Home intro controller (idempotent, no-op on non-home pages).
     if (window.HomeIntro && typeof window.HomeIntro.init === 'function') {
       window.HomeIntro.init();
+    }
+
+    // Navigation behavior (hamburger + overlay). Markup is server-injected.
+    if (window.Nav && typeof window.Nav.init === 'function') {
+      window.Nav.init(root);
     }
   }
 

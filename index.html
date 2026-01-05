@@ -21,7 +21,7 @@
     Dependencies:
     - style.css: Global styles and design tokens
     - home-gallery.css: Gallery-specific layouts
-    - components.js: Reusable header/footer web components
+    - nav.js: Navigation behavior (markup injected by _worker.js)
     - home-gallery.js: Gallery initialization and lightbox logic
     - app.js: PJAX navigation and audio controls
     ============================================================================
@@ -103,7 +103,8 @@
         
         <!-- ===== SCRIPTS ===== -->
         <!-- Web components for header/footer (deferred to avoid render blocking) -->
-        <script src="js/components.js?v=20251230a" defer></script>
+            <!-- Nav behavior (hamburger + overlay). Markup is injected server-side by _worker.js -->
+            <script src="js/nav.js?v=20260104a" defer></script>
     </head>
 
 
@@ -115,7 +116,9 @@
         
         <!-- ===== HEADER ===== -->
         <!-- Reusable navigation component, 'current' attribute highlights active page -->
-        <site-header current="home"></site-header>
+            <!-- ===== HEADER (Server-Injected) ===== -->
+            <!-- Placeholder: _worker.js replaces this with partials/nav.html -->
+            <div data-partial="nav"></div>
 
 
         <!-- ===== MAIN CONTENT ===== -->
@@ -209,7 +212,9 @@
 
         <!-- ===== FOOTER ===== -->
         <!-- Reusable footer component with contact info and social links -->
-        <site-footer></site-footer>
+            <!-- ===== FOOTER (Server-Injected) ===== -->
+            <!-- Placeholder: _worker.js replaces this with partials/footer.html -->
+            <div data-partial="footer"></div>
 
 
         <!-- ===== PAGE SCRIPTS ===== -->

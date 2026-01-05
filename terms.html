@@ -55,7 +55,8 @@ LAST UPDATED: 2025-10-12
     <!-- ============================================================
          SCRIPTS
          ============================================================ -->
-    <script src="js/components.js?v=20251230a" defer></script>
+    <!-- Nav behavior (hamburger + overlay). Markup is injected server-side by _worker.js -->
+    <script src="js/nav.js?v=20260104a" defer></script>
 </head>
 
 
@@ -64,7 +65,8 @@ LAST UPDATED: 2025-10-12
          ACCESSIBILITY & NAVIGATION
          ============================================================ -->
     <a class="skip-link" href="#main">Skip to content</a>
-    <site-header current="terms"></site-header>
+    <!-- HEADER (Server-Injected): _worker.js replaces this with partials/nav.html -->
+    <div data-partial="nav"></div>
 
 
     <!-- ============================================================
@@ -316,7 +318,8 @@ LAST UPDATED: 2025-10-12
     <!-- ============================================================
          FOOTER
          ============================================================ -->
-    <site-footer></site-footer>
+    <!-- FOOTER (Server-Injected): _worker.js replaces this with partials/footer.html -->
+    <div data-partial="footer"></div>
 
 
     <!-- ============================================================

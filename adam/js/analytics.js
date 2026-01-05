@@ -46,6 +46,34 @@
         return;
     }
     
+    // Check if user has disabled tracking via localStorage flag
+    if (localStorage.getItem('lenko_disable_analytics') === 'true') {
+        console.log('PostHog: Analytics disabled by user preference');
+        return;
+    }
+    
+    // Blocked IP addresses (owner devices)
+    const BLOCKED_IPS = [
+        '189.203.193.210'  // Owner's computer IP
+    ];
+    
+    // Check IP address (using ipify API)
+    fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+            if (BLOCKED_IPS.includes(data.ip)) {
+                console.log('PostHog: Analytics disabled for blocked IP:', data.ip);
+                // Stop PostHog if already initialized
+                if (window.posthog) {
+                    window.posthog.opt_out_capturing();
+                }
+            }
+        })
+        .catch(error => {
+            console.log('PostHog: Could not check IP', error);
+            // Continue with analytics if IP check fails
+        });
+    
     // Check if PostHog should be loaded (respect privacy settings)
     if (!POSTHOG_API_KEY || POSTHOG_API_KEY === 'YOUR_PROJECT_API_KEY') {
         console.warn('PostHog: API key not configured. Analytics disabled.');
@@ -187,7 +215,7 @@
      */
     function trackNavigationClicks() {
         document.addEventListener('click', function(e) {
-            const navLink = e.target.closest('nav a, .nav-link');
+            const navLink = e.target.closest('nav a, .nav-link, site-header a');
             if (navLink) {
                 posthog.capture('navigation_clicked', {
                     link_text: navLink.textContent.trim(),

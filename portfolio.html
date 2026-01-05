@@ -30,7 +30,7 @@
     - style.css: Global styles and design tokens
     - portfolio.css: Portfolio grid layout
     - sphere-gallery.css: 3D sphere viewer styles
-    - components.js: Reusable header/footer web components
+    - nav.js: Navigation behavior (markup injected by _worker.js)
     - portfolio.js: Portfolio interaction and sphere gallery initialization
     - sphere-gallery.js: 3D sphere gallery logic
     - app.js: PJAX navigation and audio controls
@@ -84,7 +84,8 @@
 
         <!-- ===== SCRIPTS ===== -->
         <!-- Web components for header/footer (deferred to avoid render blocking) -->
-        <script src="js/components.js?v=20251230a" defer></script>
+        <!-- Nav behavior (hamburger + overlay). Markup is injected server-side by _worker.js -->
+        <script src="js/nav.js?v=20260104a" defer></script>
     </head>
 
 
@@ -96,7 +97,8 @@
 
         <!-- ===== HEADER ===== -->
         <!-- Reusable navigation component, 'current' attribute highlights active page -->
-        <site-header current="portfolio"></site-header>
+        <!-- HEADER (Server-Injected): _worker.js replaces this with partials/nav.html -->
+        <div data-partial="nav"></div>
 
 
         <!-- ===== MAIN CONTENT ===== -->
@@ -272,7 +274,8 @@
 
         <!-- ===== FOOTER ===== -->
         <!-- Reusable footer component with contact info and social links -->
-        <site-footer></site-footer>
+        <!-- FOOTER (Server-Injected): _worker.js replaces this with partials/footer.html -->
+        <div data-partial="footer"></div>
 
 
         <!-- ===== PAGE SCRIPTS ===== -->

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simulator Test</title>
+    <style>
+        body { background: #0a0a0a; color: white; font-family: Arial; padding: 20px; }
+        .test { margin: 20px 0; padding: 15px; border: 1px solid #333; }
+        .success { border-color: green; }
+        .error { border-color: red; }
+        code { background: #222; padding: 2px 5px; }
+    </style>
+</head>
+<body>
+    <h1>Simulator Diagnostic Test</h1>
+    <div id="results"></div>
+    
+    <script>
+        const results = document.getElementById('results');
+        
+        function test(name, fn) {
+            try {
+                const result = fn();
+                results.innerHTML += '<div class="test success"> ' + name + ': ' + result + '</div>';
+                return true;
+            } catch (e) {
+                results.innerHTML += '<div class="test error"> ' + name + ': ' + e.message + '</div>';
+                return false;
+            }
+        }
+        
+        // Test if page structure exists
+        test('Page loads', () => 'OK');
+        test('startingFollowers input exists', () => {
+            const el = document.getElementById('startingFollowers');
+            return el ? 'Found' : 'MISSING';
+        });
+        test('startSimBtn exists', () => {
+            const el = document.getElementById('startSimBtn');
+            return el ? 'Found' : 'MISSING';
+        });
+        test('growthChart exists', () => {
+            const el = document.getElementById('growthChart');
+            return el ? 'Found' : 'MISSING';
+        });
+        test('aspectTableBody exists', () => {
+            const el = document.getElementById('aspectTableBody');
+            return el ? 'Found' : 'MISSING';
+        });
+    </script>
+    <!-- Analytics and user tracking -->
+    <script src="js/analytics.js?v=20260103" defer></script>
+</body>
+</html>

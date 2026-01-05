@@ -1,36 +1,80 @@
-/**
- * Reusable Web Components
- *
- * Goals:
- * - Keep navigation consistent across all pages.
- * - Keep the markup small and cacheable.
- * - Let app.js handle audio behavior (this component only renders the toggle).
- *
- * Why Web Components?
- * - Reusability: Define once, use across all HTML pages without duplication.
- * - Encapsulation: Each component manages its own DOM and behavior.
- * - Standards-based: Uses native browser APIs (Custom Elements) for better performance.
- * - Maintainability: Changes to header/footer propagate automatically to all pages.
- */
+// ============================================================================
+// WEB COMPONENTS: Reusable Site Header and Footer
+// ============================================================================
+//
+// PURPOSE:
+//     Defines custom HTML elements (<site-header> and <site-footer>) that
+//     encapsulate navigation and footer markup/behavior. This promotes
+//     consistency across pages and reduces code duplication.
+//
+// COMPONENTS:
+//     1. <site-header> - Main navigation with mobile hamburger menu
+//     2. <site-footer> - Standard footer with social links
+//
+// GOALS:
+//     - Keep navigation consistent across all pages
+//     - Keep markup small and cacheable
+//     - Separation of concerns (audio handled in app.js)
+//     - Accessibility-first design
+//
+// USAGE:
+//     In HTML, simply use:
+//         <site-header current="home"></site-header>
+//         <site-footer></site-footer>
+//
+// NOTE:
+//     This file is for legacy pages. New ADAM pages use the global-nav.js
+//     injection system instead. Both systems are maintained for compatibility.
+//
+// ============================================================================
+
+
+// ============================================================================
+// SITE HEADER COMPONENT
+// ============================================================================
+//
+// Custom element that provides site-wide navigation with:
+//     - Responsive hamburger menu for mobile
+//     - Active page highlighting
+//     - Sound toggle button
+//     - Accessibility features (ARIA, keyboard nav)
+//     - Focus management
+//
+// ATTRIBUTES:
+//     current - Current page identifier for highlighting (e.g., "home", "portfolio")
+//
+// ============================================================================
 
 class SiteHeader extends HTMLElement {
-    // Prevent duplicate event listeners across multiple instances.
-    // Since Escape handler is document-level, we only bind it once.
+    
+    // Class-level flag to prevent duplicate event binding
     static _escapeBound = false;
 
-    // connectedCallback is a Custom Element lifecycle method that runs when the
-    // element is inserted into the DOM. This is where we render the header markup
-    // and initialize all interactive behaviors.
+    /**
+     * Called when element is inserted into DOM
+     * 
+     * This is the Web Component lifecycle hook that runs when the element
+     * is added to the page. We use it to inject our navigation HTML and
+     * set up interactive behavior.
+     */
     connectedCallback() {
+        
+        // --------------------------------------------------------------------
+        // Read Attributes and State
+        // --------------------------------------------------------------------
+        
         const currentPage = this.getAttribute('current') || '';
-
         const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
         const soundLabel = soundEnabled ? 'Sound On' : 'Sound Off';
 
+        
+        // --------------------------------------------------------------------
+        // Inject Navigation HTML
+        // --------------------------------------------------------------------
+        // Template includes header, nav, hamburger toggle, and overlay
+        
         this.innerHTML = `
             <header class="site-header" role="banner">
-                <!-- Hamburger menu button: 3 spans transform into an X when open.
-                     CSS handles the animation via .is-open class on parent nav. -->
                 <button class="menu-toggle" type="button" aria-expanded="false" aria-label="Toggle menu" aria-controls="primaryNav">
                     <span></span>
                     <span></span>
@@ -42,6 +86,7 @@ class SiteHeader extends HTMLElement {
 
                     <ul class="nav-list">
                         <li><a href="portfolio.html"${currentPage === 'portfolio' ? ' aria-current="page"' : ''}>Portfolio</a></li>
+                        <li><a href="simulator.html"${currentPage === 'simulator' ? ' aria-current="page"' : ''}>Simulator</a></li>
                         <li><a href="about.html"${currentPage === 'about' ? ' aria-current="page"' : ''}>About</a></li>
                         <li><a href="contact.html"${currentPage === 'contact' ? ' aria-current="page"' : ''}>Contact</a></li>
                         <li><a class="adam-link" href="https://adam.lenkostudio.com" target="_blank" rel="noopener">For Creators — ADAM</a></li>
@@ -54,30 +99,47 @@ class SiteHeader extends HTMLElement {
             <div class="menu-overlay" aria-hidden="true"></div>
         `;
 
-        // Mobile menu state management:
-        // - On mobile (<768px): nav slides in/out with overlay, hamburger animates
-        // - On desktop: nav always visible, hamburger hidden via CSS
-        // We keep all this logic in the component so every page gets consistent behavior.
-        // requestAnimationFrame ensures DOM is ready before querying elements.
+        
+        // --------------------------------------------------------------------
+        // Initialize Mobile Menu Behavior
+        // --------------------------------------------------------------------
+        // Wait for next frame to ensure DOM is fully rendered
+        
         requestAnimationFrame(() => {
             const menuToggle = this.querySelector('.menu-toggle');
             const nav = this.querySelector('.site-nav');
             const overlay = this.querySelector('.menu-overlay');
 
+            // Early exit if required elements are missing
             if (!menuToggle || !nav || !overlay) {
                 return;
             }
 
+            
+            // ----------------------------------------------------------------
+            // Helper Functions
+            // ----------------------------------------------------------------
+
+            /**
+             * Get all focusable navigation links
+             * @returns {Array<HTMLElement>} Array of link elements
+             */
             const getFocusableLinks = () => Array.from(nav.querySelectorAll('a'));
 
-            // Focus management for accessibility:
-            // When menu is closed on mobile, links should not be keyboard-navigable
-            // (they're off-screen). We remove them from tab order via tabindex="-1".
+            /**
+             * Enable or disable keyboard focus on navigation links
+             * 
+             * When menu is closed on mobile, we disable tab navigation through
+             * the off-screen menu to improve keyboard navigation UX.
+             * 
+             * @param {boolean} enabled - Whether links should be focusable
+             */
             function setNavFocusable(enabled) {
                 const links = getFocusableLinks();
 
                 links.forEach((a) => {
                     if (enabled) {
+                        // Restore previous tabindex state
                         const prev = a.getAttribute('data-prev-tabindex');
                         if (prev !== null) {
                             a.setAttribute('tabindex', prev);
@@ -88,7 +150,7 @@ class SiteHeader extends HTMLElement {
                         return;
                     }
 
-                    // Disable tab stops when menu is closed (especially important on mobile)
+                    // Disable tab stops when menu is closed (mobile)
                     const current = a.getAttribute('tabindex');
                     if (current !== null) {
                         a.setAttribute('data-prev-tabindex', current);
@@ -96,9 +158,7 @@ class SiteHeader extends HTMLElement {
                     a.setAttribute('tabindex', '-1');
                 });
 
-                // The `inert` attribute is the modern way to make entire subtrees
-                // non-interactive. It's more robust than tabindex alone, but not all
-                // browsers support it yet. We apply it when available, fall back gracefully.
+                // Use the 'inert' attribute when available (better accessibility)
                 try {
                     if (!enabled) {
                         nav.setAttribute('inert', '');
@@ -106,16 +166,18 @@ class SiteHeader extends HTMLElement {
                         nav.removeAttribute('inert');
                     }
                 } catch {
-                    // inert not supported; tabindex handling above still helps.
+                    // inert not supported in older browsers; tabindex handling above still helps
                 }
             }
 
-            // Close menu state:
-            // 1. Remove visual classes (slide-out animation via CSS)
-            // 2. Update ARIA attributes for screen readers
-            // 3. Restore body scroll
-            // 4. Remove keyboard access to hidden links
-            // 5. Optionally return focus to hamburger button
+            /**
+             * Close Mobile Menu
+             * 
+             * Hides menu, removes overlay, re-enables body scroll, and
+             * optionally returns focus to the toggle button.
+             * 
+             * @param {boolean} restoreFocus - Whether to return focus to toggle
+             */
             const closeMenu = (restoreFocus = true) => {
                 nav.classList.remove('is-open');
                 nav.setAttribute('aria-hidden', 'true');
@@ -130,17 +192,17 @@ class SiteHeader extends HTMLElement {
                     try {
                         menuToggle.focus();
                     } catch {
-                        // ignore
+                        // Focus may fail in some edge cases, ignore
                     }
                 }
             };
 
-            // Open menu state:
-            // 1. Add visual classes (slide-in animation via CSS)
-            // 2. Update ARIA attributes
-            // 3. Prevent body scroll (menu takes full viewport)
-            // 4. Enable keyboard access to links
-            // 5. Move focus to first link for keyboard users
+            /**
+             * Open Mobile Menu
+             * 
+             * Shows menu, displays overlay, locks body scroll, and moves
+             * keyboard focus to first link for accessibility.
+             */
             const openMenu = () => {
                 nav.classList.add('is-open');
                 nav.setAttribute('aria-hidden', 'false');
@@ -151,29 +213,35 @@ class SiteHeader extends HTMLElement {
 
                 setNavFocusable(true);
 
-                // Move focus to first link for keyboard users.
+                // Move focus to first link for keyboard users
                 const first = getFocusableLinks()[0];
                 if (first && typeof first.focus === 'function') {
                     first.focus();
                 }
             };
 
-            // Media query to detect mobile vs desktop viewport.
-            // This breakpoint (768px) matches the CSS breakpoint.
+            
+            // ----------------------------------------------------------------
+            // Responsive Behavior
+            // ----------------------------------------------------------------
+            // Sync menu state with viewport size changes
+            
             const mobileNavQuery = window.matchMedia('(max-width: 768px)');
 
-            // Synchronize menu state with viewport size:
-            // - Mobile: Close menu and disable keyboard nav (off-canvas panel)
-            // - Desktop: Always show nav, always allow keyboard access
-            // This prevents state bugs when resizing from mobile to desktop.
+            /**
+             * Synchronize navigation state with viewport size
+             * 
+             * MOBILE: Menu starts closed, links not focusable
+             * DESKTOP: Menu always visible, links always focusable
+             */
             const syncNavForViewport = () => {
                 if (mobileNavQuery.matches) {
-                    // Mobile: start closed and keep focus out of the off-canvas panel.
+                    // Mobile: start closed and keep focus out of off-canvas panel
                     closeMenu(false);
                     return;
                 }
 
-                // Desktop: nav is always visible + interactive.
+                // Desktop: nav is always visible and interactive
                 nav.classList.remove('is-open');
                 nav.setAttribute('aria-hidden', 'false');
                 overlay.classList.remove('is-visible');
@@ -182,27 +250,31 @@ class SiteHeader extends HTMLElement {
                 document.body.style.overflow = '';
 
                 setNavFocusable(true);
+                
                 try {
                     nav.removeAttribute('inert');
                 } catch {
-                    // ignore
+                    // Ignore if inert is not supported
                 }
             };
 
-            // Ensure correct initial state when component loads (handles page refresh,
-            // back/forward navigation, or component being added dynamically).
+            // Set initial state based on current viewport
             syncNavForViewport();
 
-            // Listen for viewport size changes (device rotation, window resize).
-            // Modern browsers use addEventListener, older Safari uses addListener.
+            // Re-sync when viewport size changes
             try {
                 mobileNavQuery.addEventListener('change', syncNavForViewport);
             } catch {
-                // Safari < 14 fallback
+                // Fallback for Safari < 14
                 mobileNavQuery.addListener(syncNavForViewport);
             }
 
-            // Hamburger button click: toggle menu open/closed (mobile only).
+            
+            // ----------------------------------------------------------------
+            // Event Listeners
+            // ----------------------------------------------------------------
+
+            // Toggle menu on hamburger click (mobile only)
             menuToggle.addEventListener('click', () => {
                 if (!mobileNavQuery.matches) {
                     return;
@@ -218,7 +290,7 @@ class SiteHeader extends HTMLElement {
                 openMenu();
             });
 
-            // Click on dark overlay: close menu (common mobile UI pattern).
+            // Close menu when overlay is clicked (mobile only)
             overlay.addEventListener('click', () => {
                 if (!mobileNavQuery.matches) {
                     return;
@@ -226,40 +298,41 @@ class SiteHeader extends HTMLElement {
                 closeMenu();
             });
 
-            // When user clicks a nav link, close the menu (mobile only).
-            // This provides better UX: user taps link, menu slides away, page navigates.
+            // Close menu when a navigation link is clicked (mobile only)
             nav.querySelectorAll('a').forEach((link) => {
                 link.addEventListener('click', () => {
                     if (!mobileNavQuery.matches) {
                         return;
                     }
-                    closeMenu(false);
+                    closeMenu(false);  // Don't restore focus when navigating away
                 });
             });
 
-            // Accessibility: Escape key closes the menu (WCAG best practice).
-            // This handler is document-level, so we use a static flag to prevent
-            // duplicate bindings if multiple <site-header> instances exist
-            // (though typically there's only one per page).
+            
+            // ----------------------------------------------------------------
+            // Global Escape Key Handler
+            // ----------------------------------------------------------------
+            // Allow users to close menu with Escape key (accessibility)
+            // Guard ensures we only bind this once globally
+            
             if (!SiteHeader._escapeBound) {
                 SiteHeader._escapeBound = true;
+                
                 document.addEventListener('keydown', (event) => {
-                    // Only handle Escape key presses.
-                    // Only handle Escape key presses.
                     if (event.key !== 'Escape') {
                         return;
                     }
 
-                    // Find currently open menu by querying the DOM.
-                    // This works even if multiple headers exist.
+                    // Find any open menu on the page
                     const activeNav = document.querySelector('.site-nav.is-open');
                     const activeToggle = document.querySelector('.menu-toggle[aria-expanded="true"]');
                     const activeOverlay = document.querySelector('.menu-overlay.is-visible');
 
-                    // If menu is open, close it and restore focus to hamburger button.
                     if (activeNav && activeToggle) {
+                        // Close the menu
                         activeNav.classList.remove('is-open');
                         activeNav.setAttribute('aria-hidden', 'true');
+                        
                         if (activeOverlay) {
                             activeOverlay.classList.remove('is-visible');
                             activeOverlay.setAttribute('aria-hidden', 'true');
@@ -268,13 +341,16 @@ class SiteHeader extends HTMLElement {
                         activeToggle.setAttribute('aria-expanded', 'false');
                         document.body.style.overflow = '';
 
-                        // Also disable tab stops.
-                        activeNav.querySelectorAll('a').forEach((a) => a.setAttribute('tabindex', '-1'));
+                        // Disable tab stops on links
+                        activeNav.querySelectorAll('a').forEach((a) => {
+                            a.setAttribute('tabindex', '-1');
+                        });
 
+                        // Return focus to toggle button
                         try {
                             activeToggle.focus();
                         } catch {
-                            // ignore
+                            // Ignore focus errors
                         }
                     }
                 });
@@ -283,12 +359,22 @@ class SiteHeader extends HTMLElement {
     }
 }
 
-// ============================================
+
+// ============================================================================
 // SITE FOOTER COMPONENT
-// ============================================
-// Simple component with no interactive behavior.
-// Just renders consistent footer markup across all pages.
+// ============================================================================
+//
+// Simple footer component with copyright and social links.
+// Automatically updates the year to the current year.
+//
+// ============================================================================
+
 class SiteFooter extends HTMLElement {
+    
+    /**
+     * Called when element is inserted into DOM
+     * Injects footer HTML with dynamic year
+     */
     connectedCallback() {
         this.innerHTML = `
             <footer class="site-footer" role="contentinfo">
@@ -305,10 +391,11 @@ class SiteFooter extends HTMLElement {
     }
 }
 
-// ============================================
-// REGISTER COMPONENTS
-// ============================================
-// Register custom elements so they can be used in HTML as <site-header> and <site-footer>.
-// Tag names must contain a hyphen (per Web Components spec) to avoid conflicts with future HTML elements.
+
+// ============================================================================
+// COMPONENT REGISTRATION
+// ============================================================================
+// Register custom elements with the browser so they can be used in HTML
+
 customElements.define('site-header', SiteHeader);
 customElements.define('site-footer', SiteFooter);

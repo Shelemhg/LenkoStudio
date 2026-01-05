@@ -1,65 +1,151 @@
-/**
- * simulator.js
- * Logic for the Creator Growth Decision Simulator.
- */
+// ============================================================================
+// SIMULATOR.JS: Creator Growth Decision Simulator
+// ============================================================================
+//
+// PURPOSE:
+//     Interactive simulator that models a social media creator's growth journey.
+//     Users make strategic decisions (content type, posting schedule, monetization)
+//     and see how each choice impacts followers, views, engagement, and income.
+//
+// KEY FEATURES:
+//     1. Multi-Chapter Story
+//        - Each chapter presents a growth decision
+//        - Choices have different tradeoffs (engagement vs income, time vs quality)
+//        - Outcomes are influenced by account size (exponential scaling)
+//
+//     2. Dynamic Scaling System
+//        - Same decision has different impact at 1K vs 100K followers
+//        - Uses exponential multipliers: (followers/35000)^0.57
+//        - Ensures meaningful growth at any account size
+//        - Prevents tiny % changes at small scale or unrealistic growth at large scale
+//
+//     3. Metrics Tracked
+//        - Followers (social reach)
+//        - Views (content performance)
+//        - Engagement rate (audience quality)
+//        - Monthly income (monetization success)
+//        - Monthly costs (business expenses)
+//        - Subscribers (premium tier fans)
+//
+//     4. Visual Feedback
+//        - Animated line chart showing follower growth over time
+//        - Decision table with impact breakdown per choice
+//        - Real-time preview on hover (shows potential outcome)
+//        - Smooth number animations (avoid jarring updates)
+//        - Mobile-optimized (skips animations on small screens)
+//
+// WHY THIS DESIGN?
+//     - Educational: Shows creators how decisions compound over time
+//     - Realistic: Growth is non-linear, costs increase with scale
+//     - Engaging: Immediate visual feedback keeps users invested
+//     - Replayable: Different starting points yield different strategies
+//
+// DATA SOURCE:
+//     - simulator.csv: Contains all decision scenarios, choices, and effects
+//     - Falls back to embedded data if CSV fails to load
+//
+// SCALING FORMULA EXPLAINED:
+//     Base multiplier = (followers / 35000) ^ 0.57
+//     
+//     WHY 35000?
+//     - Middle-tier creator baseline (mid-size influencer)
+//     - Makes math human-readable at common account sizes
+//     
+//     WHY 0.57 exponent?
+//     - Balances realistic growth (not too fast at small scale)
+//     - Ensures meaningful absolute numbers at large scale
+//     - Tuned through testing to feel "right" across 1K-1M followers
+//
+// USAGE:
+//     1. User sets starting follower count
+//     2. Clicks "Start Simulation"
+//     3. Makes choices chapter by chapter
+//     4. Sees follower graph update after each decision
+//     5. Can restart with different strategy
+//
+// DEPENDENCIES:
+//     - Chart.js (line chart rendering)
+//     - data/simulator.csv (decision scenarios)
+//     - CSS: simulator.css
+//
+// ============================================================================
 
 (function () {
     'use strict';
 
-    // Core simulator class managing the chapter-based decision tree.
-    // Each chapter presents a scenario with multiple choices, each choice affects growth metrics.
-    // The simulator tracks state across all decisions and calculates cumulative effects.
+
+    // ========================================================================
+    // CREATOR SIMULATOR CLASS
+    // ========================================================================
+
     class CreatorSimulator {
         constructor() {
-            // Chapter-based decision tree: Each chapter = one decision point with multiple choice options.
-            // Loaded from CSV with questions, choices, and their growth/cost effects.
-            this.chapters = []; // Loaded from CSV
-            this.userStartingFollowers = 1000; // Default, will be overridden
-            
-            // State tracking: Tracks all key creator metrics throughout the simulation.
-            // - followers: Total follower count (main growth metric)
-            // - views: Monthly views (engagement indicator)
-            // - engagement: Engagement rate as percentage points (0-100)
-            // - income: Monthly revenue in dollars
-            // - subscribers: Paid subscriber count
-            // - costs: Array of recurring monthly costs {name, val}
-            // - historyByStep: Follower count snapshot after each decision (used for chart rendering)
+            // Data loaded from CSV
+            this.chapters = [];
+
+            // User's chosen starting point
+            this.userStartingFollowers = 1000;
+
+            // Initial metrics state
             this.initialState = {
-                followers: 1000, // Start with some base
+                followers: 1000,
                 views: 5000,
                 engagement: 5,
                 income: 0,
                 subscribers: 0,
-                costs: [],
-                historyByStep: [1000]
+                costs: [], // Array of {name, val} cost items
+                historyByStep: [1000] // Follower count at each step (for chart)
             };
             
+            // Current simulation state (mutates as user makes choices)
             this.state = { ...this.initialState };
-            // Track selected choice index per chapter (null = no choice yet).
-            this.choices = []; // Track selected choice index per chapter
-            
-            // Preview system: Hover to see impact of a choice before committing.
-            // Shows a dashed preview line on the chart.
-            this.previewData = null; // For hover preview
 
-            // Animation state tracking: Coordinates smooth transitions when choices are made.
-            // These flags prevent race conditions between chart animation, row animation, and highlight application.
-            this._pendingChartAnim = null; // { fromStep, toStep } - triggers chart segment animation
-            this._pendingHighlightChapter = null; // Which chapter index is currently animating (only that row delays highlights)
-            this._pendingDecisionAnim = null; // { chapterIndex, from, to } - decision row count-up animation data
+            // User's choice selections (one per chapter)
+            this.choices = [];
+
+            // Preview data for hover effects (shows potential outcome)
+            this.previewData = null;
+
+            // Animation state tracking
+            this._pendingChartAnim = null; // { fromStep, toStep }
+            this._pendingHighlightChapter = null; // Which chapter is animating
+            this._pendingDecisionAnim = null; // { chapterIndex, from, to }
             
+            // Cached DOM elements (populated by cacheElements())
             this.els = {};
         }
 
+        /**
+         * Get Last Answered Step
+         * 
+         * WHY needed?
+         * - Chart animation needs to know how far along user is
+         * - Decision table needs to show only answered chapters
+         * - Determines which chapter to display next
+         * 
+         * @returns {number} Step index (0 = no choices made, max = all answered)
+         */
         getLastAnsweredStep() {
             const totalChapters = this.chapters.length - 1;
             let lastAnsweredStep = 0;
+
             for (let i = 0; i < totalChapters; i++) {
-                if (this.choices[i] !== null) lastAnsweredStep = i + 1;
+                if (this.choices[i] !== null) {
+                    lastAnsweredStep = i + 1;
+                }
             }
+
             return lastAnsweredStep;
         }
 
+        /**
+         * Clone Current Totals Snapshot
+         * 
+         * Creates immutable snapshot of current state for comparison.
+         * Used to calculate deltas when animating decision impacts.
+         * 
+         * @returns {Object} Snapshot with all key metrics
+         */
         cloneTotalsSnapshot() {
             return {
                 followers: this.state.followers,
@@ -70,17 +156,29 @@
             };
         }
 
-        // Decision animation system: Smooth count-up effect when a choice is made.
-        // 
-        // Animation flow (750ms + 200ms = 950ms total):
-        // 1. New choice is selected → old values stored
-        // 2. Table row is re-rendered with data-final-class attributes (green highlights delayed)
-        // 3. This function animates from old values to new values over 950ms
-        // 4. Uses cubic ease-out for natural deceleration
-        // 5. After animation completes, applyDelayedHighlights() reveals green best-choice highlights
-        // 
-        // Why 950ms? Slower transitions feel more premium and give users time to absorb the impact.
+        /**
+         * Animate Decision Row Numbers
+         * 
+         * WHY animate?
+         * - Makes impact of choice visually clear
+         * - Smooth transitions feel premium and professional
+         * - Draws eye to what changed
+         * 
+         * WHY skip on mobile?
+         * - Slower devices may lag
+         * - Small screens don't benefit from animation as much
+         * - Instant updates feel snappier on mobile
+         * 
+         * @param {Object} anim - Animation config {chapterIndex, from, to}
+         * @param {Function} done - Callback when animation completes
+         */
         animateDecisionRow(anim, done) {
+            // Skip animation on mobile (< 600px)
+            if (window.innerWidth < 600) {
+                done?.();
+                return;
+            }
+
             const tbody = this.els.aspectTableBody;
             if (!tbody || !anim) {
                 done?.();
@@ -99,25 +197,28 @@
                 return;
             }
 
-            const duration = 950; // 750ms transition + 200ms buffer for polish
+            const duration = 950; // Longer duration for smoother feel
             const start = performance.now();
             const from = anim.from;
             const to = anim.to;
 
+            // Format helpers: add space between number and unit for readability
             const fmtSignedCompactSpaced = (n) => this.formatSignedCompact(Math.round(n)).replace(/(\d)([KMB])/g, '$1 $2');
             const fmtSignedMoneySpaced = (n) => this.formatSignedMoney(Math.round(n)).replace(/([+\-$])(\d)/, '$1 $2').replace(/(\d)([KMB])/g, '$1 $2');
 
             const step = (now) => {
                 const t = Math.min(1, (now - start) / duration);
-                const ease = 1 - Math.pow(1 - t, 3);
+                const ease = 1 - Math.pow(1 - t, 3); // Cubic ease-out (smooth deceleration)
                 const lerp = (a, b) => a + (b - a) * ease;
 
+                // Interpolate all metrics
                 const followers = lerp(from.followersDelta, to.followersDelta);
                 const views = lerp(from.viewsDelta, to.viewsDelta);
                 const subscribers = lerp(from.subscribersDelta, to.subscribersDelta);
                 const cost = lerp(from.costDelta, to.costDelta);
                 const income = lerp(from.incomeDelta, to.incomeDelta);
 
+                // Update cell text content with interpolated values
                 cells[1].textContent = fmtSignedCompactSpaced(followers);
                 cells[2].textContent = fmtSignedCompactSpaced(views);
                 cells[3].textContent = fmtSignedCompactSpaced(subscribers);
@@ -134,72 +235,103 @@
             requestAnimationFrame(step);
         }
 
-        // Delayed highlight application: Apply green "best choice" highlighting after animations complete.
-        // Why needed: If we apply green immediately, it flashes during the count-up animation.
-        // Instead, we store the final class in data-final-class and apply it after the 750ms transition.
-        // This creates a polished reveal effect: numbers count up → burst animation → green highlight appears.
+        /**
+         * Apply Delayed Highlights
+         * 
+         * WHY delay?
+         * - Number animations need to complete before highlighting
+         * - Prevents visual conflict (animating numbers + color change)
+         * - Creates clear "animate then highlight" sequence
+         * 
+         * Works with data-final-class attribute set during row creation.
+         */
         applyDelayedHighlights() {
             const tbody = this.els.aspectTableBody;
-            if (!tbody) return;
+            if (!tbody) {
+                return;
+            }
+
             const delayed = tbody.querySelectorAll('[data-final-class]');
+
             delayed.forEach((el) => {
                 const cls = el.getAttribute('data-final-class');
-                if (cls) el.classList.add(cls);
+                if (cls) {
+                    el.classList.add(cls);
+                }
                 el.removeAttribute('data-final-class');
             });
         }
 
         /**
-         * Growth multiplier math: Exponential scaling for realistic account growth.
+         * Get Growth Multiplier for Account Size
          * 
-         * Why exponential scaling?
-         * - Small accounts (1K followers): Decisions have smaller absolute impact but higher % growth.
-         * - Large accounts (100K+ followers): Decisions have larger absolute impact but lower % growth.
-         * - Formula: (followers / 35000) ^ 0.57
+         * CORE SCALING LOGIC:
+         * Same decision should have different absolute impact based on
+         * account size. Growing from 1K to 2K is 100% growth, but growing
+         * from 100K to 101K is only 1% and feels insignificant.
          * 
-         * The 0.57 exponent was chosen through testing to balance:
-         * - At 1K followers: multiplier ≈ 0.1 (10% of base effect)
-         * - At 35K followers: multiplier = 1.0 (100% of base effect)
-         * - At 200K followers: multiplier ≈ 2.4 (240% of base effect)
+         * This multiplier scales effects exponentially so:
+         * - Small accounts see meaningful % growth
+         * - Large accounts see meaningful absolute numbers
+         * - Growth always feels impactful
          * 
-         * This creates realistic growth curves where early decisions matter but later decisions
-         * scale appropriately with audience size (e.g., hiring an editor has more impact at 100K than 1K).
+         * FORMULA:
+         * multiplier = (followers / 35000) ^ 0.57
+         * 
+         * TUNING:
+         * - Exponent 0.57 was empirically tested across 1K-1M followers
+         * - 35000 baseline represents mid-tier creator (good reference point)
+         * - Clamps to 0.1x-500x to prevent extremes
+         * 
+         * @param {number} baseFollowers - Current follower count
+         * @returns {number} Scaling multiplier (0.1 to 500)
          */
         getGrowthMultiplier(baseFollowers) {
             // Balanced exponential scaling: reasonable % growth at small scale, meaningful absolute at large scale
             const followers = Math.max(baseFollowers, 1000);
             const multiplier = Math.pow(followers / 35000, 0.57);
             
-            // Clamp to reasonable bounds (minimum 0.1x for very small accounts, max 500x for edge cases)
+            // Clamp to reasonable bounds (minimum 0.1x for very small accounts)
             return Math.max(0.1, Math.min(500.0, multiplier));
         }
 
-        // Percent vs absolute growth effects:
-        // CSV stores effects as percentages (e.g., 0.05 = 5% follower growth).
-        // To maintain exponential scaling consistency, we need a dampening factor.
-        // 
-        // Formula: (35000 / followers) ^ 0.43
-        // This ensures: Pct * Followers * PercentMultiplier = Base * (Followers/35k) ^ 0.57
-        // 
-        // Why 0.43? It's calculated so percent-based effects scale inversely to absolute effects.
-        // As account grows, percent multiplier decreases (dampening) while absolute multiplier increases.
+        /**
+         * Get Percentage Dampening Multiplier
+         * 
+         * Companion to getGrowthMultiplier. Used when effects are defined
+         * as percentages of followers. Dampens % impact as account grows.
+         * 
+         * FORMULA:
+         * multiplier = (35000 / followers) ^ 0.43
+         * 
+         * WHY needed?
+         * When combining Pct * Followers * Multiplier, this ensures
+         * the result matches the old Base * (F/35k)^0.57 formula.
+         * 
+         * @param {number} baseFollowers - Current follower count
+         * @returns {number} Dampening multiplier
+         */
         getPercentMultiplier(baseFollowers) {
             // Dampening factor for percentages as account grows
             // Formula: (35000 / followers)^0.43
-            // This ensures that if we apply Pct * Followers * Multiplier, it matches the old Base * (F/35k)^0.57
             const followers = Math.max(baseFollowers, 1000);
             const multiplier = Math.pow(35000 / followers, 0.43);
             return multiplier;
         }
 
-        // Scale effect based on current account size.
-        // Takes raw percentages from CSV and converts them to scaled absolute values.
-        // 
-        // Cost accumulation logic:
-        // - Monthly costs (e.g., software subscriptions, team salaries) are recurring.
-        // - One-time costs could be added but are currently all monthly in the CSV.
-        // - Costs scale with account size (hiring an editor costs more for 100K vs 1K account).
-        // - All costs accumulate in state.costs array and sum to show total monthly burn rate.
+        /**
+         * Scale Effect Based on Account Size
+         * 
+         * Takes a raw effect definition (from CSV) and scales all metrics
+         * based on current follower count using growth multipliers.
+         * 
+         * Also scales costs - larger accounts pay more for the same services
+         * (reflects real-world: enterprise pricing, premium tools, etc.)
+         * 
+         * @param {Object} effect - Raw effect from CSV
+         * @param {number} currentFollowers - Current follower count
+         * @returns {Object} Scaled effect with absolute numbers
+         */
         scaleEffect(effect, currentFollowers) {
             const absMultiplier = this.getGrowthMultiplier(currentFollowers);
             const pctMultiplier = this.getPercentMultiplier(currentFollowers);
@@ -213,13 +345,19 @@
             return {
                 followers: Math.round(currentFollowers * effect.followersPct * pctMultiplier),
                 views: Math.round(currentFollowers * effect.viewsPct * pctMultiplier),
-                engagement: effect.engagement, // Keep engagement as-is (absolute points, not scaled)
+                engagement: effect.engagement, // Keep engagement as-is (points, not scaled)
                 income: Math.round(currentFollowers * effect.incomePct * pctMultiplier),
                 subscribers: Math.round(currentFollowers * effect.subscribersPct * pctMultiplier),
                 costs: scaledCosts
             };
         }
 
+        /**
+         * Initialize Simulator
+         * 
+         * Entry point. Called on page load. Sets up DOM references,
+         * loads chapter data, binds event handlers, and renders initial UI.
+         */
         async init() {
             this.cacheElements();
             await this.loadData();
@@ -229,12 +367,15 @@
                 this.updateDashboard();
             }
 
-            // Bind follower input
+            // Bind follower input validation
             const followerInput = document.getElementById('startingFollowers');
             const startBtn = document.getElementById('startSimBtn');
+
             if (followerInput && startBtn) {
                 followerInput.addEventListener('input', (e) => {
                     const value = parseInt(e.target.value);
+
+                    // Minimum 100 followers required to start
                     if (value >= 100) {
                         startBtn.disabled = false;
                     } else {
@@ -244,29 +385,105 @@
             }
         }
 
+        /**
+         * Load Chapter Data
+         * 
+         * WHY fetch() instead of hardcoding?
+         * - Easier to update scenarios without touching code
+         * - Non-technical team members can edit CSV
+         * - Falls back to embedded data if network fails
+         * 
+         * @returns {Promise<void>}
+         */
         async loadData() {
             try {
-                const response = await fetch('data/chapters.csv');
+                const response = await fetch('data/simulator.csv');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
                 const text = await response.text();
                 const rows = this.parseCSV(text);
                 this.processChapters(rows);
+                console.log("Chapters loaded via fetch:", this.chapters.length);
             } catch (e) {
-                console.error("Failed to load chapters", e);
+                console.warn("Failed to load chapters via fetch, using fallback data.", e);
+                const text = this.getFallbackData();
+                const rows = this.parseCSV(text);
+                this.processChapters(rows);
+                console.log("Chapters loaded via fallback:", this.chapters.length);
             }
         }
 
-        // CSV parsing logic with proper quote handling.
-        // 
-        // Why custom parser instead of library?
-        // - Need to handle multi-line text fields in CSV (e.g., long explanations with line breaks).
-        // - CSV standard: Fields can be quoted with " to allow commas and newlines inside.
-        // - Escaped quotes: "" inside quoted field becomes a single " character.
-        // 
-        // Algorithm:
-        // 1. Track insideQuote state to know if we're inside a quoted field.
-        // 2. Only treat commas and newlines as delimiters when NOT inside quotes.
-        // 3. Handle escaped quotes (two consecutive quotes "" = literal quote character).
-        // 4. Build rows array where each row is an array of field values.
+        getFallbackData() {
+            return `Step,Variation,Type,Title,Text,Followers,Views,Engagement,Income,Subscribers,CostName,CostVal,Explanation
+1,profile_conversion_a,Question,The 10‑Second Profile Audit,"You’re getting views, but the follow button isn’t moving. When someone taps your profile, do they understand who you are and what you deliver in under 10 seconds?",0.000000,0.000000,,0.000000,0.000000,,,
+1,profile_conversion_a,Choice,Focused creator identity shoot,A short professional session for profile photo + thumbnails + a few hero images. The goal isn’t ‘luxury’—it’s instant clarity and consistency across your profile.,0.050000,0.250000,3,0.001800,0.000600,Branding Mini-Session,-250,Best when your content already earns views but your profile looks ‘drafty’. The conversion lift can compound for months.
+1,profile_conversion_a,Choice,Clarity refresh with what you have,"You tighten your bio promise, pin a “Start here” video, and rebuild thumbnails with a simple repeatable style. Costs time, but it keeps you authentic and fast to iterate.",0.035000,0.180000,1,0.001200,0.000400,Time & Effort,0,Best when your niche is still evolving. You gain clarity without spending money; you pay in time and iteration.
+1,profile_conversion_b,Question,Pinned Video Problem,"People land on your page… then bounce. Are your pinned videos and visuals making the right first impression, or are they leaking attention?",0.000000,0.000000,,0.000000,0.000000,,,
+1,profile_conversion_b,Choice,Portrait + thumbnail system day,You shoot a cohesive portrait set and a thumbnail system with proper lighting and framing so your profile reads ‘clear’ at a glance.,0.053000,0.280000,3,0.001800,0.000600,Portrait + Thumbnail System,-320,Best when your positioning is already clear. It reduces doubt for new viewers and improves follow-through.
+1,profile_conversion_b,Choice,DIY pinned intro + thumbnail system,You script a 12‑second pinned intro and batch-shoot 10 consistent thumbnails with phone + window light. No cost—just discipline.,0.034000,0.180000,1,0.001200,0.000400,Time & Effort,0,"Strong move if you can keep consistency. Small lift, great ROI on time when budgets are tight."
+1,profile_conversion_c,Question,Grid Trust Check,"If your profile were a storefront, would people walk in? Your grid and thumbnails signal trust before your best video ever plays.",0.000000,0.000000,,0.000000,0.000000,,,
+1,profile_conversion_c,Choice,Creator storefront refresh,"You build a clean ‘creator storefront’: profile portrait, banner/pinned frame, and thumbnail style that reads instantly on mobile.",0.050000,0.250000,3,0.001800,0.000600,Storefront Refresh Session,-280,Most useful when your videos already attract taps. This improves what happens after the tap.
+1,profile_conversion_c,Choice,One-hour consistency batch,You create one repeatable DIY lighting spot and shoot 12 consistent thumbnails in one hour. Not fancy—just less visual noise.,0.035000,0.180000,1,0.001200,0.000400,Time & Effort,0,"Works when you can keep the system going. This is a discipline play, not a money play."
+2,hook_retention_a,Question,The First 3 Seconds,"Your ideas are solid, but viewers swipe early. Do you earn the next 3 seconds after the first 3?",0.000000,0.000000,,0.000000,0.000000,,,
+2,hook_retention_a,Choice,Hook-first edit pass,"A professional edit pass tightens pacing, adds clean captions, and makes the opening land faster. Requires a clear brief.",0.057000,0.400000,4,0.002400,0.000800,Editing Pass,-220,Best when you have good footage but weak structure. Higher lift *only* if direction is clear.
+2,hook_retention_a,Choice,Hook rewrite + cut dead time,You test 3 hook scripts and cut the first 1–2 seconds of filler. No spend—just fast learning.,0.045000,0.300000,1,0.001600,0.000500,Time & Effort,0,Often the highest ROI early: clarity + pacing. You improve retention without changing who you are.
+2,hook_retention_b,Question,Retention Leak,"You get clicks, then watch time collapses. Your first 6 seconds decide whether anything else matters.",0.000000,0.000000,,0.000000,0.000000,,,
+2,hook_retention_b,Choice,Caption + audio polish,A minimal pro upgrade: audio leveling + captions + a tighter opening cut. Keep it repeatable.,0.057000,0.400000,4,0.002400,0.000800,Caption + Audio Polish,-120,Worth it if viewers complain about clarity/audio. Keep it minimal so it doesn’t slow you down.
+2,hook_retention_b,Choice,"Film tighter, say the payoff first",You re-shoot with a tighter frame and state the payoff immediately. You trade perfection for clarity.,0.045000,0.300000,1,0.001600,0.000500,Time & Effort,0,Clarity-first usually beats fancy production at this stage. Great when you can iterate quickly.
+2,hook_retention_c,Question,Your Best Ideas Are Hidden,"People would love your point—if they reached it. Are you starting with the value, or making viewers wait?",0.000000,0.000000,,0.000000,0.000000,,,
+2,hook_retention_c,Choice,Template edit pack,A pro editor restructures three videos into reusable templates you can follow later. This is a systems play.,0.060000,0.430000,4,0.002400,0.000800,Template Edit Pack,-260,High leverage if you reuse the structure for weeks. Wasteful if you go back to random edits.
+2,hook_retention_c,Choice,"Conclusion first, explanation after","You flip the structure: conclusion first, then the ‘how/why’. No cost, faster learning.",0.045000,0.300000,2,0.001600,0.000500,Time & Effort,0,Maximizes learning speed and makes content instantly understandable—especially in short-form.
+3,series_system_a,Question,Random vs Repeatable,Your posts perform inconsistently. Do you have a series people recognize—or are you reinventing every post?,0.000000,0.000000,,0.000000,0.000000,,,
+3,series_system_a,Choice,Run one controlled experiment,"You keep one constant (format) and test one variable (hook, length, topic) per week. Cleaner learning, less chaos.",0.050000,0.320000,3,0.002400,0.000700,Time & Effort,0,Faster learning without confusing the audience. Great if you’re unsure what’s driving results.
+3,series_system_a,Choice,Launch a weekly series,"You name the series, define a repeatable structure, and commit to one format for 4 weeks. Recognition beats novelty.",0.054000,0.320000,1,0.002600,0.000800,Time & Effort,0,Reduces volatility and builds return viewers. This is a strategic unlock with zero spend.
+3,series_system_b,Question,The Signature Question,"If someone saw three of your posts, would they describe a clear signature—or just ‘random creator stuff’?",0.000000,0.000000,,0.000000,0.000000,,,
+3,series_system_b,Choice,Build a simple format checklist,You create a one-page checklist: hook → proof → payoff → CTA. You use it every post for 2 weeks.,0.046000,0.290000,3,0.002400,0.000700,Time & Effort,0,Reduces cognitive load and improves clarity. Best when you’re inconsistent under time pressure.
+3,series_system_b,Choice,Pick one signature angle,"Same promise, same framing, same cadence. You trade novelty for recognizability.",0.054000,0.320000,1,0.002600,0.000800,Time & Effort,0,Recognizability is a growth accelerant. Consistency often matters more than ‘better’ production.
+3,series_system_c,Question,Experimentation Without Chaos,"You want to experiment, but your page feels inconsistent. How do you test without losing trust?",0.000000,0.000000,,0.000000,0.000000,,,
+3,series_system_c,Choice,Double down on what already works,"You pick your top-performing topic and publish 4 variations of it. Less novelty, more leverage.",0.054000,0.320000,3,0.002800,0.000900,Time & Effort,0,Best when you already have one clear winner. You’re buying momentum with focus.
+3,series_system_c,Choice,"Keep one constant, test one variable","You lock your format and test only one change per week. Small experiments, clean signals.",0.050000,0.320000,1,0.002400,0.000700,Time & Effort,0,Lets you learn quickly while keeping your audience oriented.
+4,spike_window_a,Question,The 48‑Hour Window,A post is starting to pop. The next 48 hours decide whether you convert the spike into followers—or let it leak.,0.000000,0.000000,,0.000000,0.000000,,,
+4,spike_window_a,Choice,Rapid follow‑up cut (ship tonight),"You keep your voice and footage, but a pro tightens the follow-up so the hook and pacing land fast—without delaying release.",0.070000,0.500000,4,0.006000,0.001300,Rapid Edit,-180,Best when editing speed is your bottleneck. Wasteful if it delays posting.
+4,spike_window_a,Choice,Fast follow‑up + pin the path,You post a follow-up within 24 hours and pin a comment guiding new viewers to your best content. Speed wins.,0.060000,0.420000,1,0.004000,0.001000,Time & Effort,0,"You capture momentum without spending money, but only if you execute fast."
+4,spike_window_b,Question,The Wave Problem,"You’ve seen it before: one video spikes, then nothing. Are you set up to ride the wave with a clean next step?",0.000000,0.000000,,0.000000,0.000000,,,
+4,spike_window_b,Choice,Follow‑up + recap pack,A pro helps you ship a tighter follow-up and a recap reel that new viewers can binge. Only worth it if it stays fast.,0.073000,0.530000,4,0.006000,0.001300,Follow‑Up Pack,-260,Strong if spikes happen repeatedly and you want a reusable system. Don’t do it if it slows you down.
+4,spike_window_b,Choice,Three‑part follow chain,You publish Part 2 and Part 3 quickly and link them via pinned comments + captions so new viewers binge the chain.,0.060000,0.450000,1,0.004000,0.001000,Time & Effort,0,"Chains convert attention into identity. Pure strategy, no spend."
+4,spike_window_c,Question,When Comments Demand Part 2,Your comments are asking for ‘Part 2’. This is a rare signal. Do you respond with speed or polish?,0.000000,0.000000,,0.000000,0.000000,,,
+4,spike_window_c,Choice,Polish the continuation (but ship fast),"You keep it fast, but polish captions/audio and tighten pacing so the continuation holds attention and converts better.",0.072000,0.540000,4,0.006000,0.001300,Polish Pass,-140,Worth it if it doesn’t reduce speed. Speed is still the priority in a spike.
+4,spike_window_c,Choice,Video replies today,You reply to top comments with quick video replies to keep the thread alive and learn what people want next.,0.060000,0.450000,2,0.004000,0.001000,Time & Effort,0,Comment replies are one of the cheapest momentum engines. Great for early growth.
+5,brand_ready_a,Question,Brand‑Ready Signal,A brand checks your page. Do your visuals look consistent and reusable—or do they feel risky and random?,0.000000,0.000000,,0.000000,0.000000,,,
+5,brand_ready_a,Choice,Brand-safe asset pack,You create a clean portrait set plus one sample reel that shows how you deliver. Not corporate—dependable.,0.063000,0.430000,3,0.045000,0.001000,Brand Asset Pack,-450,Unlocks better deals when you’re close to deal-ready. The value is trust + reuse.
+5,brand_ready_a,Choice,Proof-first pitch,"You prepare a lean one-page pitch with screenshots, niche clarity, and a few solid DIY photos. You lead with results.",0.050000,0.340000,1,0.025000,0.000600,Time & Effort,0,Great if your niche is clear and numbers are strong. You may still lose deals that require polish.
+5,brand_ready_b,Question,Would You Hire You?,"If you were a brand manager, would you trust this profile to represent the brand’s image tomorrow?",0.000000,0.000000,,0.000000,0.000000,,,
+5,brand_ready_b,Choice,Spec sample + BTS proof,You produce a short ‘spec’ sample and a BTS clip that shows how you work. Strong signal for brand trust.,0.060000,0.400000,3,0.045000,0.001000,Spec Sample Shoot,-600,Best if you’ll actively pitch and close deals. Not worth it if you won’t use it to sell.
+5,brand_ready_b,Choice,Clarify positioning + clean the feed,"You remove confusing posts, tighten your promise, and standardize a simple look using what you already have.",0.050000,0.340000,1,0.020000,0.000500,Time & Effort,0,Often the right first step. Brands care about clarity and reliability before camera gear.
+5,brand_ready_c,Question,Reusability Check,Brands don’t just want one post. They want assets they can reuse. Does your content look reusable across placements?,0.000000,0.000000,,0.000000,0.000000,,,
+5,brand_ready_c,Choice,Reuse-first production day,A short pro session produces multiple reuse-friendly clips + hero images to reduce friction on future deals.,0.060000,0.400000,3,0.050000,0.001000,Reuse‑First Session,-500,Best when inbound interest exists and you want to convert it into better-paying repeat work.
+5,brand_ready_c,Choice,Shoot with reuse in mind,"You plan clean frames, consistent light, and space for text using a basic setup. Reuse-friendly without spending.",0.050000,0.340000,1,0.020000,0.000500,Time & Effort,0,"Smart craft without spending. The key is planning for reuse, not buying more gear."
+6,premium_tier_a,Question,Subscriptions = Expectations,"Fans want behind-the-scenes and ‘more personal’ content. If you charge, expectations rise. Can you deliver reliably?",0.000000,0.000000,,0.000000,0.000000,,,
+6,premium_tier_a,Choice,Premium monthly drop,"You create a reliable monthly drop (photos + reels). Higher perceived value, but only works if subs cover production cost.",0.050000,0.280000,2,0.040000,0.008000,Monthly Premium Pack,-320,Best when demand already exists. The model works when unit economics stay positive over time.
+6,premium_tier_a,Choice,Low-pressure tier,"You launch a simple tier with flexible perks. Lower income, higher sustainability, less burnout risk.",0.040000,0.240000,1,0.020000,0.004500,Time & Effort,0,Best when you’re still finding your voice. Sustainable beats impressive for long-term growth.
+6,premium_tier_b,Question,The Paid Tier Reality,A paid tier isn’t just money—it’s a promise. Are you building a repeatable delivery system or improvising every month?,0.000000,0.000000,,0.000000,0.000000,,,
+6,premium_tier_b,Choice,Baseline premium shoot + DIY cadence,"One pro session sets a premium baseline, then you deliver lighter DIY updates weekly to stay sustainable.",0.046000,0.250000,2,0.034000,0.007000,Baseline Premium Shoot,-220,Balanced approach: premium perception without paying every month. Works if you keep the cadence.
+6,premium_tier_b,Choice,Start tiny and learn,"You launch with a small, clear promise (e.g., 2 BTS drops/month) and measure what fans actually want.",0.036000,0.210000,1,0.018000,0.004000,Time & Effort,0,Protects consistency and lets you learn demand without overcommitting.
+6,premium_tier_c,Question,Launch Moment,You’re launching something (tier/product/service). Do you treat it like a real campaign or a casual post?,0.000000,0.000000,,0.000000,0.000000,,,
+6,premium_tier_c,Choice,Mini-campaign assets,You produce a small campaign set: one hero reel + key photos for reuse. Stronger conversion—if the offer is solid.,0.050000,0.280000,3,0.038000,0.007500,Launch Mini‑Campaign,-450,Best when you already know the offer converts. Assets amplify what’s already working.
+6,premium_tier_c,Choice,Simple authentic launch,"You launch with a raw story and a clear offer. Lower production, high trust—if your message is clear.",0.036000,0.210000,1,0.018000,0.004000,Time & Effort,0,Authentic launches can win when the story is strong and the offer is clear.
+7,manager_system_a,Question,Growth Feels Random Now,"You’re doing ‘everything right’… but results feel unpredictable. Do you keep guessing, or build a feedback loop?",0.000000,0.000000,,0.000000,0.000000,,,
+7,manager_system_a,Choice,Coach + experiments system,"You use a manager/AI tool to suggest experiments, alert you in the first hour, and store learnings so you stop repeating mistakes.",0.061000,0.430000,4,0.020000,0.002000,AI Manager (Creator Plan),-19,"Best when time and uncertainty are your bottlenecks. The value is faster iteration, not magic predictions."
+7,manager_system_a,Choice,Weekly manual review,"You track 3 metrics weekly (views, retention proxy, follows) and change one thing at a time. Slow, but honest learning.",0.041000,0.270000,1,0.012000,0.001200,Time & Effort,0,"Great if you’re disciplined. Learning is slower, but you keep full control and cost stays zero."
+7,manager_system_b,Question,Your Time Is the Constraint,You can either spend hours guessing what to post… or spend those hours creating. Where do you want the ‘thinking’ to happen?,0.000000,0.000000,,0.000000,0.000000,,,
+7,manager_system_b,Choice,Guided scheduling + alerts,"A manager/AI tool suggests windows, flags early underperformance, and recommends quick fixes so you waste less time.",0.058000,0.400000,4,0.020000,0.002000,AI Manager (Pro Plan),-49,Best when time and uncertainty are your bottlenecks. The value is faster iteration, not magic predictions.
+7,manager_system_b,Choice,Simple rules + repeat,"You pick two posting windows, one format, and repeat for 3 weeks. Less thinking, stable output.",0.041000,0.270000,1,0.012000,0.001200,Time & Effort,0,"Works when you need simplicity. Not optimal, but it protects your energy and keeps you consistent."
+7,manager_system_c,Question,Plateau After the First Wins,"You grew fast early… then plateaued. Do you double down blindly, or diagnose what actually drives your account?",0.000000,0.000000,,0.000000,0.000000,,,
+7,manager_system_c,Choice,Diagnose with an experiment engine,"A manager/AI tool proposes A/B-style tests, tracks uplift over fixed windows, and stores learnings so growth becomes less random.",0.061000,0.430000,4,0.020000,0.002000,AI Manager (Growth Plan),-149,"Best when you want repeatable learning. It’s a tool for discipline and feedback loops, not a miracle."
+7,manager_system_c,Choice,Diagnose manually,"You review your top 10 posts and replicate the common pattern (topic, hook, length). It’s slower but teaches you.",0.041000,0.270000,1,0.012000,0.001200,Time & Effort,0,Strong learning approach if you’ll actually do the review and stick to the pattern for multiple posts.`;
+        }
+
+
+
         parseCSV(text) {
             const rows = [];
             let currentRow = [];
@@ -277,22 +494,17 @@
                 const char = text[i];
                 const nextChar = text[i+1];
                 
-                // Quote handling: Toggle insideQuote state, or handle escaped quotes
                 if (char === '"') {
                     if (insideQuote && nextChar === '"') {
-                        // Escaped quote: "" becomes "
                         currentVal += '"';
-                        i++; // Skip next quote
+                        i++;
                     } else {
-                        // Regular quote: Toggle insideQuote state
                         insideQuote = !insideQuote;
                     }
                 } else if (char === ',' && !insideQuote) {
-                    // Field delimiter (only outside quotes)
                     currentRow.push(currentVal);
                     currentVal = '';
                 } else if ((char === '\n' || char === '\r') && !insideQuote) {
-                    // Row delimiter (only outside quotes)
                     if (currentVal || currentRow.length > 0) {
                         currentRow.push(currentVal);
                         rows.push(currentRow);
@@ -300,7 +512,6 @@
                         currentVal = '';
                     }
                 } else {
-                    // Regular character: Add to current field value
                     currentVal += char;
                 }
             }
@@ -312,62 +523,155 @@
         }
 
         processChapters(rows) {
-            // Headers: Step,Variation,Type,Title,Text,Followers,Views,Engagement,Income,Subscribers,CostName,CostVal,Explanation
-            // Skip header row
-            const dataRows = rows.slice(1);
-            
-            const chaptersMap = new Map(); // Step -> { variations: Map(VarID -> { question: {}, choices: [] }) }
+            // Supports two CSV schemas:
+            // 1) Variation schema (legacy):
+            //    Step,Variation,Type,Title,Text,Followers,Views,Engagement,Income,Subscribers,CostName,CostVal,Explanation
+            // 2) Step schema (current adam/data/simulator.csv):
+            //    Step,Type,Title,Text,Followers,Views,Engagement,Income,Subscribers,CostName,CostVal,Explanation
 
-            dataRows.forEach(row => {
-                if (row.length < 5) return;
-                const step = parseInt(row[0]);
-                if (isNaN(step)) return;
+            // Find the first row that actually starts with a numeric step.
+            const firstDataIndex = rows.findIndex(r => r && r.length > 1 && !isNaN(parseInt(r[0], 10)));
+            if (firstDataIndex === -1) {
+                this.chapters = [];
+                this.choices = [];
+                return;
+            }
 
-                const variation = row[1];
-                const type = row[2];
-                const title = row[3];
-                const text = row[4];
-                
-                if (!chaptersMap.has(step)) {
-                    chaptersMap.set(step, new Map());
-                }
-                const stepVariations = chaptersMap.get(step);
-                
-                if (!stepVariations.has(variation)) {
-                    stepVariations.set(variation, { question: null, choices: [] });
-                }
-                const varData = stepVariations.get(variation);
-                
-                if (type === 'Question') {
-                    varData.question = {
-                        id: variation,
-                        title: title,
-                        text: text,
-                        choices: []
-                    };
-                } else if (type === 'Choice') {
-                    const effect = {
-                        followersPct: parseFloat(row[5]) || 0,
-                        viewsPct: parseFloat(row[6]) || 0,
-                        engagement: parseInt(row[7]) || 0,
-                        incomePct: parseFloat(row[8]) || 0,
-                        subscribersPct: parseFloat(row[9]) || 0,
-                        costs: []
-                    };
-                    
-                    if (row[10] && row[11]) {
-                        effect.costs.push({ name: row[10], val: parseInt(row[11]) || 0 });
+            const firstDataRow = rows[firstDataIndex];
+            const looksLikeStepSchema = (() => {
+                const t = String(firstDataRow[1] || '').trim();
+                return t === 'Question' || t === 'Choice';
+            })();
+
+            const chaptersMap = new Map(); // Step -> Map(variationId -> { question, choices })
+
+            if (looksLikeStepSchema) {
+                // Parse sequentially: each Question starts a new variation bucket; subsequent Choice rows attach to it.
+                let current = null; // { step: number, varId: string, varData: {question, choices} }
+                const variationCounters = new Map(); // step -> count
+
+                for (let i = firstDataIndex; i < rows.length; i++) {
+                    const row = rows[i];
+                    if (!row || row.length < 3) continue;
+
+                    const step = parseInt(row[0], 10);
+                    if (isNaN(step)) continue;
+
+                    const type = String(row[1] || '').trim();
+                    const title = String(row[2] || '').trim();
+                    const text = String(row[3] || '').trim();
+
+                    if (!chaptersMap.has(step)) {
+                        chaptersMap.set(step, new Map());
+                        variationCounters.set(step, 0);
                     }
-                    
-                    const choice = {
-                        title: title,
-                        text: text,
-                        effect: effect,
-                        explanation: row[12] || null
-                    };
-                    varData.choices.push(choice);
+
+                    if (type === 'Question') {
+                        const nextCount = (variationCounters.get(step) || 0) + 1;
+                        variationCounters.set(step, nextCount);
+                        const varId = `step_${step}_q_${nextCount}`;
+                        const varData = { question: null, choices: [] };
+                        varData.question = { id: varId, title, text, choices: [] };
+                        chaptersMap.get(step).set(varId, varData);
+                        current = { step, varId, varData };
+                        continue;
+                    }
+
+                    if (type === 'Choice') {
+                        // Attach to the most recent Question within the same step.
+                        if (!current || current.step !== step) continue;
+
+                        const followersMul = parseFloat(row[4]);
+                        const viewsMul = parseFloat(row[5]);
+                        const engagementMul = parseFloat(row[6]);
+                        const incomeMul = parseFloat(row[7]);
+                        const subscribersMul = parseFloat(row[8]);
+
+                        const toPct = (mul) => (Number.isFinite(mul) ? (mul - 1) : 0);
+                        const engagementDelta = Number.isFinite(engagementMul)
+                            ? Math.round((engagementMul - 1) * 20)
+                            : 0;
+
+                        const effect = {
+                            followersPct: toPct(followersMul),
+                            viewsPct: toPct(viewsMul),
+                            engagement: engagementDelta,
+                            incomePct: toPct(incomeMul),
+                            subscribersPct: toPct(subscribersMul),
+                            costs: []
+                        };
+
+                        const costName = row[9];
+                        const costVal = row[10];
+                        if (costName && costVal !== undefined && costVal !== null && String(costVal).trim() !== '') {
+                            effect.costs.push({ name: String(costName).trim(), val: parseInt(costVal, 10) || 0 });
+                        }
+
+                        const choice = {
+                            title,
+                            text,
+                            effect,
+                            explanation: row[11] ? String(row[11]).trim() : null
+                        };
+
+                        current.varData.choices.push(choice);
+                    }
                 }
-            });
+            } else {
+                // Variation schema (legacy)
+                const dataRows = rows.slice(1);
+
+                dataRows.forEach(row => {
+                    if (row.length < 5) return;
+                    const step = parseInt(row[0], 10);
+                    if (isNaN(step)) return;
+
+                    const variation = row[1];
+                    const type = row[2];
+                    const title = row[3];
+                    const text = row[4];
+
+                    if (!chaptersMap.has(step)) {
+                        chaptersMap.set(step, new Map());
+                    }
+                    const stepVariations = chaptersMap.get(step);
+
+                    if (!stepVariations.has(variation)) {
+                        stepVariations.set(variation, { question: null, choices: [] });
+                    }
+                    const varData = stepVariations.get(variation);
+
+                    if (type === 'Question') {
+                        varData.question = {
+                            id: variation,
+                            title: title,
+                            text: text,
+                            choices: []
+                        };
+                    } else if (type === 'Choice') {
+                        const effect = {
+                            followersPct: parseFloat(row[5]) || 0,
+                            viewsPct: parseFloat(row[6]) || 0,
+                            engagement: parseInt(row[7], 10) || 0,
+                            incomePct: parseFloat(row[8]) || 0,
+                            subscribersPct: parseFloat(row[9]) || 0,
+                            costs: []
+                        };
+
+                        if (row[10] && row[11]) {
+                            effect.costs.push({ name: row[10], val: parseInt(row[11], 10) || 0 });
+                        }
+
+                        const choice = {
+                            title: title,
+                            text: text,
+                            effect: effect,
+                            explanation: row[12] || null
+                        };
+                        varData.choices.push(choice);
+                    }
+                });
+            }
             
             // Convert map to array, selecting one random variation per step
             this.chapters = [];
@@ -438,6 +742,11 @@
         }
 
         startSimulation() {
+            if (this.chapters.length === 0) {
+                alert("Error: No chapters loaded. Please refresh the page.");
+                return;
+            }
+
             // Get user's starting followers
             const followerInput = document.getElementById('startingFollowers');
             const inputValue = parseInt(followerInput?.value);
@@ -601,6 +910,13 @@
 
             let zebraIndex = 0;
 
+            // Calculate totals for mobile summary row
+            let totalFollowersDelta = 0;
+            let totalViewsDelta = 0;
+            let totalSubscribersDelta = 0;
+            let totalCostDelta = 0;
+            let totalIncomeDelta = 0;
+
             for (let i = 0; i < totalDecisions; i++) {
                 if (i === skipChapterIndex) continue;
                 const choiceIdx = this.choices[i];
@@ -620,6 +936,13 @@
                 
                 // Scale the effect based on what the account size was at that step
                 const scaledEffect = this.scaleEffect(choice.effect, followersAtStep);
+
+                // Accumulate deltas for mobile summary
+                totalFollowersDelta += scaledEffect.followers;
+                totalViewsDelta += scaledEffect.views;
+                totalSubscribersDelta += scaledEffect.subscribers;
+                totalCostDelta += scaledEffect.costs.reduce((sum, c) => sum + (Number(c.val) || 0), 0);
+                totalIncomeDelta += scaledEffect.income;
 
                 const costDelta = scaledEffect.costs.reduce((sum, c) => sum + (Number(c.val) || 0), 0);
                 const hasMeaningfulUpside =
@@ -684,6 +1007,19 @@
 
                 tbody.appendChild(row);
             }
+
+            // Add mobile summary row (only visible on mobile via CSS)
+            const mobileSummaryRow = document.createElement('tr');
+            mobileSummaryRow.className = 'mobile-summary-row';
+            mobileSummaryRow.innerHTML = `
+                <td>All Decisions</td>
+                <td><span class="increment-label">${this.formatSignedCompact(totalFollowersDelta).replace(/(\d)([KMB])/g, '$1 $2')}</span></td>
+                <td><span class="increment-label">${this.formatSignedCompact(totalViewsDelta).replace(/(\d)([KMB])/g, '$1 $2')}</span></td>
+                <td><span class="increment-label">${this.formatSignedCompact(totalSubscribersDelta).replace(/(\d)([KMB])/g, '$1 $2')}</span></td>
+                <td><span class="increment-label">${this.formatSignedMoney(totalCostDelta).replace(/([+\-$])(\d)/, '$1 $2').replace(/(\d)([KMB])/g, '$1 $2')}</span></td>
+                <td><span class="increment-label">${this.formatSignedMoney(totalIncomeDelta).replace(/([+\-$])(\d)/, '$1 $2').replace(/(\d)([KMB])/g, '$1 $2')}</span></td>
+            `;
+            tbody.appendChild(mobileSummaryRow);
         }
 
         renderAllChapters() {
@@ -832,20 +1168,27 @@
                 });
             };
 
-            const segment = this.els.chart?.querySelector('.chart-segment-anim');
-            if (segment) {
-                let handled = false;
-                const onEnd = () => {
-                    if (handled) return;
-                    handled = true;
-                    segment.removeEventListener('animationend', onEnd);
-                    runRowAndHighlights();
-                };
-                segment.addEventListener('animationend', onEnd);
-                // Fallback in case animation event doesn't fire (e.g. tab backgrounded)
-                setTimeout(onEnd, 1100);
+            // On mobile, skip all animations and show final state immediately
+            if (window.innerWidth < 600) {
+                this._pendingDecisionAnim = null;
+                this._pendingHighlightChapter = null;
+                this.updateDashboard();
             } else {
-                runRowAndHighlights();
+                const segment = this.els.chart?.querySelector('.chart-segment-anim');
+                if (segment) {
+                    let handled = false;
+                    const onEnd = () => {
+                        if (handled) return;
+                        handled = true;
+                        segment.removeEventListener('animationend', onEnd);
+                        runRowAndHighlights();
+                    };
+                    segment.addEventListener('animationend', onEnd);
+                    // Fallback in case animation event doesn't fire (e.g. tab backgrounded)
+                    setTimeout(onEnd, 1100);
+                } else {
+                    runRowAndHighlights();
+                }
             }
         }
 
@@ -921,17 +1264,6 @@
             });
         }
 
-        // Preview system: Hover to see impact before committing to a choice.
-        // 
-        // How it works:
-        // 1. Mouse enters a choice button → showPreview() is called
-        // 2. Calculate scaled effect at that specific step (not current total)
-        // 3. Store preview data (fromStep, fromFollowers, toFollowers)
-        // 4. updateChart() renders a dashed grey line showing potential growth
-        // 5. Mouse leaves → hidePreview() clears preview and restores normal chart
-        // 
-        // Why useful? Users can compare options visually before making a decision.
-        // Dashed line is non-committal and clearly distinguishes preview from actual progress.
         showPreview(chapterIndex, choiceIndex) {
             const chapter = this.chapters[chapterIndex];
             if (!chapter || !chapter.choices) return;
@@ -941,16 +1273,14 @@
             const totalDecisions = this.chapters.length - 1;
             if (chapterIndex < 0 || chapterIndex >= totalDecisions) return;
 
-            // Get follower count at the time this decision would be made
             const fromFollowers = (this.state.historyByStep && this.state.historyByStep[chapterIndex] != null)
                 ? this.state.historyByStep[chapterIndex]
                 : this.initialState.followers;
 
-            // Scale the effect based on current followers at that step (not final total)
+            // Scale the effect based on current followers at that step
             const scaledEffect = this.scaleEffect(choice.effect, fromFollowers);
             const toFollowers = fromFollowers + scaledEffect.followers;
 
-            // Store preview data for chart rendering
             this.previewData = {
                 fromStep: chapterIndex,
                 fromFollowers,
@@ -1020,23 +1350,13 @@
             const maxFollowers = theoreticalMax;
             const range = maxFollowers - minFollowers || 1;
 
-            // Chart animation logic: Animate only the newest segment growing from previous point.
-            // 
-            // Animation approach:
-            // 1. Render static path up to the previous step
-            // 2. Add animated segment using stroke-dasharray/stroke-dashoffset trick
-            // 3. Segment grows over 700ms with CSS animation
-            // 4. Burst ring appears at the end point (delayed by segDurationMs)
-            // 5. After animation, re-render chart to final static state
-            // 
-            // Why segment-only animation? Animating the full path is jarring when changing past decisions.
-            // Only animating the new/changed segment feels responsive and focused.
+            // Generate main path
             let pathD = '';
             let circles = '';
             let animSegment = '';
             let burst = '';
 
-            const segDurationMs = 700; // Segment growth duration in milliseconds
+            const segDurationMs = 700;
             // Allow chart animation for both new answers and changed answers
             const chartAnim = (!this.previewData && this._pendingChartAnim && this._pendingChartAnim.toStep <= lastAnsweredStep + 1)
                 ? { ...this._pendingChartAnim }
@@ -1323,92 +1643,259 @@
             if (!this.canvas) return;
             
             this.ctx = this.canvas.getContext('2d');
+
             this.particles = [];
-            this.particleCount = 80;
             this.colors = ['#ff6b6b', '#3b82f6', '#22c55e', '#f59e0b'];
-            
+
+            this._mediaMobile = window.matchMedia ? window.matchMedia('(max-width: 768px)') : null;
+            this._mediaReduceMotion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+            this._isMobile = this._mediaMobile ? this._mediaMobile.matches : (window.innerWidth <= 768);
+            this._reduceMotion = this._mediaReduceMotion ? this._mediaReduceMotion.matches : false;
+
+            // Performance knobs
+            this._connectionsEnabled = !this._isMobile;
+            this._targetFps = this._isMobile ? 30 : 60;
+            this._frameIntervalMs = 1000 / this._targetFps;
+            this._lastFrameMs = 0;
+            this._lastTime = 0;
+
+            // 3D params (allow "near" particles to appear larger)
+            this._fov = 900;
+            this._zNear = -350;
+            this._zFar = 1600;
+
             this.resize();
-            this.init();
+            this._syncParticleCount();
+            this._initParticles();
             this.animate();
-            
-            window.addEventListener('resize', () => this.resize());
-        }
-        
-        resize() {
-            this.canvas.width = window.innerWidth;
-            this.canvas.height = window.innerHeight;
-        }
-        
-        init() {
-            for (let i = 0; i < this.particleCount; i++) {
-                this.particles.push({
-                    x: Math.random() * this.canvas.width,
-                    y: Math.random() * this.canvas.height,
-                    z: Math.random() * 1000,
-                    vx: (Math.random() - 0.5) * 0.3,
-                    vy: (Math.random() - 0.5) * 0.3,
-                    vz: (Math.random() - 0.5) * 2,
-                    size: Math.random() * 2 + 1,
-                    color: this.colors[Math.floor(Math.random() * this.colors.length)],
-                    opacity: Math.random() * 0.5 + 0.2
+
+            window.addEventListener('resize', () => {
+                this.resize();
+                this._syncParticleCount(true);
+            });
+
+            if (this._mediaMobile && typeof this._mediaMobile.addEventListener === 'function') {
+                this._mediaMobile.addEventListener('change', () => {
+                    this._isMobile = this._mediaMobile.matches;
+                    this._connectionsEnabled = !this._isMobile;
+                    this._targetFps = this._isMobile ? 30 : 60;
+                    this._frameIntervalMs = 1000 / this._targetFps;
+                    this.resize();
+                    this._syncParticleCount(true);
+                });
+            }
+            if (this._mediaReduceMotion && typeof this._mediaReduceMotion.addEventListener === 'function') {
+                this._mediaReduceMotion.addEventListener('change', () => {
+                    this._reduceMotion = this._mediaReduceMotion.matches;
                 });
             }
         }
         
-        animate() {
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            
-            this.particles.forEach(p => {
-                // Update position
-                p.x += p.vx;
-                p.y += p.vy;
-                p.z += p.vz;
-                
-                // Wrap around edges
-                if (p.x < 0) p.x = this.canvas.width;
-                if (p.x > this.canvas.width) p.x = 0;
-                if (p.y < 0) p.y = this.canvas.height;
-                if (p.y > this.canvas.height) p.y = 0;
-                if (p.z < 0) p.z = 1000;
-                if (p.z > 1000) p.z = 0;
-                
-                // 3D perspective
-                const scale = 1000 / (1000 + p.z);
-                const x2d = (p.x - this.canvas.width / 2) * scale + this.canvas.width / 2;
-                const y2d = (p.y - this.canvas.height / 2) * scale + this.canvas.height / 2;
-                const size = p.size * scale;
-                
-                // Draw particle
+        resize() {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+
+            // Cap DPR on mobile to keep fill-rate under control.
+            const rawDpr = window.devicePixelRatio || 1;
+            const dprCap = this._isMobile ? 1.25 : 2;
+            this._dpr = Math.min(rawDpr, dprCap);
+
+            this.canvas.style.width = `${w}px`;
+            this.canvas.style.height = `${h}px`;
+            this.canvas.width = Math.floor(w * this._dpr);
+            this.canvas.height = Math.floor(h * this._dpr);
+
+            // Draw in CSS pixels (easier math)
+            this.ctx.setTransform(this._dpr, 0, 0, this._dpr, 0, 0);
+
+            this._w = w;
+            this._h = h;
+        }
+
+        _syncParticleCount(rebuild = false) {
+            // Scale particle count to viewport area, then clamp.
+            const area = Math.max(1, window.innerWidth * window.innerHeight);
+            const densityDivisor = this._isMobile ? 32000 : 26000; // higher = fewer particles
+            const base = Math.round(area / densityDivisor);
+            const minCount = this._isMobile ? 28 : 65;
+            const maxCount = this._isMobile ? 65 : 115;
+            this.particleCount = Math.max(minCount, Math.min(maxCount, base));
+
+            if (rebuild) {
+                if (this.particles.length > this.particleCount) {
+                    this.particles.length = this.particleCount;
+                }
+                while (this.particles.length < this.particleCount) {
+                    this.particles.push(this._createParticle());
+                }
+            }
+        }
+
+        _createParticle() {
+            // Particles spawn fully transparent and fade in.
+            const margin = 40;
+            return {
+                x: Math.random() * (this._w + margin * 2) - margin,
+                y: Math.random() * (this._h + margin * 2) - margin,
+                z: Math.random() * (this._zFar - this._zNear) + this._zNear,
+
+                // velocities in CSS px per second (scaled by dt)
+                vx: (Math.random() - 0.5) * (this._isMobile ? 10 : 14),
+                vy: (Math.random() - 0.5) * (this._isMobile ? 10 : 14),
+                vz: (Math.random() - 0.5) * (this._isMobile ? 55 : 75),
+
+                baseSize: Math.random() * 1.8 + 0.9,
+                color: this.colors[Math.floor(Math.random() * this.colors.length)],
+                baseOpacity: Math.random() * 0.35 + 0.18,
+
+                age: 0,
+                life: Math.random() * 6 + 6 // seconds
+            };
+        }
+
+        _respawn(p) {
+            const np = this._createParticle();
+            p.x = np.x;
+            p.y = np.y;
+            p.z = np.z;
+            p.vx = np.vx;
+            p.vy = np.vy;
+            p.vz = np.vz;
+            p.baseSize = np.baseSize;
+            p.color = np.color;
+            p.baseOpacity = np.baseOpacity;
+            p.age = 0;
+            p.life = np.life;
+        }
+        
+        _initParticles() {
+            this.particles = [];
+            for (let i = 0; i < this.particleCount; i++) {
+                this.particles.push(this._createParticle());
+            }
+        }
+
+        _clamp(v, min, max) {
+            return Math.max(min, Math.min(max, v));
+        }
+
+        _smoothstep(edge0, edge1, x) {
+            const t = this._clamp((x - edge0) / (edge1 - edge0), 0, 1);
+            return t * t * (3 - 2 * t);
+        }
+        
+        animate(nowMs = 0) {
+            requestAnimationFrame((t) => this.animate(t));
+
+            if (this._reduceMotion) {
+                // Respect reduced motion; keep background static.
+                this.ctx.clearRect(0, 0, this._w, this._h);
+                return;
+            }
+
+            // FPS throttling (important on mobile)
+            if (this._lastFrameMs && (nowMs - this._lastFrameMs) < this._frameIntervalMs) return;
+            this._lastFrameMs = nowMs;
+
+            const dt = this._lastTime ? Math.min(0.05, (nowMs - this._lastTime) / 1000) : (1 / this._targetFps);
+            this._lastTime = nowMs;
+
+            this.ctx.clearRect(0, 0, this._w, this._h);
+
+            const cx = this._w / 2;
+            const cy = this._h / 2;
+            const margin = 60;
+
+            // Precompute projected points for connection drawing.
+            const projected = new Array(this.particles.length);
+
+            for (let i = 0; i < this.particles.length; i++) {
+                const p = this.particles[i];
+
+                p.age += dt;
+
+                // Fade-in / fade-out via lifecycle
+                const tLife = p.life > 0 ? (p.age / p.life) : 1;
+                if (tLife >= 1) {
+                    this._respawn(p);
+                }
+
+                // Move
+                p.x += p.vx * dt;
+                p.y += p.vy * dt;
+                p.z += p.vz * dt;
+
+                // Recycle when leaving bounds/depth instead of hard wrapping (prevents popping)
+                if (
+                    p.x < -margin || p.x > this._w + margin ||
+                    p.y < -margin || p.y > this._h + margin ||
+                    p.z < this._zNear || p.z > this._zFar
+                ) {
+                    this._respawn(p);
+                }
+
+                const scale = this._fov / (this._fov + p.z);
+                const x2d = (p.x - cx) * scale + cx;
+                const y2d = (p.y - cy) * scale + cy;
+
+                // Larger when "closer": allow scale > 1 when z < 0
+                const radius = Math.min(11, p.baseSize * scale * 2);
+
+                // Smooth fade in/out (no popping)
+                const fadeIn = this._smoothstep(0.0, 0.18, tLife);
+                const fadeOut = 1 - this._smoothstep(0.82, 1.0, tLife);
+                const fade = fadeIn * fadeOut;
+
+                // Slightly brighten closer particles without overdoing it
+                const depthBoost = this._clamp(scale, 0.35, 1.35);
+                const alpha = p.baseOpacity * fade * this._clamp(depthBoost, 0.35, 1.0);
+
+                projected[i] = { x: x2d, y: y2d, z: p.z, r: radius, a: alpha, c: p.color };
+
+                if (alpha <= 0.001) continue;
+
                 this.ctx.beginPath();
-                this.ctx.arc(x2d, y2d, size, 0, Math.PI * 2);
+                this.ctx.arc(x2d, y2d, radius, 0, Math.PI * 2);
                 this.ctx.fillStyle = p.color;
-                this.ctx.globalAlpha = p.opacity * scale;
+                this.ctx.globalAlpha = alpha;
                 this.ctx.fill();
-                
-                // Draw connections to nearby particles
-                this.particles.forEach(p2 => {
-                    const dx = p.x - p2.x;
-                    const dy = p.y - p2.y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (dist < 150 && Math.abs(p.z - p2.z) < 200) {
-                        const scale2 = 1000 / (1000 + p2.z);
-                        const x2d2 = (p2.x - this.canvas.width / 2) * scale2 + this.canvas.width / 2;
-                        const y2d2 = (p2.y - this.canvas.height / 2) * scale2 + this.canvas.height / 2;
-                        
+            }
+
+            if (this._connectionsEnabled) {
+                const maxDist = 150;
+                const maxDist2 = maxDist * maxDist;
+                const maxDz = 240;
+
+                for (let i = 0; i < projected.length; i++) {
+                    const a = projected[i];
+                    if (!a || a.a <= 0.03) continue;
+
+                    for (let j = i + 1; j < projected.length; j++) {
+                        const b = projected[j];
+                        if (!b || b.a <= 0.03) continue;
+                        if (Math.abs(a.z - b.z) > maxDz) continue;
+
+                        const dx = a.x - b.x;
+                        const dy = a.y - b.y;
+                        const d2 = dx * dx + dy * dy;
+                        if (d2 > maxDist2) continue;
+
+                        const dist = Math.sqrt(d2);
+                        const lineAlpha = (1 - dist / maxDist) * 0.14 * Math.min(a.a, b.a);
+                        if (lineAlpha <= 0.001) continue;
+
                         this.ctx.beginPath();
-                        this.ctx.moveTo(x2d, y2d);
-                        this.ctx.lineTo(x2d2, y2d2);
-                        this.ctx.strokeStyle = p.color;
-                        this.ctx.globalAlpha = (1 - dist / 150) * 0.15 * scale;
-                        this.ctx.lineWidth = 0.5;
+                        this.ctx.moveTo(a.x, a.y);
+                        this.ctx.lineTo(b.x, b.y);
+                        this.ctx.strokeStyle = a.c;
+                        this.ctx.globalAlpha = lineAlpha;
+                        this.ctx.lineWidth = 0.6;
                         this.ctx.stroke();
                     }
-                });
-            });
-            
+                }
+            }
+
             this.ctx.globalAlpha = 1;
-            requestAnimationFrame(() => this.animate());
         }
     }
     

@@ -1,0 +1,790 @@
+<!doctype html>
+<!--
+==============================================================================
+ADAM - Pricing Page
+==============================================================================
+
+PURPOSE:
+    Transparent pricing presentation designed to convert visitors into paying
+    customers. Reduces decision friction through clear value communication.
+
+PRICING STRATEGY:
+    - Freemium model: Free tier attracts users, paid tiers monetize power users
+    - Three-tier structure: Starter (free) → Pro ($29/mo) → Agency ($99/mo)
+    - Annual discount incentive: Save 20% (increases LTV, reduces churn)
+    - No credit card required for free tier (lowers signup friction)
+
+TARGET PERSONAS:
+    1. Starter (Free)
+       - New creators testing the waters
+       - Hobbyists, side hustlers
+       - Lead generation: Get them hooked, then upsell
+    
+    2. Pro ($29/mo)
+       - Serious creators (10K-100K followers)
+       - Full-time or aspiring full-time
+       - Core revenue driver
+    
+    3. Agency ($99/mo)
+       - Agencies managing multiple clients
+       - Large creators (100K+ followers)
+       - Premium features, white-label options
+
+PAGE SECTIONS:
+    1. Pricing Hero
+       - "Simple, transparent pricing" headline
+       - Builds trust through clarity
+
+    2. Plan Comparison Table
+       - Side-by-side feature comparison
+       - Highlights recommended plan (Pro)
+       - Visual hierarchy guides to optimal choice
+
+    3. FAQ Section
+       - Addresses pricing objections:
+         * "Can I cancel anytime?" (Yes, no contracts)
+         * "What if I outgrow my plan?" (Easy upgrades)
+         * "Do you offer refunds?" (30-day money-back)
+       - Reduces purchase anxiety
+
+    4. Social Proof
+       - "Join 2,847+ creators" trust badge
+       - Testimonials mentioning ROI/value
+       - Case studies with revenue growth
+
+    5. Money-Back Guarantee
+       - 30-day guarantee reduces risk
+       - Increases conversion (proven by testing)
+
+    6. CTA Section
+       - "Start Free Trial" button for each tier
+       - Emphasize no credit card required
+
+CONVERSION PSYCHOLOGY:
+    - Anchoring: Pro plan positioned as "best value" (middle option bias)
+    - Scarcity: "Limited spots" for agency tier (FOMO)
+    - Social proof: User count, testimonials
+    - Risk reversal: Money-back guarantee
+    - Clarity: No hidden fees, transparent feature list
+
+A/B TESTING NOTES:
+    - Test annual vs monthly default selection
+    - Test 3-tier vs 2-tier layout
+    - Test CTA copy: "Start Free" vs "Get Started" vs "Try ADAM Free"
+
+DEPENDENCIES:
+    - css/adam-styles.css (design system)
+    - css/global-nav.css (navigation)
+    - js/global-nav.js (navigation functionality)
+    - js/components.js (header/footer)
+    - app.js (PJAX navigation)
+
+==============================================================================
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Alternate language versions for SEO -->
+    <link rel="alternate" hreflang="en" href="adam-pricing.html" />
+    <link rel="alternate" hreflang="es" href="es/adam-pricing.html" />
+    <link rel="alternate" hreflang="x-default" href="adam-pricing.html" />
+
+
+
+    <link rel="icon" type="image/png" href="media/Logo.png" />
+    <title>Pricing - ADAM TikTok AI Growth Manager</title>
+    <meta name="description" content="Simple, transparent pricing for ADAM. Start free, upgrade when you're ready. Plans for solo creators, pros, and agencies." />
+    <link rel="stylesheet" href="css/adam-styles.css" />
+    <link rel="stylesheet" href="css/global-nav.css" />
+    <style>
+      /* Page-specific styles */
+      .pricing-hero {
+        min-height: 50vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(ellipse at top, #0f172a 0%, #020617 100%);
+        padding: var(--space-12) var(--space-6);
+        text-align: center;
+        position: relative;
+      }
+      
+      .pricing-hero h1 {
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 800;
+        background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: var(--space-4);
+      }
+      
+      .pricing-hero p {
+        font-size: var(--text-xl);
+        color: var(--adam-text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      
+      /* Pricing Toggle */
+      .pricing-toggle {
+        display: flex;
+        justify-content: center;
+        gap: var(--space-4);
+        align-items: center;
+        margin: var(--space-8) 0;
+      }
+      
+      .toggle-label {
+        color: var(--adam-text-secondary);
+        font-weight: 500;
+        transition: color var(--duration-fast) var(--ease-out);
+      }
+      
+      .toggle-label.active {
+        color: var(--adam-text-primary);
+      }
+      
+      .toggle-switch {
+        width: 60px;
+        height: 32px;
+        background: var(--adam-surface);
+        border-radius: 16px;
+        padding: 4px;
+        cursor: pointer;
+        transition: background var(--duration-base) var(--ease-out);
+        position: relative;
+      }
+      
+      .toggle-switch.annual {
+        background: var(--adam-primary);
+      }
+      
+      .toggle-knob {
+        width: 24px;
+        height: 24px;
+        background: white;
+        border-radius: 50%;
+        transition: transform var(--duration-base) var(--ease-out);
+      }
+      
+      .toggle-switch.annual .toggle-knob {
+        transform: translateX(28px);
+      }
+      
+      .save-badge {
+        background: var(--adam-success);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 99px;
+        font-size: var(--text-sm);
+        font-weight: 600;
+      }
+      
+      /* Pricing Cards */
+      .pricing-section {
+        padding: var(--space-8) 0 var(--space-16);
+      }
+      
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--space-6);
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      
+      .pricing-card {
+        background: var(--adam-surface);
+        border: 1px solid var(--adam-border);
+        border-radius: 20px;
+        padding: var(--space-8);
+        position: relative;
+        transition: all var(--duration-base) var(--ease-out);
+      }
+      
+      .pricing-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--adam-primary);
+      }
+      
+      .pricing-card.featured {
+        border-color: var(--adam-primary);
+        background: linear-gradient(180deg, rgba(59,130,246,0.1) 0%, var(--adam-surface) 100%);
+        transform: scale(1.02);
+      }
+      
+      .pricing-card.featured:hover {
+        transform: scale(1.02) translateY(-4px);
+      }
+      
+      .popular-badge {
+        position: absolute;
+        top: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, var(--adam-primary), var(--adam-secondary));
+        color: white;
+        padding: 6px 16px;
+        border-radius: 99px;
+        font-size: var(--text-sm);
+        font-weight: 600;
+      }
+      
+      .pricing-card h3 {
+        font-size: var(--text-xl);
+        color: var(--adam-text-primary);
+        margin-bottom: var(--space-2);
+      }
+      
+      .pricing-card .tagline {
+        font-size: var(--text-sm);
+        color: var(--adam-text-muted);
+        margin-bottom: var(--space-6);
+      }
+      
+      .price-display {
+        margin-bottom: var(--space-6);
+      }
+      
+      .price-amount {
+        font-size: var(--text-4xl);
+        font-weight: 800;
+        color: var(--adam-text-primary);
+      }
+      
+      .price-period {
+        font-size: var(--text-base);
+        color: var(--adam-text-muted);
+      }
+      
+      .original-price {
+        font-size: var(--text-lg);
+        color: var(--adam-text-muted);
+        text-decoration: line-through;
+        margin-left: var(--space-2);
+      }
+      
+      .pricing-card .adam-btn-primary,
+      .pricing-card .adam-btn-secondary {
+        width: 100%;
+        margin-bottom: var(--space-6);
+      }
+      
+      .features-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      
+      .features-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-3);
+        padding: var(--space-3) 0;
+        color: var(--adam-text-secondary);
+        font-size: var(--text-sm);
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+      }
+      
+      .features-list li:last-child {
+        border-bottom: none;
+      }
+      
+      .features-list .check {
+        color: var(--adam-success);
+        flex-shrink: 0;
+      }
+      
+      .features-list .highlight {
+        color: var(--adam-text-primary);
+        font-weight: 500;
+      }
+      
+      /* FAQ Section */
+      .faq-section {
+        padding: var(--space-16) 0;
+        background: rgba(15, 23, 42, 0.5);
+      }
+      
+      .faq-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: var(--space-6);
+        margin-top: var(--space-8);
+      }
+      
+      @media (max-width: 500px) {
+        .faq-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      
+      .faq-item {
+        background: var(--adam-surface);
+        border: 1px solid var(--adam-border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      
+      .faq-question {
+        width: 100%;
+        text-align: left;
+        padding: var(--space-5);
+        background: transparent;
+        border: none;
+        color: var(--adam-text-primary);
+        font-size: var(--text-base);
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--space-4);
+      }
+      
+      .faq-question:hover {
+        background: var(--adam-surface-elevated);
+      }
+      
+      .faq-icon {
+        font-size: 1.5rem;
+        color: var(--adam-primary);
+        transition: transform var(--duration-base) var(--ease-out);
+      }
+      
+      .faq-item.open .faq-icon {
+        transform: rotate(45deg);
+      }
+      
+      .faq-answer {
+        padding: 0 var(--space-5);
+        max-height: 0;
+        overflow: hidden;
+        transition: all var(--duration-base) var(--ease-out);
+      }
+      
+      .faq-item.open .faq-answer {
+        padding: 0 var(--space-5) var(--space-5);
+        max-height: 500px;
+      }
+      
+      .faq-answer p {
+        color: var(--adam-text-secondary);
+        font-size: var(--text-sm);
+        line-height: 1.7;
+        margin: 0;
+      }
+      
+      /* Enterprise Section */
+      .enterprise-section {
+        padding: var(--space-16) 0;
+        text-align: center;
+      }
+      
+      .enterprise-card {
+        background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(6,182,212,0.1) 100%);
+        border: 1px solid var(--adam-primary);
+        border-radius: 20px;
+        padding: var(--space-10);
+        max-width: 700px;
+        margin: 0 auto;
+      }
+      
+      .enterprise-card h3 {
+        font-size: var(--text-2xl);
+        margin-bottom: var(--space-4);
+      }
+      
+      .enterprise-card p {
+        color: var(--adam-text-secondary);
+        margin-bottom: var(--space-6);
+      }
+      
+      .enterprise-features {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: var(--space-4);
+        margin-bottom: var(--space-8);
+      }
+      
+      .enterprise-features span {
+        background: var(--adam-surface);
+        padding: var(--space-2) var(--space-4);
+        border-radius: 8px;
+        font-size: var(--text-sm);
+        color: var(--adam-text-secondary);
+      }
+      
+      /* Guarantee Section */
+      .guarantee-section {
+        padding: var(--space-12) 0;
+        background: var(--adam-bg-dark);
+      }
+      
+      .guarantee-card {
+        display: flex;
+        align-items: center;
+        gap: var(--space-6);
+        max-width: 700px;
+        margin: 0 auto;
+        text-align: left;
+      }
+      
+      @media (max-width: 600px) {
+        .guarantee-card {
+          flex-direction: column;
+          text-align: center;
+        }
+      }
+      
+      .guarantee-icon {
+        font-size: 4rem;
+        flex-shrink: 0;
+      }
+      
+      .guarantee-content h3 {
+        font-size: var(--text-xl);
+        margin-bottom: var(--space-2);
+      }
+      
+      .guarantee-content p {
+        color: var(--adam-text-secondary);
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    
+    <!-- Header -->
+    <div id="global-nav-container"></div>
+
+    <main id="main" role="main">
+      
+      <!-- Hero -->
+      <section class="pricing-hero">
+        <div>
+          <h1 id="pricing-hero-title">Simple, Honest Pricing</h1>
+          <p id="pricing-hero-subtitle">Start free. Upgrade when you're ready. No hidden fees, no surprises.</p>
+        </div>
+      </section>
+
+      <!-- Pricing Toggle -->
+      <section class="pricing-section">
+        <div class="adam-container">
+          <div class="pricing-toggle">
+            <span class="toggle-label active" id="monthly-label">Monthly</span>
+            <div class="toggle-switch" id="pricing-toggle" role="switch" aria-checked="false" tabindex="0">
+              <div class="toggle-knob"></div>
+            </div>
+            <span class="toggle-label" id="annual-label">Annual</span>
+            <span class="save-badge" id="pricing-save-badge">Save 20%</span>
+          </div>
+
+          <!-- Pricing Grid -->
+          <div class="pricing-grid">
+            
+            <!-- Free Tier -->
+            <div class="pricing-card">
+              <h3>Free</h3>
+              <p class="tagline">Get started, no credit card required</p>
+              <div class="price-display">
+                <span class="price-amount">$0</span>
+                <span class="price-period">/month</span>
+              </div>
+              <a href="index.html#waitlist" class="adam-btn-secondary" id="pricing-free-cta">Start Free</a>
+              <ul class="features-list">
+                <li><span class="check">✓</span> 1 TikTok account</li>
+                <li><span class="check">✓</span> 30-day history</li>
+                <li><span class="check">✓</span> Up to 50 videos tracked</li>
+                <li><span class="check">✓</span> Manual refresh (1x/day)</li>
+                <li><span class="check">✓</span> Weekly recap email</li>
+                <li><span class="check">✓</span> Basic insights (3/week)</li>
+                <li><span class="check">✓</span> 2 missions/week</li>
+              </ul>
+            </div>
+
+            <!-- Creator Tier -->
+            <div class="pricing-card featured">
+              <span class="popular-badge" id="pricing-popular-badge">Most Popular</span>
+              <h3>Creator</h3>
+              <p class="tagline">For serious creators ready to grow</p>
+              <div class="price-display">
+                <span class="price-amount" data-monthly="19" data-annual="15">$19</span>
+                <span class="price-period">/month</span>
+                <span class="original-price" style="display: none;">$19</span>
+              </div>
+              <a href="index.html#waitlist" class="adam-btn-primary" id="pricing-creator-cta">Start 14-Day Trial</a>
+              <ul class="features-list">
+                <li><span class="check">✓</span> <span class="highlight">1 TikTok account</span></li>
+                <li><span class="check">✓</span> <span class="highlight">180-day history</span></li>
+                <li><span class="check">✓</span> <span class="highlight">Unlimited videos</span></li>
+                <li><span class="check">✓</span> <span class="highlight">Auto-refresh (30 min)</span></li>
+                <li><span class="check">✓</span> <span class="highlight">First-hour velocity alerts</span></li>
+                <li><span class="check">✓</span> <span class="highlight">Best posting times</span></li>
+                <li><span class="check">✓</span> <span class="highlight">Experiments engine</span></li>
+                <li><span class="check">✓</span> Unlimited missions</li>
+                <li><span class="check">✓</span> Unlimited insights</li>
+                <li><span class="check">✓</span> AI coach (10 questions/month)</li>
+                <li><span class="check">✓</span> CSV export</li>
+              </ul>
+            </div>
+
+            <!-- Pro Tier -->
+            <div class="pricing-card">
+              <h3>Pro</h3>
+              <p class="tagline">For creators managing multiple accounts</p>
+              <div class="price-display">
+                <span class="price-amount" data-monthly="49" data-annual="39">$49</span>
+                <span class="price-period">/month</span>
+                <span class="original-price" style="display: none;">$49</span>
+              </div>
+              <a href="index.html#waitlist" class="adam-btn-secondary" id="pricing-pro-cta">Start 14-Day Trial</a>
+              <ul class="features-list">
+                <li><span class="check">✓</span> <span class="highlight">3 TikTok accounts</span></li>
+                <li><span class="check">✓</span> <span class="highlight">Full history (all time)</span></li>
+                <li><span class="check">✓</span> Everything in Creator</li>
+                <li><span class="check">✓</span> <span class="highlight">Growth predictions</span></li>
+                <li><span class="check">✓</span> <span class="highlight">Slack/Discord alerts</span></li>
+                <li><span class="check">✓</span> <span class="highlight">Live ROI tracking</span></li>
+                <li><span class="check">✓</span> <span class="highlight">Sponsor kit (share page)</span></li>
+                <li><span class="check">✓</span> Unlimited AI questions</li>
+                <li><span class="check">✓</span> Priority support</li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Enterprise -->
+      <section class="enterprise-section">
+        <div class="adam-container">
+          <div class="enterprise-card">
+            <h3>🏢 Agency & Enterprise</h3>
+            <p>Managing 10+ accounts? Need custom integrations, white-label reports, or SSO? Let's talk.</p>
+            <div class="enterprise-features">
+              <span>Unlimited accounts</span>
+              <span>Custom onboarding</span>
+              <span>White-label sponsor kits</span>
+              <span>API access</span>
+              <span>SSO/SAML</span>
+              <span>Dedicated support</span>
+              <span>Custom SLAs</span>
+            </div>
+            <a href="mailto:hello@lenkostudio.com?subject=ADAM Enterprise Inquiry" class="adam-btn-primary" id="pricing-enterprise-cta">Contact Sales</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Guarantee -->
+      <section class="guarantee-section">
+        <div class="adam-container">
+          <div class="guarantee-card">
+            <div class="guarantee-icon">🛡️</div>
+            <div class="guarantee-content">
+              <h3>14-Day Money-Back Guarantee</h3>
+              <p>Try ADAM risk-free. If you don't see value in the first 14 days, email us and we'll refund 100% of your payment. No questions asked, no fine print.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section class="faq-section">
+        <div class="adam-container">
+          <h2 class="adam-section-title">Frequently Asked Questions</h2>
+          
+          <div class="faq-grid">
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>How does the free trial work?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>Start your 14-day trial with full access to all features in your chosen plan. No credit card required to start. If you love it, upgrade before the trial ends. If not, you'll automatically move to the Free plan—no charge.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Can I change plans anytime?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>Yes! Upgrade instantly and your new features activate immediately. Downgrade at any time and your current plan stays active until the end of your billing period. No lock-in contracts.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Is my TikTok account safe?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>100% safe. We use TikTok's official API with read-only access. We can't post, delete, or modify anything on your account. Your OAuth tokens are encrypted at rest using bank-level security. We've been an official TikTok API partner since 2024.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>How accurate are the predictions?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>Our predictions include explicit confidence intervals. When we say "12K-18K views (80% confidence)," we mean 80% of predictions fall within that range. We track and publish our calibration accuracy so you know when to trust us.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>What happens to my data if I cancel?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>Your data is yours. When you cancel, you can export everything (CSV/JSON) before your subscription ends. After 30 days of inactivity, we delete all your data from our servers. You can also request immediate deletion at any time.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Do you offer refunds?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>Yes. We offer a 14-day money-back guarantee on all paid plans. If ADAM doesn't help you grow, email us and we'll refund your payment—no questions asked. After 14 days, we offer prorated refunds on annual plans.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>What's included in AI coach questions?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>Each "question" is a back-and-forth conversation turn. Ask follow-ups without using additional credits. Creator gets 10 questions/month, Pro gets unlimited. Free users can see sample coach responses but can't ask custom questions.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Can I connect Instagram or YouTube?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>Not yet! ADAM is TikTok-focused in Phase 1. We're building Instagram and YouTube integrations for 2025. Join the waitlist to get notified when we launch multi-platform support.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Final CTA -->
+      <section class="features-cta" style="padding: var(--space-16) 0;">
+        <div class="adam-container">
+          <h2>Ready to Grow?</h2>
+          <p>Join 2,847+ creators who chose action over guesswork.</p>
+          <a href="index.html#waitlist" class="adam-btn-primary adam-btn-large">Join Free Beta</a>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer adam-footer" role="contentinfo">
+      <div class="adam-container">
+        <div class="adam-footer-grid">
+          <div class="adam-footer-col">
+            <h4>Product</h4>
+            <ul>
+              <li><a href="adam-features.html">Features</a></li>
+              <li><a href="adam-pricing.html">Pricing</a></li>
+              <li><a href="index.html#demo-preview">Demo</a></li>
+            </ul>
+          </div>
+          <div class="adam-footer-col">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="adam-about.html">About</a></li>
+              <li><a href="mailto:hello@lenkostudio.com">Contact</a></li>
+            </ul>
+          </div>
+          <div class="adam-footer-col">
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="privacy.html">Privacy</a></li>
+              <li><a href="terms.html">Terms</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="adam-footer-bottom">
+          <p>© 2025 Lenko Studio. All rights reserved.</p>
+          <p class="adam-footer-tagline">Built with ❤️ for TikTok creators</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // =====================================================================
+      // NAVIGATION
+      // =====================================================================
+      // This site uses the injected global nav from `js/global-nav.js`.
+      // Do NOT add legacy menu toggles (`.mobile-menu-toggle`, `.nav-list`) here.
+
+      // Pricing toggle
+      const toggle = document.getElementById('pricing-toggle');
+      const monthlyLabel = document.getElementById('monthly-label');
+      const annualLabel = document.getElementById('annual-label');
+      const priceAmounts = document.querySelectorAll('.price-amount[data-monthly]');
+      const originalPrices = document.querySelectorAll('.original-price');
+      
+      let isAnnual = false;
+      
+      toggle.addEventListener('click', () => {
+        isAnnual = !isAnnual;
+        toggle.classList.toggle('annual', isAnnual);
+        monthlyLabel.classList.toggle('active', !isAnnual);
+        annualLabel.classList.toggle('active', isAnnual);
+        
+        priceAmounts.forEach(el => {
+          const monthly = el.dataset.monthly;
+          const annual = el.dataset.annual;
+          el.textContent = `$${isAnnual ? annual : monthly}`;
+        });
+        
+        originalPrices.forEach(el => {
+          el.style.display = isAnnual ? 'inline' : 'none';
+        });
+      });
+      
+      toggle.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggle.click();
+        }
+      });
+
+      // FAQ accordion
+      document.querySelectorAll('.faq-question').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.parentElement;
+          const wasOpen = item.classList.contains('open');
+          
+          // Close all
+          document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+          
+          // Open clicked if it was closed
+          if (!wasOpen) {
+            item.classList.add('open');
+          }
+        });
+      });
+    </script>
+    <script src="js/global-nav.js"></script>
+    <!-- Analytics and user tracking -->
+    <script src="js/analytics.js?v=20260103" defer></script>
+  </body>
+</html>

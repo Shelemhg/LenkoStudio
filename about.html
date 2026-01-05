@@ -24,7 +24,7 @@ STRUCTURE:
 
 DEPENDENCIES:
     • style.css - Global styles and page-specific layout
-    • js/components.js - Web components (site-header, site-footer)
+    • js/nav.js - Navigation behavior (markup injected by _worker.js)
     • app.js - Global JavaScript utilities
 
 ACCESSIBILITY:
@@ -62,8 +62,8 @@ LAST UPDATED: January 3, 2026
     <link rel="stylesheet" href="style.css?v=20251230a" />
     
     <!-- Web components script loaded with defer for better performance -->
-    <!-- Provides <site-header> and <site-footer> custom elements -->
-    <script src="js/components.js?v=20251230a" defer></script>
+    <!-- Nav behavior (hamburger + overlay). Markup is injected server-side by _worker.js -->
+    <script src="js/nav.js?v=20260104a" defer></script>
 </head>
 
 
@@ -84,7 +84,8 @@ LAST UPDATED: January 3, 2026
     <!-- ===================================================================== -->
     <!-- Custom web component that renders site navigation -->
     <!-- The 'current' attribute highlights "About" in the menu -->
-    <site-header current="about"></site-header>
+    <!-- HEADER (Server-Injected): _worker.js replaces this with partials/nav.html -->
+    <div data-partial="nav"></div>
 
 
     <!-- ===================================================================== -->
@@ -175,7 +176,8 @@ LAST UPDATED: January 3, 2026
     <!-- FOOTER - Site Footer                                                  -->
     <!-- ===================================================================== -->
     <!-- Custom web component that renders site footer with links and info -->
-    <site-footer></site-footer>
+    <!-- FOOTER (Server-Injected): _worker.js replaces this with partials/footer.html -->
+    <div data-partial="footer"></div>
 
 
     <!-- ===================================================================== -->

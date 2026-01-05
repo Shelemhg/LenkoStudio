@@ -7,7 +7,7 @@ This file tracks every usability/accessibility/performance fix applied, with the
 
 ### Implemented
 - Navigation (mobile menu): prevent off-canvas link tabbing, add `aria-controls`, toggle `aria-hidden`, restore/move focus on open/close, and guard Escape binding.
-	- Files: js/components.js, style.css
+	- Files: js/nav.js, style.css
 - Home intro: remove CTA click-blocking during intro and add `HomeIntro.destroy()` for PJAX cleanup; also harden localStorage reads.
 	- Files: style.css, js/home.js, app.js
 - PJAX lifecycle: add `cleanupPageFeatures()` and call before DOM/script swaps.
@@ -42,7 +42,7 @@ This file tracks every usability/accessibility/performance fix applied, with the
 	- Removed header navigation links.
 	- Converted `services.html`, `pricing.html`, and `case-studies.html` into `noindex` redirect stubs to `index.html`.
 	- Updated redirect stubs `portraits.html` and `3dWedding.html` to redirect to `portfolio.html` instead of hidden pages.
-	- Files: js/components.js, services.html, pricing.html, case-studies.html, portraits.html, 3dWedding.html
+	- Files: js/nav.js, services.html, pricing.html, case-studies.html, portraits.html, 3dWedding.html
 
 ### 2025-12-31 (content)
 - Modernized Contact page and simplified contact methods:

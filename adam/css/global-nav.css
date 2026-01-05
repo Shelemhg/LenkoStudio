@@ -1,0 +1,404 @@
+/* ============================================================================
+   GLOBAL NAVIGATION STYLES (SINGLE SOURCE OF TRUTH)
+   ============================================================================
+
+   PURPOSE:
+       This file contains ALL styles for the dynamically injected global
+       navigation. This is the only file that should style these elements.
+
+   ARCHITECTURE:
+       - Desktop: Sticky top bar with inline nav links
+       - Mobile: Fixed bottom bar with slide-up menu panel
+
+   RELATED FILES:
+       - js/global-nav.js (injects HTML and handles behavior)
+       - HTML pages include: <div id="global-nav-container"></div>
+
+   IMPORTANT:
+       Pages should NOT have any legacy menu logic targeting:
+         - .site-nav / .nav-list / .menu-toggle / .mobile-menu-toggle
+       
+       These classes are for the old component system. The new system uses:
+         - .global-nav / .global-nav-panel / .global-nav-toggle
+
+   ============================================================================ */
+
+
+/* ============================================================================
+   CSS CUSTOM PROPERTIES (Design Tokens)
+   ============================================================================ */
+
+:root {
+    --global-nav-bg: rgba(2, 6, 23, 0.8);          /* Desktop header background */
+    --global-nav-bg-mobile: rgba(2, 6, 23, 0.95);  /* Mobile header background (more opaque) */
+    --global-nav-border: #1e293b;                   /* Border color */
+    --global-nav-surface: #1e293b;                  /* Menu panel background */
+    --global-nav-text: #f8fafc;                     /* Primary text color */
+    --global-nav-text-muted: #94a3b8;               /* Secondary text color */
+}
+
+
+/* ============================================================================
+   DESKTOP / BASE LAYOUT (Default, Mobile Overridden Below)
+   ============================================================================ */
+
+/* ----------------------------------------------------------------------------
+   Header Container
+   ---------------------------------------------------------------------------- 
+   Sticky top bar with glassmorphism effect */
+
+.site-header.global-nav {
+    position: sticky;
+    top: 0;
+    z-index: 1300;                      /* Above most content, below modals */
+    width: 100%;
+    display: block;
+    background: var(--global-nav-bg);
+    backdrop-filter: blur(12px);        /* Glassmorphism blur effect */
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--global-nav-border);
+    padding: 0;
+    transition: transform 0.3s ease;    /* Smooth show/hide on mobile scroll */
+}
+
+
+/* ----------------------------------------------------------------------------
+   Inner Wrapper
+   ---------------------------------------------------------------------------- 
+   Contains logo, nav, and hamburger */
+
+.site-header.global-nav .nav-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    max-width: 1200px;              /* Match site content max-width */
+    margin: 0 auto;                 /* Center the navigation */
+    width: 100%;
+}
+
+
+/* ----------------------------------------------------------------------------
+   Brand Logo
+   ---------------------------------------------------------------------------- */
+
+.site-header.global-nav .global-nav-brand {
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    font-size: 1.125rem;            /* 18px */
+    color: var(--global-nav-text);
+    text-decoration: none;
+}
+
+
+/* ----------------------------------------------------------------------------
+   Nav Panel (Desktop: Inline with Header)
+   ---------------------------------------------------------------------------- */
+
+.site-header.global-nav .global-nav-panel {
+    display: block;                 /* Always visible on desktop */
+}
+
+
+/* ----------------------------------------------------------------------------
+   Nav List (Shared Styles for Header and Detached Panel)
+   ---------------------------------------------------------------------------- 
+   Horizontal list on desktop, vertical on mobile */
+
+.site-header.global-nav .global-nav-list,
+.global-nav-panel .global-nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* Ensure detached mobile panel list has no unexpected positioning */
+.global-nav-panel .global-nav-list {
+    position: static !important;
+}
+
+
+/* ----------------------------------------------------------------------------
+   Nav Links (Base Styles)
+   ---------------------------------------------------------------------------- */
+
+.site-header.global-nav .global-nav-list a,
+.global-nav-panel .global-nav-list a {
+    padding: 8px 16px;
+    font-size: 0.9375rem;           /* 15px */
+    color: var(--global-nav-text-muted);
+    text-decoration: none;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+
+/* ----------------------------------------------------------------------------
+   Nav Links: Interactive States
+   ---------------------------------------------------------------------------- 
+   Hover and active page highlighting */
+
+.site-header.global-nav .global-nav-list a:hover,
+.site-header.global-nav .global-nav-list a[aria-current='page'],
+.site-header.global-nav .global-nav-list a[aria-current="page"],
+.global-nav-panel .global-nav-list a:hover,
+.global-nav-panel .global-nav-list a[aria-current='page'],
+.global-nav-panel .global-nav-list a[aria-current="page"] {
+    color: var(--global-nav-text);
+    background-color: rgba(255, 255, 255, 0.08);  /* Subtle highlight */
+}
+
+
+/* ----------------------------------------------------------------------------
+   CTA Link Styling (e.g., "Get Started")
+   ---------------------------------------------------------------------------- 
+   Emphasized styling for primary action link */
+
+.site-header.global-nav .global-nav-list a.adam-nav-link,
+.global-nav-panel .global-nav-list a.adam-nav-link {
+    color: var(--global-nav-text);
+    font-weight: 600;
+    background-color: rgba(255, 255, 255, 0.12);  /* More prominent background */
+}
+
+.site-header.global-nav .global-nav-list a.adam-nav-link:hover,
+.global-nav-panel .global-nav-list a.adam-nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.16);  /* Brighter on hover */
+}
+
+
+/* ----------------------------------------------------------------------------
+   Hamburger Button (Hidden on Desktop)
+   ---------------------------------------------------------------------------- 
+   Three-line menu icon for mobile */
+
+.site-header.global-nav .global-nav-toggle {
+    display: none;                  /* Hidden on desktop */
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    width: 44px;                    /* Touch-friendly size */
+    height: 44px;
+    position: relative;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Hamburger lines */
+.site-header.global-nav .global-nav-toggle span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: #ffffff !important; /* Important to override any inherited styles */
+    transition: transform 0.25s ease, opacity 0.2s ease;  /* For animated hamburger */
+}
+
+
+/* ============================================================================
+   MOBILE LAYOUT (Bottom Bar + Slide-Up Panel)
+   ============================================================================
+   
+   DESIGN RATIONALE:
+       - Bottom bar placement: Easier thumb reach on mobile devices
+       - Slide-up panel: Natural gesture (swipe up to open menu)
+       - Auto-hide on scroll: Maximizes content viewing space
+       
+   ============================================================================ */
+
+@media (max-width: 768px) {
+
+    /* ------------------------------------------------------------------------
+       Header: Fixed Bottom Bar
+       ------------------------------------------------------------------------ 
+       Navigation bar sticks to bottom of screen for easy thumb access */
+
+    .site-header.global-nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;                  /* Stick to bottom instead of top */
+        top: auto;
+        border-bottom: none;        /* Remove bottom border */
+        border-top: 1px solid var(--global-nav-border);  /* Add top border */
+        background: var(--global-nav-bg-mobile);
+        padding-bottom: env(safe-area-inset-bottom, 0px);  /* iOS safe area */
+    }
+
+    /* Use dynamic viewport height for better mobile browser support
+       (accounts for address bar showing/hiding) */
+    @supports (height: 100dvh) {
+        .site-header.global-nav {
+            bottom: auto;
+            top: calc(100dvh - var(--global-nav-bar-height, 60px));
+        }
+    }
+
+
+    /* ------------------------------------------------------------------------
+       Header: Hidden State (Auto-Hide on Scroll)
+       ------------------------------------------------------------------------ 
+       Hides navigation when user scrolls down */
+
+    .site-header.global-nav.nav-hidden {
+        transform: translateY(200%);  /* Slide down off-screen */
+    }
+
+
+    /* ------------------------------------------------------------------------
+       Inner Wrapper: Mobile Adjustments
+       ------------------------------------------------------------------------ */
+
+    .site-header.global-nav .nav-inner {
+        padding: 0.75rem 1rem;      /* Tighter padding on mobile */
+        max-width: none;            /* Full width on mobile */
+    }
+
+
+    /* ------------------------------------------------------------------------
+       Hamburger Button: Visible on Mobile
+       ------------------------------------------------------------------------ */
+
+    .site-header.global-nav .global-nav-toggle {
+        display: flex;              /* Show hamburger on mobile */
+        margin-left: auto;          /* Push to right side */
+        margin-right: 1rem;
+    }
+
+
+    /* ------------------------------------------------------------------------
+       Overlay (Darkens Background When Menu is Open)
+       ------------------------------------------------------------------------ 
+       Provides visual focus and tap-to-close functionality */
+
+    .global-nav-overlay {
+        position: fixed;
+        inset: 0;                   /* Cover entire viewport */
+        background: rgba(0, 0, 0, 0.35);  /* Semi-transparent black */
+        z-index: 1200;              /* Behind menu, above content */
+        opacity: 0;
+        pointer-events: none;       /* Not clickable when hidden */
+        transition: opacity 0.3s ease;
+    }
+
+    .global-nav-overlay.is-visible {
+        opacity: 1;
+        pointer-events: auto;       /* Clickable when visible */
+    }
+
+
+    /* ------------------------------------------------------------------------
+       Nav Panel: Slide-Up Sheet
+       ------------------------------------------------------------------------ 
+       Menu panel that slides up from bottom when opened */
+
+    .global-nav-panel {
+        position: fixed;
+        left: auto;
+        right: calc(env(safe-area-inset-right, 0px));  /* Respect device notch */
+        bottom: calc(var(--global-nav-bar-height, 60px));  /* Sit above nav bar */
+        background: var(--global-nav-surface);
+        padding: 1rem 0;
+        border-top: 1px solid var(--global-nav-border);
+        width: fit-content;         /* Size to content */
+        max-width: calc(100vw - 2rem - env(safe-area-inset-right, 0px) - env(safe-area-inset-left, 0px));
+        height: auto;
+        transform: translateY(100%); /* Start hidden below viewport */
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+        opacity: 0;
+        pointer-events: none;       /* Not interactive when hidden */
+        overflow: visible;
+        z-index: 1250;              /* Above overlay, below nothing */
+    }
+
+    /* Open state: slide panel into view */
+    .global-nav-panel.is-open {
+        transform: translateY(0);   /* Slide to visible position */
+        opacity: 1;
+        pointer-events: auto;       /* Make interactive */
+    }
+
+
+    /* ------------------------------------------------------------------------
+       Nav List: Vertical Stack on Mobile
+       ------------------------------------------------------------------------ */
+
+    .site-header.global-nav .global-nav-list,
+    .global-nav-panel .global-nav-list {
+        flex-direction: column;     /* Stack vertically instead of horizontal */
+        gap: 0.5rem;
+        width: max-content;
+        max-width: 100%;
+    }
+
+
+    /* ------------------------------------------------------------------------
+       Nav Links: Full-Width Touch Targets on Mobile
+       ------------------------------------------------------------------------ 
+       Larger touch targets for easier thumb tapping */
+
+    .site-header.global-nav .global-nav-list a,
+    .global-nav-panel .global-nav-list a {
+        display: block;
+        width: 100%;
+        min-width: 200px;           /* Ensure reasonable minimum width */
+        padding: 1rem 1.5rem;       /* Larger touch-friendly padding */
+        font-size: 1.1rem;          /* Slightly larger text for readability */
+        text-align: left;
+        border-radius: 0;           /* Square edges for full-width buttons */
+    }
+
+
+    /* ------------------------------------------------------------------------
+       CTA Link: Remove Special Styling on Mobile
+       ------------------------------------------------------------------------ 
+       All links look the same in mobile menu for simplicity */
+
+    .global-nav-panel .global-nav-list a.adam-nav-link {
+        background-color: transparent;
+        font-weight: 400;
+    }
+
+    .global-nav-panel .global-nav-list a.adam-nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.08);  /* Standard hover effect */
+    }
+}
+
+/* ============================================================================
+   BACK TO LENKO STUDIO BUTTON
+   ============================================================================ */
+
+.back-to-lenko-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    background-color: transparent;
+    color: #f8fafc;
+    border: none;
+    border-bottom: 1px solid rgba(248, 250, 252, 0.4);
+    border-radius: 0;
+    font-weight: 500;
+    font-size: 13px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    margin-left: 0;
+    margin-right: 20px;
+}
+
+.back-to-lenko-btn:hover {
+    background-color: rgba(248, 250, 252, 0.05);
+    border-bottom-color: #f8fafc;
+    transform: none;
+}
+
+/* Mobile: Hide button on small screens */
+@media (max-width: 768px) {
+    .back-to-lenko-btn {
+        display: none;
+    }
+}
