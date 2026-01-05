@@ -228,18 +228,31 @@ window.SphereGallery = (() => {
       return src;
     }
 
+    // Normalize folder to be root-relative (strip ../)
+    const cleanFolder = folder.replace(/^(\.\.\/)+/, '');
+
     // Prefer storing a stable, relative path (e.g. media/portfolio/Fashion/3.jpg)
     try {
       const url = new URL(src, window.location.href);
       const path = String(url.pathname || '').replace(/^\/+/, '');
-      const token = `${folder}/`;
+      
+      // Try with clean folder (root relative)
+      const token = `${cleanFolder}/`;
       const idx = path.indexOf(token);
       if (idx >= 0) {
         return path.slice(idx);
       }
+      
+      // Fallback: try with original folder (in case path includes ../)
+      const rawToken = `${folder}/`;
+      const rawIdx = path.indexOf(rawToken);
+      if (rawIdx >= 0) {
+        return path.slice(rawIdx);
+      }
+      
       return path;
     } catch {
-      const token = `${folder}/`;
+      const token = `${cleanFolder}/`;
       const idx = String(src).indexOf(token);
       if (idx >= 0) {
         return String(src).slice(idx);
@@ -250,7 +263,9 @@ window.SphereGallery = (() => {
 
   function setCoverSelection(folder, src) {
     const map = readCoverSelections();
-    map[folder] = normalizeCoverSrc(folder, src);
+    // Store using root-relative key
+    const key = folder.replace(/^(\.\.\/)+/, '');
+    map[key] = normalizeCoverSrc(folder, src);
     writeCoverSelections(map);
   }
 
@@ -262,7 +277,9 @@ window.SphereGallery = (() => {
         return;
       }
 
-      const stored = map[folder];
+      // Lookup using root-relative key
+      const key = folder.replace(/^(\.\.\/)+/, '');
+      const stored = map[key];
       if (!stored) {
         return;
       }
@@ -272,7 +289,14 @@ window.SphereGallery = (() => {
         return;
       }
 
-      img.src = stored;
+      // Fix path for subdirectories (e.g. Spanish site)
+      // If stored path is root-relative (starts with media/) but we are in a subdir (folder starts with ../)
+      if (folder.startsWith('../') && !stored.startsWith('../') && !stored.startsWith('http')) {
+        img.src = '../' + stored;
+      } else {
+        img.src = stored;
+      }
+
       if (img.hasAttribute('srcset')) {
         img.removeAttribute('srcset');
       }
@@ -868,17 +892,12 @@ window.SphereGallery = (() => {
         behavior: 'auto' // Instant
     });
 
-    // FORCE PARALLAX STATE
-    // We calculate the exact parallax transform based on where the item *actually* ended up.
-    // This handles cases where the item couldn't be perfectly centered (e.g. near top/bottom of page).
-    const finalItemRect = itemToUpdate.getBoundingClientRect();
-    const progress = (viewportHeight - finalItemRect.top) / (viewportHeight + finalItemRect.height);
-    const parallaxY = progress * -10; // Matches the -10 multiplier in portfolio.js
-
+    // RESET IMAGE TRANSFORM
+    // Clear any old parallax transform so the image displays correctly.
+    // The parallax system will recalculate on next scroll event.
     if (targetImg) {
-        // Disable transition to ensure immediate application
         targetImg.style.transition = 'none';
-        targetImg.style.transform = `translateY(${parallaxY}%)`;
+        targetImg.style.transform = 'none';
     }
     
     // 4. Animate to Target

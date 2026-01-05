@@ -81,8 +81,8 @@ class SiteHeader extends HTMLElement {
                     <span></span>
                 </button>
 
-                <nav id="primaryNav" class="site-nav" aria-label="Primary" aria-hidden="false">
-                    <a class="brand" href="index.html"${currentPage === 'home' ? ' aria-current="page"' : ''}>Lenko Studio</a>
+                <nav id="primaryNav" class="site-nav" aria-label="${t.primary_nav}" aria-hidden="false">
+                    <a class="brand" href="${pathPrefix}index.html"${currentPage === 'home' ? ' aria-current="page"' : ''}>${t.brand}</a>
 
                     <ul class="nav-list">
                         <li><a href="portfolio.html"${currentPage === 'portfolio' ? ' aria-current="page"' : ''}>Portfolio</a></li>
@@ -91,9 +91,33 @@ class SiteHeader extends HTMLElement {
                         <li><a href="contact.html"${currentPage === 'contact' ? ' aria-current="page"' : ''}>Contact</a></li>
                         <li><a class="adam-link" href="https://adam.lenkostudio.com" target="_blank" rel="noopener">For Creators — ADAM</a></li>
                     </ul>
+
+                    <!-- Mobile: Actions inside nav for sliding panel -->
+                    <div class="header-actions header-actions--mobile">
+                        <a href="${altLangUrl}" class="lang-toggle" aria-label="${t.language}: ${altLangLabel}" title="${altLangLabel}">
+                            <span class="lang-icon">🌐</span>
+                            <span class="lang-code">${altLang.toUpperCase()}</span>
+                        </a>
+                        <button id="soundToggleMobile" class="sound-toggle" type="button" 
+                                aria-pressed="${soundEnabled ? 'true' : 'false'}" 
+                                aria-label="${soundLabel}"
+                                data-label-on="${t.sound_on}"
+                                data-label-off="${t.sound_off}">${soundLabel}</button>
+                    </div>
                 </nav>
 
-                <button id="soundToggle" class="sound-toggle" type="button" aria-pressed="${soundEnabled ? 'true' : 'false'}" aria-label="${soundLabel}">${soundLabel}</button>
+                <!-- Desktop: Actions outside nav -->
+                <div class="header-actions header-actions--desktop">
+                    <a href="${altLangUrl}" class="lang-toggle" aria-label="${t.language}: ${altLangLabel}" title="${altLangLabel}">
+                        <span class="lang-icon">🌐</span>
+                        <span class="lang-code">${altLang.toUpperCase()}</span>
+                    </a>
+                    <button id="soundToggle" class="sound-toggle" type="button" 
+                            aria-pressed="${soundEnabled ? 'true' : 'false'}" 
+                            aria-label="${soundLabel}"
+                            data-label-on="${t.sound_on}"
+                            data-label-off="${t.sound_off}">${soundLabel}</button>
+                </div>
             </header>
 
             <div class="menu-overlay" aria-hidden="true"></div>
@@ -376,14 +400,17 @@ class SiteFooter extends HTMLElement {
      * Injects footer HTML with dynamic year
      */
     connectedCallback() {
+        const lang = this.getAttribute('lang') || 'en';
+        const t = this.getTranslations(lang);
+        
         this.innerHTML = `
             <footer class="site-footer" role="contentinfo">
                 <div class="footer-inner">
-                    <p>© <span id="year"></span> Lenko Studio</p>
+                    <p>© <span id="year"></span> ${t.rights}</p>
 
                     <div class="social">
-                        <a href="https://www.instagram.com/lenkostudio/" target="_blank" rel="noopener">Instagram</a>
-                        <a href="https://www.facebook.com/LenkoStudio/" target="_blank" rel="noopener">Facebook</a>
+                        <a href="https://www.instagram.com/lenkostudio/" target="_blank" rel="noopener">${t.instagram}</a>
+                        <a href="https://www.facebook.com/LenkoStudio/" target="_blank" rel="noopener">${t.facebook}</a>
                     </div>
                 </div>
             </footer>

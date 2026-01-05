@@ -215,7 +215,7 @@
      */
     function trackNavigationClicks() {
         document.addEventListener('click', function(e) {
-            const navLink = e.target.closest('nav a, .nav-link');
+            const navLink = e.target.closest('nav a, .nav-link, site-header a');
             if (navLink) {
                 posthog.capture('navigation_clicked', {
                     link_text: navLink.textContent.trim(),

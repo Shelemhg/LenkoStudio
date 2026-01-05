@@ -24,7 +24,7 @@ STRUCTURE:
 
 DEPENDENCIES:
     • style.css - Global styles and page-specific layout
-    • js/nav.js - Navigation behavior (markup injected by _worker.js)
+    • js/components.js - Web components (site-header, site-footer)
     • app.js - Global JavaScript utilities
 
 ACCESSIBILITY:
@@ -36,7 +36,7 @@ ACCESSIBILITY:
 LAST UPDATED: January 3, 2026
 -->
 <!doctype html>
-<html lang="en">
+<html lang="es">
 
 
 <!-- ========================================================================== -->
@@ -49,9 +49,11 @@ LAST UPDATED: January 3, 2026
     <!-- Viewport settings for responsive design on mobile devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- Alternate language versions for SEO -->
-    <link rel="alternate" hreflang="en" href="about.html" />
-    <link rel="alternate" hreflang="es" href="es/about.html" />
-    <link rel="alternate" hreflang="x-default" href="about.html" />
+    <link rel="alternate" hreflang="en" href="../about.html" />
+    <link rel="alternate" hreflang="es" href="about.html" />
+    <link rel="alternate" hreflang="x-default" href="../about.html" />
+
+    
 
     
 
@@ -97,20 +99,20 @@ LAST UPDATED: January 3, 2026
 
     
     <!-- Favicon displayed in browser tabs and bookmarks -->
-    <link rel="icon" type="image/png" href="media/Logo.png" />
+    <link rel="icon" type="image/png" href="../media/Logo.png" />
     
     <!-- Page title shown in browser tab and search results -->
-    <title>About — Lenko Studio</title>
+    <title>Acerca de — Lenko Studio</title>
     
     <!-- SEO meta description for search engines and social sharing -->
-    <meta name="description" content="Learn about Lenko Studio's journey, philosophy, and approach to cinematic photography and videography." />
+    <meta name="description" content="Conoce el viaje, filosofía y enfoque de Lenko Studio en fotografía y videografía cinematográfica." />
     
     <!-- Main stylesheet with cache-busting version parameter -->
-    <link rel="stylesheet" href="style.css?v=20251230a" />
+    <link rel="stylesheet" href="../style.css?v=20251230a" />
     
     <!-- Web components script loaded with defer for better performance -->
-    <!-- Nav behavior (hamburger + overlay). Markup is injected server-side by _worker.js -->
-    <script src="js/nav.js?v=20260104a" defer></script>
+    <!-- Provides <site-header lang="es"> and <site-footer lang="es"> custom elements -->
+    <script src="../js/components.js?v=20251230a" defer></script>
 </head>
 
 
@@ -123,7 +125,7 @@ LAST UPDATED: January 3, 2026
     <!-- ACCESSIBILITY - Skip Link                                             -->
     <!-- ===================================================================== -->
     <!-- Hidden link for keyboard users to bypass navigation and jump to main content -->
-    <a class="skip-link" href="#main" id="skip-to-content">Skip to content</a>
+    <a class="skip-link" href="#main" id="skip-to-content">Saltar al contenido</a>
 
 
     <!-- ===================================================================== -->
@@ -131,8 +133,7 @@ LAST UPDATED: January 3, 2026
     <!-- ===================================================================== -->
     <!-- Custom web component that renders site navigation -->
     <!-- The 'current' attribute highlights "About" in the menu -->
-    <!-- HEADER (Server-Injected): _worker.js replaces this with partials/nav.html -->
-    <div data-partial="nav"></div>
+    <site-header current="about" lang="es"></site-header>
 
 
     <!-- ===================================================================== -->
@@ -141,7 +142,7 @@ LAST UPDATED: January 3, 2026
     <main id="main" class="page" role="main">
 
         <!-- Page title -->
-        <h1 id="about-page-title">About Us</h1>
+        <h1 id="about-page-title">Acerca de Nosotros</h1>
 
 
         <!-- ================================================================= -->
@@ -149,7 +150,7 @@ LAST UPDATED: January 3, 2026
         <!-- ================================================================= -->
         <!-- Tells the journey of Lenko Studio from NYC to Mexico -->
         <section aria-labelledby="our-story">
-            <h2 id="our-story">Our Story</h2>
+            <h2 id="our-story">Nuestra Historia</h2>
             
             <!-- Studio origin and evolution narrative -->
             <p id="story-p1">
@@ -168,7 +169,7 @@ LAST UPDATED: January 3, 2026
         <!-- ================================================================= -->
         <!-- Lists the core principles that guide the studio's work -->
         <section aria-labelledby="approach-values">
-            <h2 id="approach-values">Approach & Values</h2>
+            <h2 id="approach-values">Enfoque y Valores</h2>
             
             <ul>
                 <!-- Philosophy: Creating comfortable shooting environment -->
@@ -194,7 +195,7 @@ LAST UPDATED: January 3, 2026
         <!-- ================================================================= -->
         <!-- Overview of service categories available to clients -->
         <section aria-labelledby="what-we-offer">
-            <h2 id="what-we-offer">What We Offer</h2>
+            <h2 id="what-we-offer">Lo Que Ofrecemos</h2>
             
             <ul>
                 <!-- Wedding services: Full range from engagement to post-wedding -->
@@ -214,7 +215,7 @@ LAST UPDATED: January 3, 2026
         <!-- ================================================================= -->
         <!-- Persistent button that encourages immediate booking -->
         <!-- Styled as floating element via .floating-cta class -->
-        <a class="floating-cta" href="contact.html" id="cta-book">Book a Shoot</a>
+        <a class="floating-cta" href="contact.html" id="cta-book">Reservar Sesi?n</a>
 
     </main>
 
@@ -223,8 +224,7 @@ LAST UPDATED: January 3, 2026
     <!-- FOOTER - Site Footer                                                  -->
     <!-- ===================================================================== -->
     <!-- Custom web component that renders site footer with links and info -->
-    <!-- FOOTER (Server-Injected): _worker.js replaces this with partials/footer.html -->
-    <div data-partial="footer"></div>
+    <site-footer lang="es"></site-footer>
 
 
     <!-- ===================================================================== -->
@@ -232,10 +232,10 @@ LAST UPDATED: January 3, 2026
     <!-- ===================================================================== -->
     <!-- Main application script with cache-busting version parameter -->
     <!-- Loaded with defer to not block page rendering -->
-    <script src="app.js?v=20251230a" defer></script>
+    <script src="../app.js?v=20251230a" defer></script>
     
     <!-- Analytics and user tracking -->
-    <script src="js/analytics.js?v=20260103" defer></script>
+    <script src="../js/analytics.js?v=20260103" defer></script>
 
 </body>
 </html>

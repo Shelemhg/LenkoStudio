@@ -6,51 +6,16 @@
 
 PURPOSE:
     This page serves as a cinematic landing experience with a full-screen video
-    background, animated intro sequence, and stage-based reveal system. It 
-    creates an immersive first impression for visitors before they explore the
-    portfolio or book a shoot.
+    background and stage-based reveal system.
 
-FEATURES:
-    • Full-screen looping video background with lazy loading
-    • Multi-stage intro animation system (controlled by body classes)
-    • Animated grid overlay for visual depth
-    • Dark scrim layer for text readability over video
-    • Accessibility features: skip link, ARIA labels, keyboard navigation
-    • Floating CTA button for persistent conversion opportunity
-    • Responsive design with mobile-optimized video handling
-
-STRUCTURE:
-    1. Black overlay for fade-in transition
-    2. Skip link for accessibility
-    3. Site header (custom web component)
-    4. Hero section with video background and content
-    5. Floating CTA button
-    6. Site footer (custom web component)
-
-DEPENDENCIES:
-    CSS:  style.css (global styles + hero + animations)
-    JS:   nav.js (nav behavior); markup injected by _worker.js
-          home.js (intro sequence, video lazy-load, stage management)
-          app.js (PJAX navigation, audio, forms)
-
-STAGE SYSTEM:
-    stage-0: Initial state (hidden/preparing)
-    stage-1: Fade in overlay and grid
-    stage-2: Reveal title
-    stage-3: Reveal CTA buttons
-    stage-4: Intro complete, normal state
-
-BROWSER SUPPORT:
-    • Modern browsers (Chrome, Firefox, Safari, Edge)
-    • Progressive enhancement for older browsers
-    • Graceful degradation if JavaScript disabled
+LANGUAGE: EN
 
 AUTHOR: Lenko Studio
 LAST MODIFIED: 2026-01-03
 -->
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
 
 
 <!-- ========================================================================= -->
@@ -62,9 +27,11 @@ LAST MODIFIED: 2026-01-03
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- Alternate language versions for SEO -->
-    <link rel="alternate" hreflang="en" href="project.html" />
-    <link rel="alternate" hreflang="es" href="es/project.html" />
-    <link rel="alternate" hreflang="x-default" href="project.html" />
+    <link rel="alternate" hreflang="en" href="../project.html" />
+    <link rel="alternate" hreflang="es" href="project.html" />
+    <link rel="alternate" hreflang="x-default" href="../project.html" />
+
+    
 
     
 
@@ -110,16 +77,16 @@ LAST MODIFIED: 2026-01-03
 
     
     <!-- Site favicon -->
-    <link rel="icon" type="image/png" href="media/Logo.png" />
+    <link rel="icon" type="image/png" href="../media/Logo.png" />
 
     <!-- Page title shown in browser tab -->
-    <title>Lenko Studio — Project</title>
+    <title>Lenko Studio — Proyecto</title>
 
 
     <!-- ===== SEO & i18n ===== -->
     
     <!-- Meta description for search engines -->
-    <meta name="description" content="Lenko Studio — Cinematic photo and video. Book a shoot, explore work, and discover ADAM for creators." />
+    <meta name="description" content="Lenko Studio — Fotografía y video cinematográfico. Reserva una sesión, explora nuestro trabajo y descubre ADAM para creadores." />
     
     
 
@@ -139,23 +106,13 @@ LAST MODIFIED: 2026-01-03
     <!-- ===== STYLESHEETS ===== -->
     
     <!-- Main stylesheet with cache-busting version parameter -->
-    <link rel="stylesheet" href="style.css?v=20251230a" />
+    <link rel="stylesheet" href="../style.css?v=20251230a" />
 
 
     <!-- ===== SCRIPTS ===== -->
     
     <!-- Web components (header/footer) - load early but defer execution -->
-    <!-- Nav behavior (hamburger + overlay). Markup is injected server-side by _worker.js -->
-    <script src="js/nav.js?v=20260104a" defer></script>
-
-
-    <!-- ===== SEO ===== -->
-    
-    <!-- Meta description for search engines -->
-    <meta
-        name="description"
-        content="Lenko Studio — Cinematic photo and video. Book a shoot, explore work, and discover ADAM for creators."
-    />
+    <script src="../js/components.js?v=20251230a" defer></script>
 </head>
 
 
@@ -173,18 +130,17 @@ LAST MODIFIED: 2026-01-03
         Skip link for keyboard users and screen readers.
         Allows quick navigation to main content.
     -->
-    <a id="skip-to-content" class="skip-link" href="#main">Skip to content</a>
+    <a id="skip-to-content" class="skip-link" href="#main">Saltar al contenido</a>
 
 
     <!-- ===== SITE HEADER ===== -->
     
     <!-- 
-        Server-injected partial (injected by _worker.js).
+        Custom web component (defined in components.js).
         Renders navigation bar with logo and menu links.
         "current" attribute highlights the active page.
     -->
-    <!-- HEADER (Server-Injected): _worker.js replaces this with partials/nav.html -->
-    <div data-partial="nav"></div>
+    <site-header current="project" lang="es"></site-header>
 
 
     <!-- ========================================================================= -->
@@ -255,7 +211,7 @@ LAST MODIFIED: 2026-01-03
                 -->
                 <div id="heroCtas" class="hero-ctas" aria-live="polite">
                     <!-- Primary CTA: Navigate to portfolio -->
-                    <a class="cta" href="portfolio.html" id="ctaExplore">Explore Portfolio</a>
+                    <a class="cta" href="portfolio.html" id="ctaExplore">Explorar Portafolio</a>
                 </div>
 
             </div>
@@ -270,7 +226,7 @@ LAST MODIFIED: 2026-01-03
             Remains visible during scroll for conversion opportunities.
             Links to booking/contact page.
         -->
-        <a class="floating-cta" href="contact.html" id="cta-book">Book a Shoot</a>
+        <a class="floating-cta" href="contact.html" id="cta-book">Reservar Sesi?n</a>
 
     </main>
 
@@ -280,11 +236,10 @@ LAST MODIFIED: 2026-01-03
     <!-- ========================================================================= -->
 
     <!-- 
-        Server-injected partial (injected by _worker.js).
+        Custom web component (defined in components.js).
         Renders footer with links, social media, and copyright.
     -->
-    <!-- FOOTER (Server-Injected): _worker.js replaces this with partials/footer.html -->
-    <div data-partial="footer"></div>
+    <site-footer lang="es"></site-footer>
 
 
     <!-- ========================================================================= -->
@@ -297,7 +252,7 @@ LAST MODIFIED: 2026-01-03
         - Video lazy loading and playback
         - Grid overlay animations
     -->
-    <script src="js/home.js?v=20251230a" defer></script>
+    <script src="../js/home.js?v=20251230a" defer></script>
 
     <!-- 
         app.js: Global site functionality
@@ -305,10 +260,10 @@ LAST MODIFIED: 2026-01-03
         - Audio management
         - Form handling and validation
     -->
-    <script src="app.js?v=20251230a" defer></script>
+    <script src="../app.js?v=20251230a" defer></script>
     
     <!-- Analytics and user tracking -->
-    <script src="js/analytics.js?v=20260103" defer></script>
+    <script src="../js/analytics.js?v=20260103" defer></script>
 
 
 </body>
