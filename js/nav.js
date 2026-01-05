@@ -3,7 +3,7 @@
 // This replaces the old client-rendered header/footer approach.
 //
 // IMPORTANT:
-// - Markup is injected server-side by _worker.js from partials/nav.html
+// - Markup is injected server-side by _worker.js from components/nav.html
 // - This script only attaches event listeners and manages ARIA + focus.
 
 (function () {

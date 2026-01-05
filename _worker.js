@@ -7,14 +7,14 @@
 //
 // How it works:
 // - Fetch the requested asset normally from Pages
-// - If it's HTML, fetch partials (nav/footer)
+// - If it's HTML, fetch components (nav/footer)
 // - Replace placeholders:
 //   <div data-partial="nav"></div>
 //   <div data-partial="footer"></div>
 
 const NAV_PARTIAL_PATH = '/components/nav.html';
 const ADAM_NAV_PARTIAL_PATH = '/components/adam-nav.html';
-const FOOTER_PARTIAL_PATH = '/partials/footer.html';
+const FOOTER_PARTIAL_PATH = '/components/footer.html';
 
 let cachedNavHtml = null;
 let cachedAdamNavHtml = null;
@@ -114,7 +114,7 @@ export default {
 
     const isLocalDev = url.hostname === '127.0.0.1' || url.hostname === 'localhost';
 
-    if (url.pathname.startsWith('/partials/')) {
+    if (url.pathname.startsWith('/components/')) {
       const partialRes = await fetchAsset(request, env);
 
       if (!isLocalDev) {
