@@ -13,8 +13,9 @@
 
 /* Ensure ancestors don't break sticky */
 html, body {
-    overflow-x: hidden; /* Prevent horizontal scroll but allow vertical */
-    overflow-y: auto;
+    height: auto !important; /* Override style.css height: 100% to allow window scroll */
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow-y: visible; /* Allow window scroll */
 }
 
 /* Ensure the simulator page height is content-driven and doesn't create extra empty scroll.
