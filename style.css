@@ -190,18 +190,24 @@ site-header, site-footer { display: block; }
 }
 
 /* Language toggle button */
-.lang-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
+.sound-toggle {
   background: var(--btn-secondary-bg);
   border: 1px solid var(--border);
-  padding: var(--space-sm) var(--space-md);
-  border-radius: var(--radius-sm);
+  padding: var(--space-xxs) var(--space-xs);
+  border-radius: calc(var(--radius-sm) / 2);
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 0.875rem;
-  text-decoration: none;
+  font-size: 0.78rem;
+  min-width: 74px;
+  text-align: center;
+  justify-self: end;
+  align-self: center;
+  line-height: 1;
+}
+.sound-toggle:hover { 
+  background: var(--btn-secondary-hover);
+  border-color: var(--border-hover);
+}
   color: var(--text-primary);
   white-space: nowrap;
 }
