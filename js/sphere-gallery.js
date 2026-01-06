@@ -291,11 +291,22 @@ window.SphereGallery = (() => {
 
       // Fix path for subdirectories (e.g. Spanish site)
       // If stored path is root-relative (starts with media/) but we are in a subdir (folder starts with ../)
-      if (folder.startsWith('../') && !stored.startsWith('../') && !stored.startsWith('http')) {
-        img.src = '../' + stored;
-      } else {
-        img.src = stored;
-      }
+      const fallbackCover = `${folder}/p (1).jpg`;
+      const finalSrc = folder.startsWith('../') && !stored.startsWith('../') && !stored.startsWith('http')
+        ? '../' + stored
+        : stored;
+
+      img.onerror = () => {
+        img.onerror = null;
+        delete map[key];
+        writeCoverSelections(map);
+        img.src = fallbackCover;
+        if (img.hasAttribute('srcset')) {
+          img.removeAttribute('srcset');
+        }
+      };
+
+      img.src = finalSrc;
 
       if (img.hasAttribute('srcset')) {
         img.removeAttribute('srcset');
