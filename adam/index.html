@@ -120,13 +120,21 @@ DEPENDENCIES:
         <div class="adam-hero-content">
           <h1 id="hero-title">Stop Guessing.<br>Start Growing.</h1>
           <p class="subheadline" id="index-hero-subheadline">
-            ADAM analyzes your TikTok data and tells you <strong>exactly</strong> what to post, 
-            when to post, and why it works. No more confusion. Just growth.
+            ADAM connects to your TikTok analytics and turns it into clear next steps:
+            what to test next, what to fix right now, and what to repeat.
           </p>
           
           <div class="adam-cta-group">
             <a href="#waitlist" class="adam-btn-primary" id="index-cta-join-beta">Join Free Beta</a>
             <a href="#demo-preview" class="adam-btn-secondary" id="index-cta-watch-demo">Watch Demo (60s)</a>
+          </div>
+
+          <div class="hero-trust-line" role="note">
+            <span class="hero-trust-pill">Read-only access</span>
+            <span class="hero-trust-sep">•</span>
+            <span>Uses the official TikTok API</span>
+            <span class="hero-trust-sep">•</span>
+            <span>You stay in control</span>
           </div>
           
           <div class="adam-stats-bar" aria-label="User statistics">
@@ -216,6 +224,118 @@ DEPENDENCIES:
         </div>
       </section>
 
+      <!-- Section 1.5: Hook-First Services (Progressive Disclosure) -->
+      <section class="adam-section adam-services-section" id="services" aria-labelledby="services-title">
+        <div class="adam-container">
+          <h2 class="adam-section-title reveal" id="services-title">What ADAM Does (In 15 Seconds)</h2>
+          <p class="adam-section-subtitle reveal">
+            Three services. Visual-first. Details only when you want them.
+          </p>
+
+          <div class="adam-service-grid" data-accordion>
+            <article class="adam-service-card reveal-left stagger-1" data-accordion-item>
+              <button class="adam-service-head" type="button" aria-expanded="false" aria-controls="service-alerts">
+                <div class="adam-service-top">
+                  <span class="adam-service-icon" aria-hidden="true">⚡</span>
+                  <div class="adam-service-titles">
+                    <h3 class="adam-service-title">First-hour rescue</h3>
+                    <p class="adam-service-blurb">Know when a post is losing momentum—and what to do next.</p>
+                  </div>
+                  <span class="adam-service-chip" aria-hidden="true">Live</span>
+                </div>
+                <div class="adam-service-visual visual-spark" aria-hidden="true">
+                  <div class="spark-line"></div>
+                  <div class="spark-dot"></div>
+                  <div class="spark-ping"></div>
+                </div>
+                <div class="adam-service-cta" aria-hidden="true">Read more →</div>
+              </button>
+              <div class="adam-service-details" id="service-alerts" hidden>
+                <ul class="adam-check-list">
+                  <li>First-hour velocity alerts + suggested actions</li>
+                  <li>Comment/reply timing nudges to protect momentum</li>
+                  <li>Post-mortem notes so you learn what changed</li>
+                </ul>
+                <div class="adam-service-links">
+                  <a class="adam-link" href="#velocity-demo">See the first-hour demo →</a>
+                </div>
+              </div>
+            </article>
+
+            <article class="adam-service-card reveal-scale stagger-2" data-accordion-item>
+              <button class="adam-service-head" type="button" aria-expanded="false" aria-controls="service-experiments">
+                <div class="adam-service-top">
+                  <span class="adam-service-icon" aria-hidden="true">🧪</span>
+                  <div class="adam-service-titles">
+                    <h3 class="adam-service-title">Experiments that teach you</h3>
+                    <p class="adam-service-blurb">Stop guessing. Run small tests and keep the wins.</p>
+                  </div>
+                  <span class="adam-service-chip" aria-hidden="true">A/B</span>
+                </div>
+                <div class="adam-service-visual visual-cards" aria-hidden="true">
+                  <div class="ab-card card-a">
+                    <div class="ab-tag">A</div>
+                    <div class="ab-bar"></div>
+                  </div>
+                  <div class="ab-card card-b">
+                    <div class="ab-tag">B</div>
+                    <div class="ab-bar"></div>
+                  </div>
+                </div>
+                <div class="adam-service-cta" aria-hidden="true">Read more →</div>
+              </button>
+              <div class="adam-service-details" id="service-experiments" hidden>
+                <ul class="adam-check-list">
+                  <li>Test hooks, thumbnails, format, and timing</li>
+                  <li>Store learnings (what worked, for whom, and why)</li>
+                  <li>Turn winners into repeatable templates</li>
+                </ul>
+                <div class="adam-service-links">
+                  <a class="adam-link" href="adam-features.html#experiments">Explore experiments →</a>
+                </div>
+              </div>
+            </article>
+
+            <article class="adam-service-card reveal-right stagger-3" data-accordion-item>
+              <button class="adam-service-head" type="button" aria-expanded="false" aria-controls="service-missions">
+                <div class="adam-service-top">
+                  <span class="adam-service-icon" aria-hidden="true">🎯</span>
+                  <div class="adam-service-titles">
+                    <h3 class="adam-service-title">Missions for consistency</h3>
+                    <p class="adam-service-blurb">A simple plan you can actually follow—built from your data.</p>
+                  </div>
+                  <span class="adam-service-chip" aria-hidden="true">Daily</span>
+                </div>
+                <div class="adam-service-visual visual-mission" aria-hidden="true">
+                  <div class="mission-row">
+                    <div class="mission-dot"></div>
+                    <div class="mission-label"></div>
+                  </div>
+                  <div class="mission-row">
+                    <div class="mission-dot"></div>
+                    <div class="mission-label"></div>
+                  </div>
+                  <div class="mission-progress">
+                    <div class="mission-progress-bar"></div>
+                  </div>
+                </div>
+                <div class="adam-service-cta" aria-hidden="true">Read more →</div>
+              </button>
+              <div class="adam-service-details" id="service-missions" hidden>
+                <ul class="adam-check-list">
+                  <li>Weekly missions that build habits (not overwhelm)</li>
+                  <li>Clear “film this / publish then / review this” steps</li>
+                  <li>Progress tracking so you stay consistent</li>
+                </ul>
+                <div class="adam-service-links">
+                  <a class="adam-link" href="adam-features.html#missions">Explore missions →</a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
       <!-- Section 2: Inductive Hook #1 - Challenge Selector -->
       <section class="adam-section adam-challenge-section" id="challenge-selector">
         <div class="adam-container">
@@ -278,13 +398,13 @@ DEPENDENCIES:
               <svg class="adam-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
-              <span>TikTok API Partner</span>
+              <span>Official TikTok API</span>
             </div>
             <div class="adam-trust-badge">
               <svg class="adam-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
               </svg>
-              <span>Bank-Level Security</span>
+              <span>Secure, read-only access</span>
             </div>
             <div class="adam-trust-badge">
               <svg class="adam-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -309,8 +429,13 @@ DEPENDENCIES:
           <p class="adam-section-subtitle reveal">
             Three simple steps to take control of your TikTok growth.
           </p>
-          
-          <div class="adam-steps-container reveal">
+
+          <div class="adam-collapsible reveal" data-collapsible>
+            <button class="adam-collapsible-toggle" type="button" aria-expanded="false" aria-controls="how-it-works-details">
+              Open the interactive tour (optional)
+            </button>
+            <div class="adam-collapsible-content" id="how-it-works-details" hidden>
+              <div class="adam-steps-container">
             <div class="adam-step-tabs" role="tablist">
               <button class="adam-step-tab active" role="tab" aria-selected="true" aria-controls="step-1-panel" id="step-1-tab">
                 <span class="step-number">01</span>
@@ -499,6 +624,8 @@ DEPENDENCIES:
                 </div>
               </div>
             </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -510,49 +637,54 @@ DEPENDENCIES:
           <p class="adam-section-subtitle reveal">
             ADAM doesn't just show you numbers. It tells you what to do next.
           </p>
-          
-          <div class="adam-value-grid">
-            <div class="adam-value-card reveal-left stagger-1">
-              <div class="adam-value-icon">📊</div>
-              <h3>Reliable Data You Can Trust</h3>
-              <p>
-                Official TikTok API integration. Refreshed every 30 minutes. 
-                No scraping, no guessing, no BS.
-              </p>
-              <ul class="adam-value-list">
-                <li>Real-time performance tracking</li>
-                <li>Historical trend analysis (180 days)</li>
-                <li>Accurate completion & engagement rates</li>
-              </ul>
-            </div>
-            
-            <div class="adam-value-card adam-value-card-featured reveal-scale stagger-2">
-              <div class="adam-value-icon">🎯</div>
-              <h3>Actionable Insights, Not Metrics</h3>
-              <p>
-                Stop drowning in numbers. ADAM converts analytics into 
-                precise, research-backed actions you can take <em>right now</em>.
-              </p>
-              <ul class="adam-value-list">
-                <li>First-hour velocity alerts (critical window)</li>
-                <li>Best posting time recommendations</li>
-                <li>Hook quality scoring & suggestions</li>
-              </ul>
-              <span class="adam-featured-badge">Most Loved Feature</span>
-            </div>
-            
-            <div class="adam-value-card reveal-right stagger-3">
-              <div class="adam-value-icon">🚀</div>
-              <h3>Learn What Works For YOU</h3>
-              <p>
-                Run experiments, complete missions, build habits. 
-                ADAM's system creates personalized learnings over time.
-              </p>
-              <ul class="adam-value-list">
-                <li>A/B test builder (thumbnails, hooks, timing)</li>
-                <li>Gamified missions for consistency</li>
-                <li>AI coach for strategy questions</li>
-              </ul>
+
+          <div class="adam-collapsible reveal" data-collapsible>
+            <button class="adam-collapsible-toggle" type="button" aria-expanded="false" aria-controls="features-details">
+              Read the details (optional)
+            </button>
+            <div class="adam-collapsible-content" id="features-details" hidden>
+              <div class="adam-value-grid">
+                <div class="adam-value-card reveal-left stagger-1">
+                  <div class="adam-value-icon">📊</div>
+                  <h3>Reliable Data You Can Trust</h3>
+                  <p>
+                    Official TikTok API integration. Refreshed regularly.
+                    No scraping.
+                  </p>
+                  <ul class="adam-value-list">
+                    <li>Performance tracking & trends</li>
+                    <li>Historical analysis (up to 180 days)</li>
+                    <li>Completion & engagement rates</li>
+                  </ul>
+                </div>
+                
+                <div class="adam-value-card adam-value-card-featured reveal-scale stagger-2">
+                  <div class="adam-value-icon">🎯</div>
+                  <h3>Actionable Insights, Not Metrics</h3>
+                  <p>
+                    ADAM converts analytics into actions you can take today.
+                  </p>
+                  <ul class="adam-value-list">
+                    <li>First-hour velocity alerts (critical window)</li>
+                    <li>Best posting time recommendations</li>
+                    <li>Hook quality scoring & suggestions</li>
+                  </ul>
+                  <span class="adam-featured-badge">Most Loved Feature</span>
+                </div>
+                
+                <div class="adam-value-card reveal-right stagger-3">
+                  <div class="adam-value-icon">🚀</div>
+                  <h3>Learn What Works For YOU</h3>
+                  <p>
+                    Run experiments, complete missions, build habits.
+                  </p>
+                  <ul class="adam-value-list">
+                    <li>A/B testing (hooks, timing, formats)</li>
+                    <li>Gamified missions for consistency</li>
+                    <li>AI coach for strategy questions</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -565,9 +697,14 @@ DEPENDENCIES:
           <p class="adam-section-subtitle reveal">
             Answer 2 quick questions. We'll show you where you could be in 90 days.
           </p>
-          
-          <div class="adam-predictor-card reveal-scale">
-            <form id="growth-predictor-form" class="adam-predictor-form">
+
+          <div class="adam-collapsible reveal-scale" data-collapsible>
+            <button class="adam-collapsible-toggle" type="button" aria-expanded="false" aria-controls="predictor-details">
+              Try the growth predictor (optional)
+            </button>
+            <div class="adam-collapsible-content" id="predictor-details" hidden>
+              <div class="adam-predictor-card">
+                <form id="growth-predictor-form" class="adam-predictor-form">
               <div class="adam-form-group">
                 <label for="current-followers">Current Followers</label>
                 <input 
@@ -592,10 +729,10 @@ DEPENDENCIES:
                 </select>
               </div>
               
-              <button type="submit" class="adam-btn-primary">Calculate My Growth</button>
-            </form>
+                  <button type="submit" class="adam-btn-primary">Calculate My Growth</button>
+                </form>
             
-            <div id="predictor-results" class="adam-predictor-results" style="display: none;">
+                <div id="predictor-results" class="adam-predictor-results" style="display: none;">
               <h3>Your 90-Day Projection</h3>
               <div class="adam-predictor-chart">
                 <canvas id="growth-chart" aria-label="Growth projection chart"></canvas>
@@ -615,6 +752,8 @@ DEPENDENCIES:
                 </div>
               </div>
               <a href="#waitlist" class="adam-btn-primary">I Want This Growth</a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -848,8 +987,13 @@ DEPENDENCIES:
           <p class="adam-section-subtitle reveal">
             Everything you need to understand your content, experiment with confidence, and grow faster.
           </p>
-          
-          <div class="adam-features-grid">
+
+          <div class="adam-collapsible reveal" data-collapsible>
+            <button class="adam-collapsible-toggle" type="button" aria-expanded="false" aria-controls="features-teaser-details">
+              Browse the feature list (optional)
+            </button>
+            <div class="adam-collapsible-content" id="features-teaser-details" hidden>
+              <div class="adam-features-grid">
             <div class="adam-feature-card reveal stagger-1">
               <div class="adam-feature-icon">⚡</div>
               <h3>First-Hour Alerts</h3>
@@ -909,10 +1053,13 @@ DEPENDENCIES:
               </p>
               <a href="adam-features.html#strategy" class="adam-link">Learn more →</a>
             </div>
-          </div>
-          
-          <div class="adam-cta-center">
-            <a href="adam-features.html" class="adam-btn-secondary">Explore All Features</a>
+
+              </div>
+              
+              <div class="adam-cta-center">
+                <a href="adam-features.html" class="adam-btn-secondary">Explore All Features</a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -1159,7 +1306,7 @@ DEPENDENCIES:
                 <path d="M8 5v14l11-7z"/>
               </svg>
               <p>60-second demo video</p>
-              <button class="adam-btn-primary" onclick="alert('Demo video coming soon!')">Play Demo</button>
+              <button class="adam-btn-primary" type="button" onclick="document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth', block: 'start' });">Request Access</button>
             </div>
           </div>
           <div class="adam-cta-center" style="margin-top: 2rem;">
@@ -1310,43 +1457,43 @@ DEPENDENCIES:
         growth: {
           icon: "📉",
           title: "Why You're Not Growing",
+          summary: "You’re posting without a feedback loop. ADAM helps you spot what correlates with growth and what to fix fast.",
           content: `
-            <p><strong>The Problem:</strong> You're posting blindly. No feedback loop means no learning.</p>
-            <p><strong>The ADAM Solution:</strong></p>
+            <p><strong>The Problem:</strong> Without a feedback loop, consistency doesn’t turn into learning.</p>
+            <p><strong>What ADAM does:</strong></p>
             <ul>
-              <li>Tracks which videos drive follower spikes (not just views)</li>
-              <li>Identifies your "viral formula" through pattern recognition</li>
-              <li>Alerts you in the first hour when a video underperforms</li>
+              <li>Highlights what correlates with follower growth (not just views)</li>
+              <li>Surfaces repeatable patterns across your posts</li>
+              <li>Helps you act during the first-hour window</li>
             </ul>
-            <p><strong>Result:</strong> Creators see an average 127% follower increase in 90 days.</p>
           `
         },
         confusion: {
           icon: "🤷",
-          title: "Why Nothing Makes Sense",
+          title: "Why You Feel Lost",
+          summary: "TikTok gives metrics, not a playbook. ADAM turns your past posts into a simple strategy you can repeat.",
           content: `
-            <p><strong>The Problem:</strong> TikTok's algorithm is a black box. Your intuition is wrong 60% of the time.</p>
-            <p><strong>The ADAM Solution:</strong></p>
+            <p><strong>The Problem:</strong> TikTok gives metrics, but not a clear playbook.</p>
+            <p><strong>What ADAM does:</strong></p>
             <ul>
-              <li>Converts raw analytics into <em>actionable insights</em></li>
-              <li>Reveals your best posting times, formats, and content pillars</li>
-              <li>Shows completion rate & hook quality metrics</li>
+              <li>Finds which hooks and formats keep attention</li>
+              <li>Shows which topics and structures your audience rewards</li>
+              <li>Gives you the next best experiment to run</li>
             </ul>
-            <p><strong>Result:</strong> 85% of users say "I finally understand what works" after 2 weeks.</p>
           `
         },
         consistency: {
           icon: "📅",
-          title: "Why You Can't Stay Consistent",
+          title: "Why Consistency Feels Impossible",
+          summary: "Motivation fades. Systems don’t. ADAM gives you missions you can complete and learn from.",
           content: `
-            <p><strong>The Problem:</strong> Motivation fades. No accountability. No visible progress.</p>
-            <p><strong>The ADAM Solution:</strong></p>
+            <p><strong>The Problem:</strong> Motivation is unpredictable, especially when results feel random.</p>
+            <p><strong>What ADAM does:</strong></p>
             <ul>
-              <li>Weekly missions that break goals into bite-sized actions</li>
-              <li>Gamified rewards (XP, coins, streaks) for consistency</li>
-              <li>AI coach that checks in and keeps you accountable</li>
+              <li>Turns your best formats into a repeatable plan</li>
+              <li>Breaks the week into small, winnable missions</li>
+              <li>Tracks progress and highlights what improved</li>
             </ul>
-            <p><strong>Result:</strong> Users post 2.3x more frequently after joining ADAM.</p>
           `
         }
       };
@@ -1432,20 +1579,84 @@ DEPENDENCIES:
               <h3 class="solution-title">${data.title}</h3>
             </div>
             <div class="solution-body">
-              ${data.content}
+              <p class="solution-summary">${data.summary || ''}</p>
+              <button class="solution-toggle" type="button" aria-expanded="false">Read more</button>
+              <div class="solution-details" hidden>
+                ${data.content}
+              </div>
             </div>
             <div style="margin-top: 1.5rem; text-align: center;">
-              <a href="#value-props" class="adam-btn-secondary">Explore Features</a>
+              <a href="#services" class="adam-btn-secondary">See What ADAM Does</a>
             </div>
           </div>
         `;
+
+        const toggle = solutionOutput.querySelector('.solution-toggle');
+        const details = solutionOutput.querySelector('.solution-details');
+        if (toggle && details) {
+          toggle.addEventListener('click', () => {
+            const expanded = toggle.getAttribute('aria-expanded') === 'true';
+            toggle.setAttribute('aria-expanded', String(!expanded));
+            details.hidden = expanded;
+            toggle.textContent = expanded ? 'Read more' : 'Show less';
+          });
+        }
       }
+
+      // Progressive disclosure (collapsibles + service tiles)
+      function setupCollapsibles() {
+        document.querySelectorAll('[data-collapsible]').forEach(wrapper => {
+          const toggle = wrapper.querySelector('.adam-collapsible-toggle');
+          const content = wrapper.querySelector('.adam-collapsible-content');
+          if (!toggle || !content) return;
+
+          toggle.addEventListener('click', () => {
+            const expanded = toggle.getAttribute('aria-expanded') === 'true';
+            toggle.setAttribute('aria-expanded', String(!expanded));
+            content.hidden = expanded;
+          });
+        });
+      }
+
+      function setupServiceAccordion() {
+        document.querySelectorAll('[data-accordion]').forEach(container => {
+          container.querySelectorAll('[data-accordion-item]').forEach(item => {
+            const head = item.querySelector('.adam-service-head');
+            if (!head) return;
+
+            const detailsId = head.getAttribute('aria-controls');
+            const details = detailsId ? document.getElementById(detailsId) : null;
+            if (!details) return;
+
+            head.addEventListener('click', () => {
+              const isOpen = head.getAttribute('aria-expanded') === 'true';
+
+              // Close others
+              container.querySelectorAll('[data-accordion-item]').forEach(other => {
+                const otherHead = other.querySelector('.adam-service-head');
+                if (!otherHead) return;
+                const otherDetailsId = otherHead.getAttribute('aria-controls');
+                const otherDetails = otherDetailsId ? document.getElementById(otherDetailsId) : null;
+                if (!otherDetails) return;
+                otherHead.setAttribute('aria-expanded', 'false');
+                otherDetails.hidden = true;
+              });
+
+              head.setAttribute('aria-expanded', String(!isOpen));
+              details.hidden = isOpen;
+            });
+          });
+        });
+      }
+
+      setupCollapsibles();
+      setupServiceAccordion();
       
       // Growth Predictor Logic
       const predictorForm = document.getElementById('growth-predictor-form');
       const predictorResults = document.getElementById('predictor-results');
-      
-      predictorForm.addEventListener('submit', (e) => {
+
+      if (predictorForm && predictorResults) predictorForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
         const followers = parseInt(document.getElementById('current-followers').value);

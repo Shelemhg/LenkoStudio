@@ -1,8 +1,10 @@
 # Adam Landing + Site Recommendations (Services & Positioning)
 
-**Last Updated:** 2026-01-04
+**Last Updated:** 2026-01-05
 
 This document focuses on improving the Adam marketing site (`/adam`) so it presents the product “services” (what users actually get) clearly, credibly, and consistently with the Phase 1/2 FRDs.
+
+Additional constraint (from user feedback): visitors perceive a **wall of text** and leave. The homepage must act as a **hook**: communicate the core value in one short paragraph, then rely on **simple visuals/animations** and **progressive disclosure** (“Read more”) for details.
 
 ---
 
@@ -22,51 +24,79 @@ Any homepage/pitch that violates these (especially “fake precision” or “gu
 
 ---
 
-## 1) Homepage: What I Would Change (High Impact)
+## 1) Homepage: Hook-First Strategy (High Impact)
 
 Target file: `adam/index.html`
 
-### 1.1 Reposition the hero to sell “services delivered” (not features)
+### 1.1 Above-the-fold must answer “what is this?” in one paragraph
 
-Current hero language implies certainty (“exactly what to post/when/why”). Replace with a service-based promise:
+Goal: the visitor should understand the service without scrolling and without reading a wall of copy.
 
-- “Get your **next best actions** from your TikTok data.”
-- “Missions + Experiments + First-hour alerts — grounded in official API analytics.”
-- Add one short trust line under the subheadline:
-  - “Read-only TikTok API connection. No scraping. Clear confidence labels.”
+Replace the hero’s dense subheadline with:
 
-Why: aligns with Phase 1 trust principle and prevents overpromising.
+- A short headline (7–10 words)
+- One paragraph (2–3 sentences) that captures your intent:
+  - Example direction (do not copy verbatim):
+    - “Adam gives you tailored growth management advice by analyzing your TikTok profile stats and translating research-grade marketing strategy into clear weekly actions. You’ll know what to do next, why it matters, and how confident the recommendation is.”
 
-### 1.2 Make the 3 “services” explicit on the homepage (module catalog)
+Then add one small trust line (not a paragraph):
 
-Add a section (ideally above the big interactive demos) that clearly states what the user gets each week:
+- “Read-only TikTok API connection. No scraping. Honest confidence labels.”
+
+Why: this directly addresses the reported confusion (“did not understand what the page was about”).
+
+### 1.2 Reduce text density: default to visuals + microcopy
+
+For each major homepage block, cap visible text to:
+
+- 1 title
+- 1 sentence (max)
+- 3 short bullets (optional)
+
+Everything else must be hidden behind a small “Read more” / “See example” interaction.
+
+This keeps the homepage skimmable and makes curiosity drive deeper reading.
+
+### 1.3 Present the “services” as 3 clickable tiles (with animations)
+
+Turn the core modules into three tiles that behave like interactive affordances. Each tile should include a micro-animation that explains the concept without text.
 
 1) **First‑Hour Rescue**
-- Deliverable: alert + “do this now” checklist + baseline comparison
+- Visible: “Get alerted when a post is under baseline.”
+- Animation: velocity curve draws → alert marker appears → checklist highlights.
 
 2) **Experiments Engine**
-- Deliverable: hypothesis template + variants + measurement windows (1h/6h/24h/72h) + stored learning
+- Visible: “Run simple tests. Keep what wins.”
+- Animation: variant A/B cards → measurement windows → learning saved.
 
 3) **Missions / Weekly Plan**
-- Deliverable: weekly goal + daily queue + streak tracking + prompts
+- Visible: “A weekly plan you can actually execute.”
+- Animation: weekly goal → daily queue → streak progress.
 
-This “service catalog” is the simplest way to communicate value without requiring visitors to decode interactive visuals.
+Progressive disclosure on click: a small inline panel expands (not a new page) with the deliverable details.
 
-### 1.3 Add a “Time to first value: 5 minutes” mini-onboarding preview
+### 1.4 Add a “Time to first value: 5 minutes” strip (one line + icons)
 
-Phase 1 states time‑to‑first‑value ≤ 5 minutes.
-Add a small timeline block:
+Keep this extremely compact:
 
-- Connect TikTok (read-only)
-- Sync recent videos
-- Receive:
-  - 1 Insight Card
-  - 1 Mission
-  - 1 Experiment suggestion
+- “Connect → Sync → Get: 1 insight • 1 mission • 1 experiment”
 
-This anchors the site in tangible deliverables.
+If you want more explanation, hide it behind “How it works” (expands inline).
 
-### 1.4 Fix trust-breaking “claims” (the biggest credibility leak)
+### 1.5 Keep interactive demos, but make them optional (collapsed by default)
+
+The existing demos are good, but they create length and reading fatigue.
+
+Recommendation:
+
+- Keep only one “hero demo” visible.
+- Collapse the rest behind:
+  - “Watch the 60s tour” (if real)
+  - “Try the demo” (expand inline)
+
+This keeps the page short and reduces bounce.
+
+### 1.6 Fix trust-breaking “claims” (the biggest credibility leak)
 
 Homepage currently includes numbers and outcomes that read as either placeholders or too absolute:
 
@@ -84,7 +114,21 @@ Recommendation:
   - “No scraping”
 - Testimonials: either use real quotes (with permission) or label as “Example playthroughs” and make them clearly fictional.
 
-### 1.5 Keep the interactive demos, but reframe them as educational demos
+### 1.7 Progressive disclosure pattern (global rule)
+
+When a page is acting as a hook, details must be opt-in.
+
+Use these patterns consistently:
+
+- “Read more” expands a small panel below the element
+- “See example” swaps the visual state (without adding more text)
+- “Learn how we calculate this” links to Methodology
+
+Avoid:
+
+- multi-paragraph blocks
+- long FAQ sections on the homepage
+- big comparison tables on the homepage
 
 The interactive sections are a strength — they teach. Keep them, but make sure they don’t claim Phase 2 capabilities as Phase 1.
 
@@ -92,12 +136,12 @@ The interactive sections are a strength — they teach. Keep them, but make sure
 - “Growth predictor” should show a range + confidence note and avoid “With Adam = guaranteed multiplier.”
 - “First-hour velocity” demo should be presented as illustrative unless backed by real outcomes.
 
-### 1.6 Fix the “Demo video coming soon” placeholder
+### 1.8 Fix the “Demo video coming soon” placeholder
 
 If you don’t have a demo video, don’t use an `alert()` placeholder.
 Replace with a static “Product Tour” panel that reuses your existing visuals (Connect/Analyze/Grow) and is fully functional.
 
-### 1.7 Remove or implement broken footer links
+### 1.9 Remove or implement broken footer links
 
 Homepage links to pages that don’t exist in this repo:
 
@@ -167,7 +211,7 @@ The simulator is a strong lead magnet. Add conversion mapping:
 
 ---
 
-## 3) New Pages You Should Add (Because the homepage promises them)
+## 3) New Pages You Should Add (Details live here, not on the hook page)
 
 These solve current gaps and/or fix broken links.
 
@@ -278,12 +322,14 @@ This “teaches honesty” and differentiates from hypey tools.
 
 ## 5) Priority Order (Fastest path to more conversions + trust)
 
-1) Remove/replace trust-breaking claims on the homepage (fake precision, placeholder stats, fictional-looking testimonials).
-2) Remove/implement broken footer pages.
-3) Align pricing story across homepage + pricing + docs (subscription vs coins).
-4) Add “Phase 1 vs Phase 2” badges + tighten claims on features page.
-5) Fix global nav back link to always go to Lenko Studio.
-6) Add Methodology + Data Limits pages, link them prominently.
+1) Replace hero copy with a single, clear paragraph + one trust line.
+2) Convert “services” into 3 animated tiles with progressive disclosure.
+3) Remove/replace trust-breaking claims (fake precision, placeholder stats, fictional-looking testimonials).
+4) Collapse optional demos and long sections behind “Read more / Try demo”.
+5) Remove/implement broken footer pages.
+6) Align pricing story across homepage + pricing + docs (subscription vs coins).
+7) Add “Phase 1 vs Phase 2” badges + tighten claims on features page.
+8) Add Methodology + Data Limits pages, link them prominently.
 
 ---
 
