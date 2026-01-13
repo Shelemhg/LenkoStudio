@@ -1,0 +1,541 @@
+/**
+ * ADAM "Connect and Analyze your Profile" Animation
+ * ==========================================================================
+ * This file controls the complex 9-second animation cycle for the first service card.
+ * It coordinates the interaction between three main components:
+ * 1. TikTok Side (Left): Logo, Ring Spin, Scan Sweep
+ * 2. Data Pipeline (Center): Connection Line, Traveling Beam, Impact Dots
+ * 3. ADAM AI (Right): Processor Chip, "ADAM" Text, State Changes (Blue -> Cyan)
+ *
+ * CYCLE OVERVIEW (Total Duration: 9s)
+ * --------------------------------------------------------------------------
+ * [00% - 10%]  IDLE / PREPARE
+ *              - Initial state, components invisible or resting.
+ *
+ * [11% - 32%]  PHASE 1: DATA TRANSMISSION (2.1s)
+ *              - TikTok Ring: Spins (Loading data)
+ *              - Connection Line: fills from Left -> Right
+ *              - Left Dot: Pulses
+ *
+ * [33%      ]  PHASE 2: IMPACT (CRITICAL MOMENT - 2.97s)
+ *              - Data Beam hits the Right side.
+ *              - Sparks: Explode (Blue)
+ *              - Right Dot: Large pulse
+ *              - ADAM Logo: Turns BLUE (Processing State)
+ *              - Ring: Disappears immediately
+ *
+ * [33% - 40%]  PHASE 3: PROCESSING (0.6s)
+ *              - ADAM Logo: Glows Blue (Analyzing data)
+ *
+ * [40% - 44%]  PHASE 4: STATE TRANSITION (0.36s)
+ *              - ADAM Logo: Shifts from Blue -> Cyan (Ready/Charged)
+ *
+ * [44% - 47%]  PHASE 5: PRE-SCAN GAP (0.27s)
+ *              - Brief pause where ADAM is Cyan but scanning hasn't started.
+ *              - Creates visual separation between "Analysis" and "Output".
+ *
+ * [48% - 59%]  PHASE 6: SCANNING (1s)
+ *              - Scan Beam: Fires from Right -> Left (cyan gradient)
+ *              - Scan FX: Sweeps up/down over TikTok logo
+ *              - TikTok Logo: Dims slightly
+ *
+ * [60% - 96%]  PHASE 7: SUCCESS / HOLD (3.2s)
+ *              - Components pulse in unison (Success state)
+ *              - Showing the "Connected" status
+ *
+ * [96% - 100%] RESET
+ *              - Fade out to prepare for next loop
+ * ==========================================================================
+ */
+
+/* ==========================================================================
+   COMPONENT: LEFT SIDE (TikTok)
+   ========================================================================== */
+
+.visual-connect .connect-left-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px; 
+    height: 60px;
+}
+
+/* The Main TikTok Logo */
+.visual-connect .tiktok-logo-large {
+    color: var(--adam-text-muted); 
+    width: 48px;
+    height: 48px;
+    z-index: 2;
+    display: flex;
+    transition: color 0.3s, transform 0.3s;
+    /* Animated to react to the scan (dimming) and success (pulsing) */
+    animation: tiktok-tech-state 9s infinite cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.visual-connect .tiktok-logo-large svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* The Loading Ring (Spins during data transmission) */
+.visual-connect .tiktok-ring { 
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 3px solid transparent; 
+    border-top-color: #00f2ea; /* Cyan */
+    border-right-color: #ff0050; /* TikTok Pink */
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0.8);
+    /* Spins only during the first 32% of the cycle */
+    animation: ring-dash-spin 9s infinite linear;
+}
+
+/* The Scan Effect overlay (Sweeps up/down) */
+.visual-connect .tiktok-scan-fx {
+    position: absolute;
+    top: -20%;
+    left: -20%;
+    width: 140%;
+    height: 2px;
+    background: #00ccff; /* Solid core */
+    box-shadow: 0 0 10px #00ccff, 0 0 5px #fff; /* Strong glow */
+    opacity: 0;
+    transform: rotate(0deg); 
+    pointer-events: none;
+    z-index: 10;
+    /* Sweeps during Phase 6 (48% - 59%) */
+    animation: tiktok-scan-sweep 9s infinite ease-in-out;
+}
+
+
+/* ==========================================================================
+   COMPONENT: CENTER (Data Pipeline)
+   ========================================================================== */
+
+.visual-connect .connect-line-container {
+    height: 4px; 
+    flex-grow: 1; 
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 120px;
+}
+
+/* The static background track */
+.visual-connect .connect-line-path {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: var(--adam-border); 
+    border-radius: 2px;
+}
+
+/* The Moving Beam (Fills Left -> Right) */
+.visual-connect .connect-line-active {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%; 
+    background: linear-gradient(90deg, var(--adam-success) 0%, #fff 100%);
+    border-radius: 2px;
+    box-shadow: 0 0 10px var(--adam-success);
+    /* Fills 0% -> 100% between 11% and 32% */
+    animation: line-beam-sequence 9s infinite linear;
+}
+
+/* Internal glow inside the beam */
+.visual-connect .connect-line-active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+    background-size: 50% 100%;
+    background-repeat: no-repeat;
+    opacity: 0;
+    z-index: 2;
+    animation: flow-glow 0.4s infinite linear, line-pulse-visibility 9s infinite linear;
+}
+
+/* The "Head" of the beam (The leading circle) */
+.visual-connect .connect-line-active::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px; 
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 15px #fff; 
+    opacity: 0; 
+    /* Visible only while traveling (11% - 32%), vanishes on impact (33%) */
+    animation: beam-head-opacity 9s infinite;
+}
+
+/* The Scan Beam (Fires Right -> Left during scanning) */
+.visual-connect .connect-scan-beam {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(270deg, #00ccff 0%, transparent 100%);
+    border-radius: 2px;
+    box-shadow: 0 0 10px #00ccff;
+    opacity: 0;
+    transform-origin: right;
+    /* Active during Phase 6 (48% - 59%) */
+    animation: scan-beam-sequence 9s infinite linear;
+}
+
+/* Connection Dots (Terminals) */
+.visual-connect .connect-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--adam-text-muted); 
+    position: absolute;
+    z-index: 3;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.visual-connect .connect-dot.left { 
+    left: -4px; 
+    animation: dot-tech-left 9s infinite;
+}
+
+.visual-connect .connect-dot.right { 
+    right: -4px; 
+    animation: dot-tech-right 9s infinite;
+}
+
+
+/* ==========================================================================
+   COMPONENT: RIGHT SIDE (ADAM AI)
+   ========================================================================== */
+
+.visual-connect .connect-right-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 60px;
+    position: relative;
+    z-index: 5;
+}
+
+/* The Chip Icon */
+.visual-connect .ai-brain-icon {
+    width: 32px;
+    height: 32px;
+    color: var(--adam-text-muted);
+    /* Handles the Blue -> Cyan color shift */
+    animation: adam-tech-state 9s infinite; 
+}
+
+.visual-connect .ai-brain-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* The "ADAM" Text */
+.visual-connect .adam-text-neon {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--adam-text-muted);
+    line-height: 1;
+    /* Matches the Chip's color shift */
+    animation: adam-tech-text 9s infinite; 
+}
+
+
+/* ==========================================================================
+   COMPONENT: SPARK SYSTEM
+   ========================================================================== */
+
+.visual-connect .sparks {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Sparks on the Left (Unused currently, but defined) */
+.visual-connect .thumb-sparks {
+    animation: sparks-explode-gold 9s infinite cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+/* Sparks on the Right (Blue explosion at Impact 33%) */
+.visual-connect .adam-sparks {
+    animation: sparks-explode-blue 9s infinite cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+
+/* ==========================================================================
+   KEYFRAME ANIMATIONS
+   ========================================================================== */
+
+/* 1. TIKTOK STATE (Left Side) */
+@keyframes tiktok-tech-state {
+    0% { color: var(--adam-text-muted); transform: scale(1); filter: none; opacity: 1; }
+    2% { transform: scale(0.9); }
+    4% { color: #fff; transform: scale(1.2); filter: drop-shadow(0 0 10px rgba(255,255,255,0.8)); } /* POP */
+    6% { transform: scale(1); }
+    
+    32% { color: #fff; filter: drop-shadow(0 0 10px rgba(255,255,255,0.8)); opacity: 1; }
+    
+    /* Hold Bright until Scan Starts at 37% */
+    36% { color: #fff; filter: drop-shadow(0 0 10px rgba(255,255,255,0.8)); opacity: 1; }
+    
+    /* Dim during scan to emphasize the beam (37% - 48%) */
+    37% { color: #fff; filter: none; opacity: 0.7; }
+    48% { color: #fff; filter: none; opacity: 0.7; }
+    
+    /* Recover & Pulse (Success) */
+    49% { color: #fff; filter: drop-shadow(0 0 15px #fff); opacity: 1; transform: scale(1.1); }
+    53% { color: #fff; filter: drop-shadow(0 0 10px rgba(255,255,255,0.8)); opacity: 1; transform: scale(1); }
+    85% { color: #fff; filter: drop-shadow(0 0 10px rgba(255,255,255,0.8)); opacity: 1; }
+    
+    99%, 100% { color: var(--adam-text-muted); transform: scale(1); filter: none; opacity: 1; }
+}
+
+@keyframes ring-dash-spin {
+    0%, 10% { opacity: 0; transform: scale(0.8) rotate(0deg); }
+    11% { opacity: 1; transform: scale(1) rotate(0deg); }
+    /* Ends at 22% */
+    22% { opacity: 1; transform: scale(1.1) rotate(360deg); } 
+    23% { opacity: 0; } /* Vanish on Impact */
+    100% { opacity: 0; }
+}
+
+@keyframes tiktok-scan-sweep {
+    /* Starts at 37% (Scan Phase) */
+    0%, 36% { opacity: 0; top: -10%; }
+    37% { opacity: 1; top: -10%; }
+    42.5% { top: 110%; } /* Scan Down */
+    48% { top: -10%; opacity: 1; } /* Scan Up */
+    49% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+
+/* 2. CENTER PIPELINE (Line & Dots) */
+@keyframes line-beam-sequence {
+    0%, 10% { width: 0%; opacity: 0; background: var(--adam-success); }
+    11% { width: 0%; opacity: 1; background: var(--adam-success); } /* Start */
+    22% { width: 100%; background: linear-gradient(90deg, var(--adam-success) 0%, #fff 100%); } /* Arrives */
+    25% { background: var(--adam-success); }
+    46% { width: 100%; opacity: 1; background: var(--adam-success); }
+    85% { width: 100%; opacity: 1; background: var(--adam-success); }
+    99% { width: 100%; opacity: 0; background: var(--adam-success); }
+    100% { width: 100%; opacity: 0; background: var(--adam-success); }
+}
+
+@keyframes beam-head-opacity {
+    0%, 10% { opacity: 0; }
+    11% { opacity: 1; }
+    22% { opacity: 1; }
+    23% { opacity: 0; } /* Cuts on Impact */
+    100% { opacity: 0; }
+}
+
+@keyframes scan-beam-sequence {
+    /* Starts at 37% (Scan Phase) */
+    0%, 36% { width: 0%; opacity: 0; }
+    37% { width: 100%; opacity: 1; }
+    48% { width: 100%; opacity: 1; }
+    49% { width: 100%; opacity: 0; } 
+    100% { width: 0%; opacity: 0; }
+}
+
+@keyframes dot-tech-left {
+    0%, 10% { background: var(--adam-text-muted); box-shadow: none; transform: scale(1); }
+    11% { background: var(--adam-success); box-shadow: 0 0 10px var(--adam-success); transform: scale(1.4); } /* Start Pulse */
+    16% { transform: scale(1); }
+    46% { background: var(--adam-success); box-shadow: 0 0 8px var(--adam-success); }
+    85% { background: var(--adam-success); box-shadow: 0 0 8px var(--adam-success); opacity: 1; }
+    99%, 100% { background: var(--adam-success); box-shadow: none; transform: scale(1); opacity: 0; }
+}
+
+@keyframes dot-tech-right {
+    0%, 21% { background: var(--adam-text-muted); box-shadow: none; transform: scale(1); }
+    22% { background: var(--adam-success); box-shadow: 0 0 12px var(--adam-success); transform: scale(1.5); } /* Impact Pulse */
+    26% { transform: scale(1); }
+    49% { background: var(--adam-success); box-shadow: 0 0 8px var(--adam-success); }
+    85% { background: var(--adam-success); box-shadow: 0 0 8px var(--adam-success); opacity: 1; }
+    99%, 100% { background: var(--adam-success); box-shadow: none; transform: scale(1); opacity: 0; }
+}
+
+@keyframes flow-glow {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes line-pulse-visibility {
+    0%, 10% { opacity: 0; }
+    11% { opacity: 1; }
+    20% { opacity: 1; }
+    21%, 100% { opacity: 0; }
+}
+
+
+/* 3. ADAM AI (Right Side) */
+@keyframes adam-tech-state {
+    0%, 21% { color: var(--adam-text-muted); transform: scale(1); filter: none; }
+    
+    /* IMPACT: Blue Flash (22%) */
+    22% { color: #2563eb; transform: scale(1.3); filter: drop-shadow(0 0 12px #2563eb); } 
+    27% { transform: scale(1); filter: drop-shadow(0 0 8px #2563eb); }
+    
+    /* Processing (Blue) */
+    29% { color: #2563eb; transform: scale(1.1); filter: drop-shadow(0 0 15px #2563eb); }
+    
+    /* Transition to Charged (Cyan) */
+    33% { color: #00ccff; transform: scale(1.05); filter: drop-shadow(0 0 12px #00ccff); } 
+    
+    /* Ready/Scan State (Cyan) */
+    47% { color: #00ccff; filter: drop-shadow(0 0 10px #00ccff); transform: scale(1); }
+    
+    /* Success/Done (White Pulse) */
+    49% { color: #fff; filter: drop-shadow(0 0 20px #fff); transform: scale(1.15); }
+    53% { color: #00ccff; filter: drop-shadow(0 0 10px #00ccff); transform: scale(1); }
+    
+    85% { color: #00ccff; filter: drop-shadow(0 0 10px #00ccff); transform: scale(1); opacity: 1; }
+    99%, 100% { color: #00ccff; transform: scale(1); filter: none; opacity: 0; }
+}
+
+@keyframes adam-tech-text {
+    0%, 21% { color: var(--adam-text-muted); text-shadow: none; }
+    22% { color: #fff; text-shadow: 0 0 20px #2563eb, 0 0 10px #2563eb; opacity: 1; }
+    25% { color: #2563eb; text-shadow: 0 0 15px #2563eb; }
+    29% { color: #2563eb; text-shadow: 0 0 15px #2563eb; }
+    33% { color: #00ccff; text-shadow: 0 0 15px #00ccff; }
+    47% { color: #00ccff; text-shadow: 0 0 15px #00ccff; }
+    49% { color: #fff; text-shadow: 0 0 20px #fff; opacity: 1; }
+    53% { color: #00ccff; text-shadow: 0 0 15px #00ccff; }
+    85% { color: #00ccff; text-shadow: 0 0 15px #00ccff; opacity: 1; }
+    99%, 100% { color: #00ccff; text-shadow: none; opacity: 0; }
+}
+
+
+/* 4. SPARK PARTICLES */
+@keyframes sparks-explode-blue {
+    /* Silent until Impact at 22% */
+    0%, 21% { box-shadow: 0 0 0 #0066ff; opacity: 0; }
+    
+    /* IMPACT */
+    22% {
+        opacity: 1;
+        box-shadow:
+            0 -15px 0 #0066ff, 6px -14px 0 #fff, 12px -12px 0 #0066ff, 18px -6px 0 #fff,
+            24px 0 0 #0066ff, 20px 10px 0 #fff, 12px 18px 0 #0066ff, 0 24px 0 #fff,
+            -12px 20px 0 #0066ff, -20px 12px 0 #fff, -26px 0 0 #0066ff, -18px -12px 0 #fff,
+            -10px -20px 0 #0066ff, 10px -24px 0 #fff, 24px 14px 0 #0066ff, -14px 24px 0 #fff,
+            0 -12px 0 #0066ff, 8px -8px 0 #fff, 12px 0 0 #0066ff, 8px 8px 0 #fff,
+            0 12px 0 #0066ff, -8px 8px 0 #fff, -12px 0 0 #0066ff, -8px -8px 0 #fff;
+    }
+    
+    /* Expansion and Fade */
+    35% {
+        opacity: 0;
+        box-shadow:
+            0 -50px 0 #0066ff, 18px -45px 0 #fff, 38px -38px 0 #0066ff, 45px -18px 0 #fff,
+            60px 0 0 #0066ff, 55px 25px 0 #fff, 35px 50px 0 #0066ff, 0 60px 0 #fff,
+            -35px 55px 0 #0066ff, -55px 35px 0 #fff, -65px 0 0 #0066ff, -50px -35px 0 #fff,
+            -30px -50px 0 #0066ff, 30px -60px 0 #fff, 65px 40px 0 #0066ff, -40px 65px 0 #fff,
+            0 -35px 0 #0066ff, 25px -25px 0 #fff, 35px 0 0 #0066ff, 25px 25px 0 #fff,
+            0 35px 0 #0066ff, -25px 25px 0 #fff, -35px 0 0 #0066ff, -25px -25px 0 #fff;
+    }
+    100% { opacity: 0; box-shadow: none; }
+}
+
+@keyframes sparks-explode-gold {
+    0%, 4% { box-shadow: 0 0 0 #FFD700; opacity: 0; }
+    5% {
+        opacity: 1;
+        box-shadow:
+            0 -15px 0 #FFD700, 5px -12px 0 #FFD700, 10px -10px 0 #FFD700, 15px -5px 0 #FFD700,
+            20px 0 0 #FFD700, 18px 8px 0 #FFD700, 10px 15px 0 #FFD700, 0 20px 0 #FFD700,
+            -10px 18px 0 #FFD700, -18px 10px 0 #FFD700, -22px 0 0 #FFD700, -15px -10px 0 #FFD700,
+            -8px -18px 0 #FFD700, 8px -22px 0 #FFD700, 22px 12px 0 #FFD700, -12px 22px 0 #FFD700,
+            0 -10px 0 #FFD700, 7px -7px 0 #FFD700, 10px 0 0 #FFD700, 7px 7px 0 #FFD700,
+            0 10px 0 #FFD700, -7px 7px 0 #FFD700, -10px 0 0 #FFD700, -7px -7px 0 #FFD700;
+    }
+    18% {
+        opacity: 0;
+        box-shadow:
+            0 -45px 0 #FFD700, 15px -40px 0 #FFD700, 35px -30px 0 #FFD700, 40px -15px 0 #FFD700,
+            55px 0 0 #FFD700, 50px 20px 0 #FFD700, 30px 45px 0 #FFD700, 0 55px 0 #FFD700,
+            -30px 50px 0 #FFD700, -50px 30px 0 #FFD700, -60px 0 0 #FFD700, -45px -30px 0 #FFD700,
+            -25px -45px 0 #FFD700, 25px -55px 0 #FFD700, 60px 35px 0 #FFD700, -35px 60px 0 #FFD700,
+            0 -30px 0 #FFD700, 20px -20px 0 #FFD700, 30px 0 0 #FFD700, 20px 20px 0 #FFD700,
+            0 30px 0 #FFD700, -20px 20px 0 #FFD700, -30px 0 0 #FFD700, -20px -20px 0 #FFD700;
+    }
+    100% { opacity: 0; box-shadow: none; }
+}
+
+/* =============================================================================
+   ACCESSIBILITY OVERRIDE: FORCE MOTION
+   Rationale: This animation is "essential" to the service demo description.
+   Note: We force the animation to play even if user requests reduce motion,
+   as requested by design requirements.
+   ============================================================================= */
+@media (prefers-reduced-motion: reduce) {
+    .visual-connect .tiktok-logo-large {
+        animation: tiktok-tech-state 9s infinite cubic-bezier(0.22, 1, 0.36, 1) !important;
+        transition: color 0.3s, transform 0.3s !important;
+    }
+    .visual-connect .tiktok-ring {
+        animation: ring-dash-spin 9s infinite linear !important;
+    }
+    .visual-connect .tiktok-scan-fx {
+        animation: tiktok-scan-sweep 9s infinite ease-in-out !important;
+    }
+    .visual-connect .connect-line-active {
+        animation: line-beam-sequence 9s infinite linear !important;
+    }
+    .visual-connect .connect-line-active::before {
+        animation: flow-glow 0.4s infinite linear, line-pulse-visibility 9s infinite linear !important;
+    }
+    .visual-connect .connect-line-active::after {
+        animation: beam-head-opacity 9s infinite !important;
+    }
+    .visual-connect .connect-scan-beam {
+        animation: scan-beam-sequence 9s infinite linear !important;
+    }
+    .visual-connect .connect-dot.left {
+         animation: dot-tech-left 9s infinite !important;
+         transition: background-color 0.3s, transform 0.3s !important;
+    }
+    .visual-connect .connect-dot.right {
+         animation: dot-tech-right 9s infinite !important;
+         transition: background-color 0.3s, transform 0.3s !important;
+    }
+    .visual-connect .ai-brain-icon {
+        animation: adam-tech-state 9s infinite !important;
+    }
+    .visual-connect .adam-text-neon {
+         animation: adam-tech-text 9s infinite !important;
+    }
+    .visual-connect .thumb-sparks {
+        animation: sparks-explode-gold 9s infinite cubic-bezier(0.1, 0.9, 0.2, 1) !important;
+    }
+    .visual-connect .adam-sparks {
+        animation: sparks-explode-blue 9s infinite cubic-bezier(0.1, 0.9, 0.2, 1) !important;
+    }
+}
