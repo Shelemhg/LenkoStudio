@@ -80,7 +80,8 @@ body {
    ============================================ */
 .portfolio-item {
   position: relative;
-  width: 100%;
+  /* width: 100%; Removed to allow shrink-wrap */
+  max-width: 100%;
   max-height: 100vh;
   overflow: hidden;
   /* 
@@ -108,17 +109,12 @@ body {
    * Centering the image vertically creates empty space below shorter images,
    * which reads like an unwanted gap between photo and title.
    */
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   /* 
-   * Why calc(100vh - 80px)?
-   * Ensures images never exceed viewport height while reserving space for the title section.
-   * - 100vh: Full viewport height for immersive viewing
-   * - 80px: Reserved for title, padding, and border spacing
-   * This prevents awkward scrolling mid-image and maintains "one image per viewport" UX.
-   * Critical for mobile where viewport space is precious.
+   * Changed to 100vh since title is now an overlay.
    */
-  max-height: calc(100vh - 80px);
+  max-height: 100vh;
   width: 100%;
   /* Avoid any inline-image baseline quirks creating stray gaps. */
   line-height: 0;
@@ -133,7 +129,7 @@ body {
   height: auto;
   object-fit: contain;
   object-position: center;
-  /* 
+  /* 100vh
    * Why user-select: none?
    * Prevents accidental text selection when clicking/dragging on images.
    * Improves UX by treating images as interactive elements rather than selectable content.
@@ -161,19 +157,32 @@ body {
    * Why z-index: 10?
    * Ensures title always appears above image content and any potential overlays.
    * While currently no overlapping elements exist, z-index establishes proper stacking context
-   * for future features (tooltips, modals, animations) and prevents rendering issues.
-   * Value of 10 leaves room for intermediate layers (1-9) if needed.
+  /* 
+   * Centered overlay style
+   * Replaces the bottom bar with a centered overlay on top of the image.
+   */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Slight dark background for text legibility, as requested */
+  background: rgba(0, 0, 0, 0.3);
+  /* 5rem, 4vw, 2.5rem);
+  font-weight: 600;
+  margin: 0;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5)eaves room for intermediate layers (1-9) if needed.
    */
   z-index: 10;
-  width: 100%;
-  padding: 20px 20px;
-  margin: 0;
-  background: #9b9b9b;
-  border-top: none;
-}
-
-/* Portfolio Item - Heading (Element) */
-.portfolio-item__heading {
+  padding: 0;
+  margin: 0ing {
   font-family: 'Inter', Georgia, serif;
   font-size: clamp(1.25rem, 3vw, 1.5rem);
   font-weight: 600;
@@ -200,8 +209,10 @@ body {
 /* Mobile: < 768px (default styles above) */
 @media (max-width: 767px) {
   .portfolio-item {
-    width: 100%;
+    /* Auto width allows item to shrink-wrap image, preventing "black bars" overlay on sides */
+    width: auto;
     margin-bottom: 80px;
+    max-width: 100%;
   }
 
   .portfolio-item--portrait {
