@@ -1,0 +1,283 @@
+/* 
+   ANIMATION: COIN EARN CARD
+   Description: "Complete Missions" Card Animation
+   Total Loop Duration: 16 Seconds
+   
+   TIMING GUIDE (16s Loop):
+   -----------------------
+   1 Second = 6.25%
+   0.1 Second = ~0.625%
+   Note: Keyframes are calculated based on these percentages.
+
+   STRUCTURE:
+   - Group 1 (Line 1, Check 1, Coins 1, Counter 50)
+   - GAP (2.4s)
+   - Group 2 (Line 2, Check 2, Coins 2, Counter 100)
+   - GAP (2.4s)
+   - Group 3 (Line 3, Check 3, Coins 3, Counter 150)
+   - HOLD (6.0s)
+   - RESET (Fade Out/In)
+*/
+
+/* =========================================
+   1. LAYOUT & STATIC STYLES
+   ========================================= */
+
+/* Main Container */
+.visual-coin-earn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    height: 100%;
+    padding: 0 10px;
+}
+
+/* --- Paper List --- */
+.visual-coin-earn .earn-paper {
+    background: #fff;
+    width: 70px;
+    padding: 8px;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transform: rotate(-5deg);
+    /* Animation Assignment */
+    animation: paper-fade-loop-16s 16s infinite;
+}
+
+.visual-coin-earn .earn-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.visual-coin-earn .earn-check {
+    width: 12px;
+    height: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 2px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.visual-coin-earn .earn-check::after {
+    content: '✓';
+    position: absolute;
+    top: -4px;
+    left: 1px;
+    font-size: 14px;
+    line-height: 1;
+    color: var(--adam-success);
+    font-weight: 800;
+    opacity: 0;
+}
+
+.visual-coin-earn .earn-line {
+    flex: 1;
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 2px;
+}
+
+/* --- Wallet/Counter --- */
+.visual-coin-earn .earn-wallet {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-width: 50px;
+    position: relative;
+    z-index: 2; /* Layer: Above coins */
+    /* Animation Assignment */
+    animation: wallet-fade-loop-16s 16s infinite;
+}
+
+.visual-coin-earn .earn-wallet-icon {
+    font-size: 20px;
+    margin-bottom: 2px;
+}
+
+.visual-coin-earn .earn-counter-wrapper {
+    height: 18px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    text-align: center;
+}
+
+.visual-coin-earn .earn-counter-scroll {
+    display: flex;
+    flex-direction: column;
+    /* Animation Assignment */
+    animation: counter-scroll-16s 16s steps(1) infinite;
+}
+
+.visual-coin-earn .earn-counter-scroll span {
+    height: 18px;
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--adam-warning);
+    line-height: 18px;
+}
+
+/* --- Falling Coins --- */
+.visual-coin-earn .earn-falling-coins {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1; /* Layer: Behind wallet (z-index: 2) */
+    overflow: visible;
+}
+
+.visual-coin-earn .coin-batch {
+    position: absolute;
+    top: -20px;
+    width: 30px;
+    height: 30px;
+}
+
+.visual-coin-earn .coin-batch i {
+    position: absolute;
+    font-style: normal;
+    font-size: 14px;
+    opacity: 0;
+}
+
+/* Coin Batch Positions & Assignments */
+/* Batch 1 */
+.visual-coin-earn .coin-batch.batch-1 { left: 55%; }
+.visual-coin-earn .coin-batch.batch-1 i:nth-child(1) { left: 0px; top: 0px; animation: coin-fall-1-16s 16s infinite 0.00s; }
+.visual-coin-earn .coin-batch.batch-1 i:nth-child(2) { left: 8px; top: -5px; animation: coin-fall-1-16s 16s infinite 0.10s; }
+.visual-coin-earn .coin-batch.batch-1 i:nth-child(3) { left: 16px; top: 2px; animation: coin-fall-1-16s 16s infinite 0.20s; }
+
+/* Batch 2 */
+.visual-coin-earn .coin-batch.batch-2 { left: 60%; }
+.visual-coin-earn .coin-batch.batch-2 i:nth-child(1) { left: 0px; top: 0px; animation: coin-fall-2-16s 16s infinite 0.00s; }
+.visual-coin-earn .coin-batch.batch-2 i:nth-child(2) { left: 8px; top: -5px; animation: coin-fall-2-16s 16s infinite 0.10s; }
+.visual-coin-earn .coin-batch.batch-2 i:nth-child(3) { left: 16px; top: 2px; animation: coin-fall-2-16s 16s infinite 0.20s; }
+
+/* Batch 3 */
+.visual-coin-earn .coin-batch.batch-3 { left: 65%; }
+.visual-coin-earn .coin-batch.batch-3 i:nth-child(1) { left: 0px; top: 0px; animation: coin-fall-3-16s 16s infinite 0.00s; }
+.visual-coin-earn .coin-batch.batch-3 i:nth-child(2) { left: 8px; top: -5px; animation: coin-fall-3-16s 16s infinite 0.10s; }
+.visual-coin-earn .coin-batch.batch-3 i:nth-child(3) { left: 16px; top: 2px; animation: coin-fall-3-16s 16s infinite 0.20s; }
+
+/* Animation Assignments for Lines & Checks */
+.visual-coin-earn .earn-row.row-1 .earn-line { animation: line-darken-1-16s 16s infinite; }
+.visual-coin-earn .earn-row.row-2 .earn-line { animation: line-darken-2-16s 16s infinite; }
+.visual-coin-earn .earn-row.row-3 .earn-line { animation: line-darken-3-16s 16s infinite; }
+
+.visual-coin-earn .earn-row.row-1 .earn-check::after { animation: check-appear-1-16s 16s infinite; }
+.visual-coin-earn .earn-row.row-2 .earn-check::after { animation: check-appear-2-16s 16s infinite; }
+.visual-coin-earn .earn-row.row-3 .earn-check::after { animation: check-appear-3-16s 16s infinite; }
+
+
+/* =========================================
+   2. KEYFRAMES & ANIMATION DEFINITIONS
+   ========================================= */
+
+/* --- Global Reset (Paper & Wallet) --- */
+/* Holds visible for 90.6% (14.5s), Fades out at 93.75% (15s), Resets */
+@keyframes paper-fade-loop-16s {
+    0%, 90.6% { opacity: 1; transform: rotate(-5deg); filter: blur(0); }
+    93.75% { opacity: 0; transform: rotate(-5deg) scale(0.95); filter: blur(2px); }
+    96% { opacity: 0; transform: rotate(-5deg); filter: blur(0); }
+    100% { opacity: 1; transform: rotate(-5deg); }
+}
+
+@keyframes wallet-fade-loop-16s {
+    0%, 90.6% { opacity: 1; filter: blur(0); }
+    93.75% { opacity: 0; transform: scale(0.95); filter: blur(2px); }
+    96% { opacity: 0; }
+    100% { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+
+/* --- GROUP 1 (Start: 1.0s) --- */
+/* Line 1: Darkens at 1.0s (6.25%) */
+@keyframes line-darken-1-16s {
+    0%, 6% { background: #e2e8f0; } /* Light Grey */
+    6.25%, 90.6% { background: #94a3b8; } /* Dark Grey */
+    93.75%, 100% { background: #e2e8f0; } /* Reset */
+}
+/* Check 1: Pops at 1.6s (10%) - Increased separation from line */
+@keyframes check-appear-1-16s {
+    0%, 9.9% { opacity: 0; transform: scale(0.5); }
+    10% { opacity: 1; transform: scale(1.2); }
+    11.25% { transform: scale(1); }
+    90.6% { opacity: 1; transform: scale(1); }
+    92%, 100% { opacity: 0; }
+}
+/* Coins 1: Fall at 2.2s (13.75%) - Increased separation from check */
+@keyframes coin-fall-1-16s {
+    0%, 13.6% { opacity: 0; transform: translateY(0) scale(0.5); }
+    13.75% { opacity: 1; transform: translateY(0) scale(1); }
+    16.75% { opacity: 1; transform: translateY(60px) scale(0.8); }
+    16.875%, 100% { opacity: 0; transform: translateY(75px); }
+}
+
+/* --- GROUP 2 (Start: 4.2s) --- */
+/* Line 2: Darkens at 4.2s (26.25%) */
+@keyframes line-darken-2-16s {
+    0%, 26% { background: #e2e8f0; }
+    26.25%, 90.6% { background: #94a3b8; }
+    93.75%, 100% { background: #e2e8f0; }
+}
+/* Check 2: Pops at 4.8s (30%) */
+@keyframes check-appear-2-16s {
+    0%, 29.9% { opacity: 0; transform: scale(0.5); }
+    30% { opacity: 1; transform: scale(1.2); }
+    31.25% { transform: scale(1); }
+    90.6% { opacity: 1; transform: scale(1); }
+    92%, 100% { opacity: 0; }
+}
+/* Coins 2: Fall at 5.4s (33.75%) */
+@keyframes coin-fall-2-16s {
+    0%, 33.6% { opacity: 0; transform: translateY(0) scale(0.5); }
+    33.75% { opacity: 1; transform: translateY(0) scale(1); }
+    36.75% { opacity: 1; transform: translateY(60px) scale(0.8); }
+    36.875%, 100% { opacity: 0; transform: translateY(75px); }
+}
+
+/* --- GROUP 3 (Start: 7.4s) --- */
+/* Line 3: Darkens at 7.4s (46.25%) */
+@keyframes line-darken-3-16s {
+    0%, 46% { background: #e2e8f0; }
+    46.25%, 90.6% { background: #94a3b8; }
+    93.75%, 100% { background: #e2e8f0; }
+}
+/* Check 3: Pops at 8.0s (50%) */
+@keyframes check-appear-3-16s {
+    0%, 49.9% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.2); }
+    51.25% { transform: scale(1); }
+    90.6% { opacity: 1; transform: scale(1); }
+    92%, 100% { opacity: 0; }
+}
+/* Coins 3: Fall at 8.6s (53.75%) */
+@keyframes coin-fall-3-16s {
+    0%, 53.6% { opacity: 0; transform: translateY(0) scale(0.5); }
+    53.75% { opacity: 1; transform: translateY(0) scale(1); }
+    56.75% { opacity: 1; transform: translateY(60px) scale(0.8); }
+    56.875%, 100% { opacity: 0; transform: translateY(75px); }
+}
+
+/* --- COUNTER SCROLL --- */
+/* Updates exactly when coins finish falling (16.875%, 36.875%, 56.875%) */
+@keyframes counter-scroll-16s {
+    0%, 16.75% { transform: translateY(0); }            /* 0 */
+    16.875%, 36.75% { transform: translateY(-18px); }   /* 50 */
+    36.875%, 56.75% { transform: translateY(-36px); }   /* 100 */
+    56.875%, 90.6% { transform: translateY(-54px); }    /* 150 (Hold until fade out) */
+    93.75%, 100% { transform: translateY(0); }          /* Reset */
+}
