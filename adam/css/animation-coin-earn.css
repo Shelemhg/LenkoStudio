@@ -281,3 +281,46 @@
     56.875%, 90.6% { transform: translateY(-54px); }    /* 150 (Hold until fade out) */
     93.75%, 100% { transform: translateY(0); }          /* Reset */
 }
+
+/* =========================================
+   3. REDUCED MOTION OVERRIDES
+   ========================================= */
+@media (prefers-reduced-motion: reduce) {
+    /* Force animations to play even if reduced motion is enabled */
+    
+    .visual-coin-earn .earn-paper { 
+        animation: paper-fade-loop-16s 16s infinite !important; 
+    }
+    .visual-coin-earn .earn-wallet { 
+        animation: wallet-fade-loop-16s 16s infinite !important; 
+    }
+    .visual-coin-earn .earn-counter-scroll { 
+        animation: counter-scroll-16s 16s steps(1) infinite !important; 
+    }
+
+    /* Lines */
+    .visual-coin-earn .earn-row.row-1 .earn-line { animation: line-darken-1-16s 16s infinite !important; }
+    .visual-coin-earn .earn-row.row-2 .earn-line { animation: line-darken-2-16s 16s infinite !important; }
+    .visual-coin-earn .earn-row.row-3 .earn-line { animation: line-darken-3-16s 16s infinite !important; }
+
+    /* Checks */
+    .visual-coin-earn .earn-row.row-1 .earn-check::after { animation: check-appear-1-16s 16s infinite !important; }
+    .visual-coin-earn .earn-row.row-2 .earn-check::after { animation: check-appear-2-16s 16s infinite !important; }
+    .visual-coin-earn .earn-row.row-3 .earn-check::after { animation: check-appear-3-16s 16s infinite !important; }
+
+    /* Coins Batch 1 */
+    .visual-coin-earn .coin-batch.batch-1 i:nth-child(1) { animation: coin-fall-1-16s 16s infinite 0.00s !important; }
+    .visual-coin-earn .coin-batch.batch-1 i:nth-child(2) { animation: coin-fall-1-16s 16s infinite 0.10s !important; }
+    .visual-coin-earn .coin-batch.batch-1 i:nth-child(3) { animation: coin-fall-1-16s 16s infinite 0.20s !important; }
+
+    /* Coins Batch 2 */
+    .visual-coin-earn .coin-batch.batch-2 i:nth-child(1) { animation: coin-fall-2-16s 16s infinite 0.00s !important; }
+    .visual-coin-earn .coin-batch.batch-2 i:nth-child(2) { animation: coin-fall-2-16s 16s infinite 0.10s !important; }
+    .visual-coin-earn .coin-batch.batch-2 i:nth-child(3) { animation: coin-fall-2-16s 16s infinite 0.20s !important; }
+
+    /* Coins Batch 3 */
+    .visual-coin-earn .coin-batch.batch-3 i:nth-child(1) { animation: coin-fall-3-16s 16s infinite 0.00s !important; }
+    .visual-coin-earn .coin-batch.batch-3 i:nth-child(2) { animation: coin-fall-3-16s 16s infinite 0.10s !important; }
+    .visual-coin-earn .coin-batch.batch-3 i:nth-child(3) { animation: coin-fall-3-16s 16s infinite 0.20s !important; }
+}
+
