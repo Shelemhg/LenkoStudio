@@ -197,18 +197,6 @@
 
                 head.addEventListener('click', () => {
                     const isOpen = head.getAttribute('aria-expanded') === 'true';
-
-                    // Close others
-                    container.querySelectorAll('[data-accordion-item]').forEach(other => {
-                        const otherHead = other.querySelector('.adam-service-head');
-                        if (!otherHead) return;
-                        const otherDetailsId = otherHead.getAttribute('aria-controls');
-                        const otherDetails = otherDetailsId ? document.getElementById(otherDetailsId) : null;
-                        if (!otherDetails) return;
-                        otherHead.setAttribute('aria-expanded', 'false');
-                        otherDetails.hidden = true;
-                    });
-
                     head.setAttribute('aria-expanded', String(!isOpen));
                     details.hidden = isOpen;
                 });

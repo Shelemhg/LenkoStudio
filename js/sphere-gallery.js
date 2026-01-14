@@ -1139,14 +1139,12 @@ window.SphereGallery = (() => {
   function animate() {
     // MOMENTUM PHYSICS (Exponential Decay Model)
     // WHY: Natural deceleration after drag release ("throw" interaction).
-    // FRICTION: 0.95 multiplier per frame = 5% energy loss per frame.
-    // MATH: velocity_n = velocity_0 × 0.95^n
-    // - After 14 frames: ~50% speed (half-life)
-    // - After 45 frames: ~10% speed (nearly stopped)
-    // - After 90 frames: ~1% speed (imperceptible)
+    // FRICTION: 0.88 multiplier per frame = 12% energy loss per frame.
+    // MATH: velocity_n = velocity_0 × 0.88^n
+    // - Adjusted for "snappier" feel (less floaty, stops faster).
     if (!isDragging) {
-      velocityX *= 0.95;
-      velocityY *= 0.95;
+      velocityX *= 0.88;
+      velocityY *= 0.88;
       
       // Apply inertia rotation
       // Note: velocityX/Y are already in "degrees per frame" units from handleDragMove
@@ -1160,7 +1158,7 @@ window.SphereGallery = (() => {
       // So we pass velocityY directly as rotX
       
       // Only apply if significant (avoid wasted matrix multiplications)
-      if (Math.abs(velocityX) > 0.01 || Math.abs(velocityY) > 0.01) {
+      if (Math.abs(velocityX) > 0.05 || Math.abs(velocityY) > 0.05) {
           applyRotation(velocityY, velocityX);
       }
     }
@@ -1168,7 +1166,7 @@ window.SphereGallery = (() => {
     // Stop if velocity is negligible AND not dragging
     // Keep the animation loop alive while the modal is open so direct-manipulation
     // rotations (dragging) always render immediately.
-    if (!isDragging && Math.abs(velocityX) < 0.01 && Math.abs(velocityY) < 0.01) {
+    if (!isDragging && Math.abs(velocityX) < 0.05 && Math.abs(velocityY) < 0.05) {
       animationFrame = requestAnimationFrame(animate);
       return;
     }

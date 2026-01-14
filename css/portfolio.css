@@ -80,8 +80,7 @@ body {
    ============================================ */
 .portfolio-item {
   position: relative;
-  /* width: 100%; Removed to allow shrink-wrap */
-  max-width: 100%;
+  width: 100%;
   max-height: 100vh;
   overflow: hidden;
   /* 
@@ -124,12 +123,12 @@ body {
 .portfolio-item__image {
   display: block;
   max-width: 100%;
-  max-height: calc(100vh - 80px);
+  max-height: 100vh;
   width: auto;
   height: auto;
   object-fit: contain;
   object-position: center;
-  /* 100vh
+  /* 
    * Why user-select: none?
    * Prevents accidental text selection when clicking/dragging on images.
    * Improves UX by treating images as interactive elements rather than selectable content.
@@ -152,11 +151,6 @@ body {
 
 /* Portfolio Item - Title Section (Element) */
 .portfolio-item__title {
-  position: relative;
-  /* 
-   * Why z-index: 10?
-   * Ensures title always appears above image content and any potential overlays.
-   * While currently no overlapping elements exist, z-index establishes proper stacking context
   /* 
    * Centered overlay style
    * Replaces the bottom bar with a centered overlay on top of the image.
@@ -171,25 +165,40 @@ body {
   justify-content: center;
   /* Slight dark background for text legibility, as requested */
   background: rgba(0, 0, 0, 0.3);
-  /* 5rem, 4vw, 2.5rem);
+  /* Transition for hover effect */
+  transition: background-color 0.3s ease;
+  /* 
+   * Why z-index: 10?
+   * Ensures title always appears above image content and any potential overlays.
+   * While currently no overlapping elements exist, z-index establishes proper stacking context
+   * for future features (tooltips, modals, animations) and prevents rendering issues.
+   * Value of 10 leaves room for intermediate layers (1-9) if needed.
+   */
+  z-index: 10;
+  padding: 0;
+  margin: 0;
+  border-top: none;
+}
+
+/* Hover effect for portfolio item overlay */
+.portfolio-item:hover .portfolio-item__title,
+.portfolio-item:focus-visible .portfolio-item__title {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* Portfolio Item - Heading (Element) */
+.portfolio-item__heading {
+  font-family: 'Inter', Georgia, serif;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
   font-weight: 600;
   margin: 0;
+  /* Use white text color universally as requested */
   color: #ffffff;
   letter-spacing: -0.02em;
   line-height: 1.2;
   text-align: center;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5)eaves room for intermediate layers (1-9) if needed.
-   */
-  z-index: 10;
-  padding: 0;
-  margin: 0ing {
-  font-family: 'Inter', Georgia, serif;
-  font-size: clamp(1.25rem, 3vw, 1.5rem);
-  font-weight: 600;
-  margin: 0;
-  color: var(--fg);
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
 }
 
 /* ============================================
@@ -209,10 +218,8 @@ body {
 /* Mobile: < 768px (default styles above) */
 @media (max-width: 767px) {
   .portfolio-item {
-    /* Auto width allows item to shrink-wrap image, preventing "black bars" overlay on sides */
-    width: auto;
+    width: 100%;
     margin-bottom: 80px;
-    max-width: 100%;
   }
 
   .portfolio-item--portrait {

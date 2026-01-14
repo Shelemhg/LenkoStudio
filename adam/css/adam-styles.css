@@ -4259,10 +4259,11 @@ img, video {
 }
 
 .adam-service-title {
-  margin: 0;
+  margin: 0 0 var(--space-3) 0;
   font-size: var(--text-xl);
   line-height: 1.2;
   color: var(--adam-text-primary);
+  text-align: center;
 }
 
 .adam-service-blurb {
@@ -4641,4 +4642,121 @@ img, video {
     50% { opacity: 1; transform: translateY(-10px); }
     80% { opacity: 1; transform: translateY(-15px); }
     100% { opacity: 0; transform: translateY(-20px); }
+}
+
+/* ========================================================================== */
+/* NEW CARD STYLES (Added via Update)                                        */
+/* ========================================================================== */
+
+/* Pulsating Title */
+@keyframes adam-pulse-title {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.03); opacity: 0.95; color: var(--adam-primary); }
+}
+
+.adam-service-title {
+    animation: adam-pulse-title 3s ease-in-out infinite;
+    transform-origin: center bottom;
+}
+
+/* Hidden Blurb - Show on Hover */
+.adam-service-blurb {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin-top: 0;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(10px);
+}
+
+.adam-service-card:hover .adam-service-blurb {
+    max-height: 150px;
+    opacity: 1;
+    margin-top: 0.5rem;
+    transform: translateY(0);
+}
+
+/* CTA "More" Styling */
+.adam-service-cta {
+    margin-top: var(--space-6);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: var(--text-xs);
+    letter-spacing: 0.05em;
+    color: var(--adam-text-muted); 
+}
+
+.adam-service-card:hover .adam-service-cta {
+   color: var(--adam-accent);
+}
+
+/* ========================================================================== */
+/* NEW CARD STYLES (Added via Update)                                        */
+/* ========================================================================== */
+
+/* Pulsating Title - More Subtle */
+@keyframes adam-pulse-title {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.02); opacity: 0.9; color: var(--adam-primary); }
+}
+
+.adam-service-title {
+    animation: adam-pulse-title 4s ease-in-out infinite;
+    transform-origin: center bottom;
+    will-change: transform, opacity;
+}
+
+/* Hidden Blurb - Mysterious Reveal Effect (Slower) */
+.adam-service-blurb {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    overflow: hidden;
+    
+    /* Reveal mechanics */
+    filter: blur(8px) grayscale(100%);
+    transform: translateY(10px) scale(0.98);
+    
+    /* Custom Timing: 1s Expansion, 0.4s content reveal */
+    transition: 
+        max-height 1s cubic-bezier(0.2, 1, 0.3, 1),
+        opacity 0.4s cubic-bezier(0.2, 1, 0.3, 1) 0.05s,
+        filter 0.5s ease-out 0.05s,
+        transform 0.5s cubic-bezier(0.2, 1, 0.3, 1) 0.05s,
+        margin-top 1s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+.adam-service-card:hover .adam-service-blurb {
+    max-height: 200px; /* Ample space for content */
+    opacity: 1;
+    margin-top: 0.5rem;
+    
+    /* Clear filters for the "reveal" */
+    filter: blur(0) grayscale(0%);
+    transform: translateY(0) scale(1);
+    transition-delay: 0s; /* Start immediately on hover */
+}
+
+/* CTA "More" Styling - Separated */
+.adam-service-cta {
+    margin-top: var(--space-8); /* Much more space to separate from visual */
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: var(--text-xs);
+    letter-spacing: 0.1em;
+    color: var(--adam-text-muted);
+    transition: color 0.3s ease, transform 0.3s ease;
+    display: flex;
+    justify-content: flex-end; /* Align right like a signature */
+    padding-right: var(--space-2);
+}
+
+.adam-service-card:hover .adam-service-cta {
+   color: var(--adam-accent);
+   transform: translateX(4px);
+}
+
+/* Enhancing Visual Area to push CTA down */
+.adam-service-visual {
+    margin-bottom: var(--space-2);
 }
