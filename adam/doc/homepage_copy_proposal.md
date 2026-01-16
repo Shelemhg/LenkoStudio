@@ -49,16 +49,27 @@ Re-wire your brain for success. We transform overwhelming growth goals into addi
 - **Burnout-Proof Planning:** Smart schedules that adapt to your energy levels.
 - **High-ROI Activities:** Focus only on the 20% of actions that bring 80% of results.
 
-### Card 3 — Real-time Control
-**Title:** Dominate The First "Golden Hour"
+### Card 3 — The Viral Lab
+**Title:** Turn Luck Into Science
 
 **Blurb:**
-The algorithm decides your fate in the first 60 minutes. Get real-time emergency alerts and "rescue plans" to **save underperforming videos** before they flatline.
+Most creators guess; the top 1% *test*. Deploy a military-grade experimentation engine to isolate variables (hooks, sounds, formats) and mathematically prove what triggers your growth.
 
 **Details (3 bullets):**
-- **Live Pulse Checks:** Know instantly if a video is tanking or trending.
-- **Crisis Intervention:** Specific, actionable comments and engagement hacks to revive reach.
-- **A/B Science:** Stop guessing. Run experiments to prove exactly what works.
+- **Automated A/B Testing:** Pit creative ideas against each other to find definitive winners.
+- **Winning Formula Vault:** Automatically save valid tests into a personal library of "Certified Hacks."
+- **Confidence Scores:** Know exactly when a result is a fluke and when it’s a scientific fact.
+
+### Card 4 — The 24/7 Watchdog
+**Title:** Never Miss A Viral Wave
+
+**Blurb:**
+While you sleep, ADAM monitors your specific growth baseline non-stop. We detect subtle statistical anomalies to alert you the second a trend begins—or a slump threatens your reach.
+
+**Details (3 bullets):**
+- **Anomaly Intercepts:** Get pinged instantly when your metrics break their standard deviation.
+- **Noise Cancellation:** Smart filtering ignores normal fluctuations to focus only on significant shifts.
+- **Real-Time Pivots:** Dynamic advice that adapts your strategy based on today's live data.
 
 ---
 

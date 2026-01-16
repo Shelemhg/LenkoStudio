@@ -48,6 +48,23 @@
  * ==========================================================================
  */
 
+/* ========================================================================== */
+/* VISUAL CONTAINER (Card 1)
+    - Black background to match request
+    - Flex row so left/line/right groups center correctly
+    ========================================================================== */
+
+.visual-connect {
+     width: 100%;
+     height: 100%;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     gap: 10px;
+     padding: 0 12px;
+     background: #000;
+}
+
 /* ==========================================================================
    COMPONENT: LEFT SIDE (TikTok)
    ========================================================================== */
@@ -100,14 +117,38 @@
     left: -20%;
     width: 140%;
     height: 2px;
-    background: #00ccff; /* Solid core */
-    box-shadow: 0 0 10px #00ccff, 0 0 5px #fff; /* Strong glow */
+    background: #00ff9d; /* Saturated Green data color */
+    box-shadow: 0 0 10px #00ff9d, 0 0 5px #fff; 
     opacity: 0;
     transform: rotate(0deg); 
     pointer-events: none;
     z-index: 10;
     /* Sweeps during Phase 6 (48% - 59%) */
     animation: tiktok-scan-sweep 9s infinite ease-in-out;
+}
+
+/* The Green Grid Effect overlay */
+.visual-connect .tiktok-scan-grid {
+    position: absolute;
+    inset: -10%; /* Cover slightly more than the logo */
+    background-image: 
+        linear-gradient(rgba(0, 255, 157, 0.6) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 157, 0.6) 1px, transparent 1px);
+    background-size: 8px 8px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 5;
+    border-radius: 50%; /* Match the ring/logo shape roughly, or just be a square overlay */
+    mask-image: radial-gradient(circle, black 40%, transparent 80%);
+    animation: tiktok-grid-scan 9s infinite ease-in-out;
+}
+
+@keyframes tiktok-grid-scan {
+    0%, 47% { opacity: 0; transform: scale(0.8); }
+    48% { opacity: 1; transform: scale(1); }
+    70% { opacity: 1; transform: scale(1); }
+    71% { opacity: 0; transform: scale(1.1); }
+    100% { opacity: 0; }
 }
 
 
@@ -131,6 +172,7 @@
     height: 100%;
     background: var(--adam-border); 
     border-radius: 2px;
+    z-index: 1;
 }
 
 /* The Moving Beam (Fills Left -> Right) */
@@ -143,6 +185,7 @@
     background: linear-gradient(90deg, var(--adam-success) 0%, #fff 100%);
     border-radius: 2px;
     box-shadow: 0 0 10px var(--adam-success);
+    z-index: 2;
     /* Fills 0% -> 100% between 11% and 32% */
     animation: line-beam-sequence 9s infinite linear;
 }
@@ -155,12 +198,15 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
-    background-size: 50% 100%;
+    /* Short, high-contrast packets with maximum visibility */
+    background: linear-gradient(90deg, transparent 0%, #ffffff 50%, transparent 100%);
+    background-size: 12% 100%; /* Shorter packet */
     background-repeat: no-repeat;
     opacity: 0;
-    z-index: 2;
-    animation: flow-glow 0.4s infinite linear, line-pulse-visibility 9s infinite linear;
+    z-index: 3;
+    filter: drop-shadow(0 0 12px #ffffff); /* Strong glow */
+    /* Much faster flow (0.15s) */
+    animation: flow-glow 0.15s infinite linear, line-pulse-visibility 9s infinite linear;
 }
 
 /* The "Head" of the beam (The leading circle) */
@@ -187,9 +233,9 @@
     top: 0;
     height: 100%;
     width: 0%;
-    background: linear-gradient(270deg, #00ccff 0%, transparent 100%);
+    background: linear-gradient(270deg, #00ff9d 0%, transparent 100%);
     border-radius: 2px;
-    box-shadow: 0 0 10px #00ccff;
+    box-shadow: 0 0 10px #00ff9d;
     opacity: 0;
     transform-origin: right;
     /* Active during Phase 6 (48% - 59%) */
@@ -299,16 +345,16 @@
     
     32% { color: #fff; filter: drop-shadow(0 0 10px rgba(255,255,255,0.8)); opacity: 1; }
     
-    /* Hold Bright until Scan Starts at 37% */
-    36% { color: #fff; filter: drop-shadow(0 0 10px rgba(255,255,255,0.8)); opacity: 1; }
+    /* Hold Bright until Scan Starts at 48% (Delayed) */
+    47% { color: #fff; filter: drop-shadow(0 0 10px rgba(255,255,255,0.8)); opacity: 1; }
     
-    /* Dim during scan to emphasize the beam (37% - 48%) */
-    37% { color: #fff; filter: none; opacity: 0.7; }
+    /* Dim during scan to emphasize the beam (48% - 70%) */
     48% { color: #fff; filter: none; opacity: 0.7; }
+    70% { color: #fff; filter: none; opacity: 0.7; }
     
     /* Recover & Pulse (Success) */
-    49% { color: #fff; filter: drop-shadow(0 0 15px #fff); opacity: 1; transform: scale(1.1); }
-    53% { color: #fff; filter: drop-shadow(0 0 10px rgba(255,255,255,0.8)); opacity: 1; transform: scale(1); }
+    71% { color: #fff; filter: drop-shadow(0 0 15px #fff); opacity: 1; transform: scale(1.1); }
+    75% { color: #fff; filter: drop-shadow(0 0 10px rgba(255,255,255,0.8)); opacity: 1; transform: scale(1); }
     85% { color: #fff; filter: drop-shadow(0 0 10px rgba(255,255,255,0.8)); opacity: 1; }
     
     99%, 100% { color: var(--adam-text-muted); transform: scale(1); filter: none; opacity: 1; }
@@ -324,12 +370,16 @@
 }
 
 @keyframes tiktok-scan-sweep {
-    /* Starts at 37% (Scan Phase) */
-    0%, 36% { opacity: 0; top: -10%; }
-    37% { opacity: 1; top: -10%; }
-    42.5% { top: 110%; } /* Scan Down */
-    48% { top: -10%; opacity: 1; } /* Scan Up */
-    49% { opacity: 0; }
+    /* Starts at 48% (Delayed Scan Phase) */
+    0%, 47% { opacity: 0; top: -10%; }
+    48% { opacity: 1; top: -10%; }
+    53.5% { top: 110%; } /* Scan Down 1 */
+    59% { top: -10%; opacity: 1; } /* Scan Up 1 */
+    
+    64.5% { top: 110%; } /* Scan Down 2 */
+    70% { top: -10%; opacity: 1; } /* Scan Up 2 */
+    
+    71% { opacity: 0; }
     100% { opacity: 0; }
 }
 
@@ -355,11 +405,11 @@
 }
 
 @keyframes scan-beam-sequence {
-    /* Starts at 37% (Scan Phase) */
-    0%, 36% { width: 0%; opacity: 0; }
-    37% { width: 100%; opacity: 1; }
+    /* Starts at 48% (Delayed Scan Phase) */
+    0%, 47% { width: 0%; opacity: 0; }
     48% { width: 100%; opacity: 1; }
-    49% { width: 100%; opacity: 0; } 
+    70% { width: 100%; opacity: 1; }
+    71% { width: 100%; opacity: 0; } 
     100% { width: 0%; opacity: 0; }
 }
 
@@ -390,7 +440,12 @@
     0%, 10% { opacity: 0; }
     11% { opacity: 1; }
     20% { opacity: 1; }
-    21%, 100% { opacity: 0; }
+    21% { opacity: 0; }
+    /* Rapid Data Transfer (Between First Scan End and Pulse) */
+    58% { opacity: 0; }
+    59% { opacity: 1; } /* Starts after first scan up */
+    70% { opacity: 1; } /* Stops before pulse */
+    71%, 100% { opacity: 0; }
 }
 
 
@@ -402,21 +457,24 @@
     22% { color: #2563eb; transform: scale(1.3); filter: drop-shadow(0 0 12px #2563eb); } 
     27% { transform: scale(1); filter: drop-shadow(0 0 8px #2563eb); }
     
-    /* Processing (Blue) */
+    /* Processing (Blue) - Extended Duration (1s = ~11%) */
     29% { color: #2563eb; transform: scale(1.1); filter: drop-shadow(0 0 15px #2563eb); }
+    40% { color: #2563eb; transform: scale(1.05); filter: drop-shadow(0 0 15px #2563eb); }
     
-    /* Transition to Charged (Cyan) */
-    33% { color: #00ccff; transform: scale(1.05); filter: drop-shadow(0 0 12px #00ccff); } 
+    /* Transition to Charged (Neon Green) Starts at 44% */
+    44% { color: #00ff9d; transform: scale(1.05); filter: drop-shadow(0 0 12px #00ff9d); } 
     
-    /* Ready/Scan State (Cyan) */
-    47% { color: #00ccff; filter: drop-shadow(0 0 10px #00ccff); transform: scale(1); }
+    /* Ready/Scan State (Neon Green) Starts at 48% */
+    48% { color: #00ff9d; filter: drop-shadow(0 0 10px #00ff9d); transform: scale(1); }
+    70% { color: #00ff9d; filter: drop-shadow(0 0 10px #00ff9d); transform: scale(1); }
     
     /* Success/Done (White Pulse) */
-    49% { color: #fff; filter: drop-shadow(0 0 20px #fff); transform: scale(1.15); }
-    53% { color: #00ccff; filter: drop-shadow(0 0 10px #00ccff); transform: scale(1); }
+    71% { color: #fff; filter: drop-shadow(0 0 20px #fff); transform: scale(1.15); }
+    /* RETURN TO BLUE */
+    75% { color: #2563eb; filter: drop-shadow(0 0 10px #2563eb); transform: scale(1); }
     
-    85% { color: #00ccff; filter: drop-shadow(0 0 10px #00ccff); transform: scale(1); opacity: 1; }
-    99%, 100% { color: #00ccff; transform: scale(1); filter: none; opacity: 0; }
+    85% { color: #2563eb; filter: drop-shadow(0 0 10px #2563eb); transform: scale(1); opacity: 1; }
+    99%, 100% { color: #2563eb; transform: scale(1); filter: none; opacity: 0; }
 }
 
 @keyframes adam-tech-text {
@@ -424,12 +482,15 @@
     22% { color: #fff; text-shadow: 0 0 20px #2563eb, 0 0 10px #2563eb; opacity: 1; }
     25% { color: #2563eb; text-shadow: 0 0 15px #2563eb; }
     29% { color: #2563eb; text-shadow: 0 0 15px #2563eb; }
-    33% { color: #00ccff; text-shadow: 0 0 15px #00ccff; }
-    47% { color: #00ccff; text-shadow: 0 0 15px #00ccff; }
-    49% { color: #fff; text-shadow: 0 0 20px #fff; opacity: 1; }
-    53% { color: #00ccff; text-shadow: 0 0 15px #00ccff; }
-    85% { color: #00ccff; text-shadow: 0 0 15px #00ccff; opacity: 1; }
-    99%, 100% { color: #00ccff; text-shadow: none; opacity: 0; }
+    40% { color: #2563eb; text-shadow: 0 0 15px #2563eb; }
+    44% { color: #00ff9d; text-shadow: 0 0 15px #00ff9d; }
+    48% { color: #00ff9d; text-shadow: 0 0 15px #00ff9d; }
+    70% { color: #00ff9d; text-shadow: 0 0 15px #00ff9d; }
+    71% { color: #fff; text-shadow: 0 0 20px #fff; opacity: 1; }
+    /* RETURN TO BLUE */
+    75% { color: #2563eb; text-shadow: 0 0 15px #2563eb; }
+    85% { color: #2563eb; text-shadow: 0 0 15px #2563eb; opacity: 1; }
+    99%, 100% { color: #2563eb; text-shadow: none; opacity: 0; }
 }
 
 
@@ -506,11 +567,14 @@
     .visual-connect .tiktok-scan-fx {
         animation: tiktok-scan-sweep 9s infinite ease-in-out !important;
     }
+    .visual-connect .tiktok-scan-grid {
+        animation: tiktok-grid-scan 9s infinite ease-in-out !important;
+    }
     .visual-connect .connect-line-active {
         animation: line-beam-sequence 9s infinite linear !important;
     }
     .visual-connect .connect-line-active::before {
-        animation: flow-glow 0.4s infinite linear, line-pulse-visibility 9s infinite linear !important;
+        animation: flow-glow 0.15s infinite linear, line-pulse-visibility 9s infinite linear !important;
     }
     .visual-connect .connect-line-active::after {
         animation: beam-head-opacity 9s infinite !important;

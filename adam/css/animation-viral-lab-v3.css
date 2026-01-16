@@ -1,0 +1,196 @@
+/* Viral Lab V3 - "The Optimizer" (Digital Glitch/Growth) */
+/* Based on original layout (A/B Modules) but with dynamic stress-test animation */
+
+.visual-viral-lab-v3 {
+    position: relative;
+    background: #050505;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Background Grid (Technical) */
+.v3-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(0, 255, 157, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 157, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+    z-index: 1;
+}
+
+/* Main Container */
+.v3-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 2;
+    position: relative;
+}
+
+/* The Modules (A and B) */
+.v3-module {
+    width: 50px;
+    height: 70px;
+    border: 2px solid #333;
+    border-radius: 6px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.02);
+    transition: all 0.3s ease;
+}
+
+.v3-label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.v3-screen {
+    width: 36px;
+    height: 36px;
+    background: #111;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Inner content of screens (Waveform) */
+.v3-wave {
+    width: 100%;
+    height: 2px;
+    background: #555;
+    box-shadow: 0 0 5px #555;
+}
+
+/* Central Scanner Bar */
+.v3-scanner-bar {
+    position: absolute;
+    top: -10%;
+    left: -10%;
+    width: 120%;
+    height: 4px;
+    background: #00ff9d;
+    box-shadow: 0 0 10px #00ff9d;
+    z-index: 10;
+    opacity: 0.8;
+}
+
+/* Result Overlays */
+.v3-result-text {
+    position: absolute;
+    top: -20px;
+    font-size: 10px;
+    font-weight: bold;
+    opacity: 0;
+}
+
+/* ------------------------------------------------ */
+/* Animations */
+/* ------------------------------------------------ */
+
+/* 1. Scanner Sequence */
+@keyframes v3-scan-pass {
+    0% { top: -10%; opacity: 0; }
+    10% { opacity: 1; }
+    50% { top: 110%; opacity: 1; }
+    60% { opacity: 0; }
+    100% { opacity: 0; top: 110%; }
+}
+
+/* 2. Module A: Failure Sequence */
+@keyframes v3-fail-state {
+    0%, 40% { border-color: #333; transform: scale(1); }
+    /* Hit by scan at ~25% */
+    45% { border-color: #ff3333; background: rgba(255, 51, 51, 0.1); transform: translateX(-2px); }
+    50% { transform: translateX(2px); }
+    55% { transform: translateX(-2px); border-color: #550000; opacity: 1; }
+    /* Glitch out */
+    60% { opacity: 0.5; filter: grayscale(100%); transform: scale(0.95); }
+    100% { opacity: 0.3; border-color: #222; transform: scale(0.9); }
+}
+
+/* Wave A Flatline */
+@keyframes v3-wave-flatline {
+    0%, 40% { background: #555; height: 2px; }
+    45% { background: #ff3333; height: 1px; }
+    100% { background: #330000; width: 50%; opacity: 0.5; }
+}
+
+/* 3. Module B: Success Sequence */
+@keyframes v3-success-state {
+    0%, 40% { border-color: #333; transform: scale(1); }
+    /* Hit by scan at ~25% */
+    45% { border-color: #00ff9d; background: rgba(0, 255, 157, 0.1); box-shadow: 0 0 15px rgba(0, 255, 157, 0.2); }
+    50% { transform: scale(1.1); }
+    60% { transform: scale(1.05); border-color: #ffffff; }
+    /* Pulse */
+    70% { transform: scale(1.1); border-color: #00ff9d; box-shadow: 0 0 25px rgba(0, 255, 157, 0.4); }
+    100% { transform: scale(1.1); border-color: #00ff9d; box-shadow: 0 0 25px rgba(0, 255, 157, 0.4); }
+}
+
+/* Wave B Growth */
+@keyframes v3-wave-grow {
+    0%, 40% { background: #555; height: 2px; }
+    45% { background: #00ff9d; height: 4px; }
+    50% { height: 12px; width: 12px; border-radius: 50%; } /* Morph to dot */
+    60% { transform: scale(2); box-shadow: 0 0 10px #00ff9d; }
+    100% { transform: scale(2.5); box-shadow: 0 0 15px #00ff9d; } /* Big glowing core */
+}
+
+/* Text floating up */
+@keyframes v3-float-up {
+    0%, 50% { opacity: 0; transform: translateY(10px); }
+    60% { opacity: 1; transform: translateY(0); color: #00ff9d; }
+    100% { opacity: 1; transform: translateY(-5px); color: #00ff9d; }
+}
+
+/* ------------------------------------------------ */
+/* Assignment */
+/* ------------------------------------------------ */
+
+.v3-scanner-bar {
+    animation: v3-scan-pass 3s infinite ease-in-out;
+}
+
+.v3-module-a {
+    animation: v3-fail-state 3s infinite ease-in-out;
+}
+.v3-module-a .v3-wave {
+    animation: v3-wave-flatline 3s infinite;
+}
+
+.v3-module-b {
+    animation: v3-success-state 3s infinite ease-in-out;
+}
+.v3-module-b .v3-wave {
+    animation: v3-wave-grow 3s infinite;
+}
+
+.v3-module-b .v3-result-text {
+    animation: v3-float-up 3s infinite;
+}
+
+/* Center Connector (Arrow) */
+.v3-arrow {
+    font-size: 20px;
+    color: #333;
+    animation: v3-arrow-pulse 3s infinite;
+}
+
+@keyframes v3-arrow-pulse {
+    0%, 40% { color: #333; }
+    50% { color: #00ff9d; text-shadow: 0 0 5px #00ff9d; }
+    100% { color: #333; }
+}

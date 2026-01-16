@@ -1,0 +1,470 @@
+/* Viral Lab V4 - "The Laboratory" (Refined A/B) */
+
+.visual-viral-lab-v4 {
+    position: relative;
+    background: #020204;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    /* Subtle Vignette */
+    box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+}
+
+.visual-viral-lab-v4.v4-reset *,
+.visual-viral-lab-v4.v4-reset *::before,
+.visual-viral-lab-v4.v4-reset *::after {
+    animation: none !important;
+}
+
+/* Background Grid - Hexagonal for more tech feel */
+.v4-bg-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
+    background-image: radial-gradient(circle, #1a1a1a 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.2;
+    transform: perspective(300px) rotateX(40deg) translateY(-50px) translateZ(-100px);
+    z-index: 1;
+}
+
+/* Main Container */
+.v4-container {
+    display: flex;
+    gap: 24px;
+    z-index: 5;
+    position: relative;
+    padding-top: 10px; /* Space for scanner */
+}
+
+/* Followers Counter (appears under modules) */
+.v4-followers {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    z-index: 8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 5px 12px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(6px);
+}
+
+.v4-followers-label {
+    font-size: 9px;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: rgba(59, 130, 246, 0.75);
+    animation: v4-followers-tint 10s infinite;
+}
+
+.v4-followers-value {
+    display: flex;
+    align-items: center;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 16px;
+    height: 16px;
+    color: rgba(255, 255, 255, 0.9);
+    animation: v4-followers-glow 10s infinite, v4-followers-pulse 10s infinite;
+}
+
+/* Common Module Styles */
+.v4-module {
+    width: 50px;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Labels (A vs B) */
+.v4-label {
+    font-size: 10px;
+    color: #444;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    transition: color 0.3s;
+}
+
+/* Screen Area */
+.v4-screen {
+    flex: 1;
+    width: 100%;
+    background: #000;
+    border-radius: 4px;
+    border: 1px solid #222;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Content inside screen (Waveform/Graph) */
+.v4-data-line {
+    width: 100%;
+    height: 1px;
+    background: #444;
+    position: relative;
+}
+.v4-data-line::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 30%;
+    height: 3px;
+    background: #666;
+    animation: v4-data-idle 10s infinite linear;
+}
+
+/* Posted overlay (so it reads as "both were published") */
+.v4-screen::before {
+    content: '▶';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: rgba(59, 130, 246, 0.55);
+    opacity: 0;
+    animation: v4-posted-icon 10s infinite;
+    pointer-events: none;
+}
+
+.v4-screen::after {
+    content: '';
+    position: absolute;
+    left: -40%;
+    top: 65%;
+    width: 40%;
+    height: 2px;
+    background: rgba(59, 130, 246, 0.42);
+    box-shadow: 0 0 14px rgba(59, 130, 246, 0.28);
+    opacity: 0;
+    animation: v4-upload-line 10s infinite;
+    pointer-events: none;
+}
+
+/* Processing / Comparison Core (replaces scan) */
+.v4-processing {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22px;
+    height: 22px;
+    z-index: 12;
+    opacity: 0;
+    animation: v4-processing-seq 10s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.v4-core {
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 rgba(59, 130, 246, 0);
+    animation: v4-core-pulse 10s infinite;
+}
+
+.v4-processing::before {
+    content: '';
+    position: absolute;
+    inset: -7px;
+    border-radius: 999px;
+    border: 1px solid rgba(59, 130, 246, 0.55);
+    opacity: 0.4;
+    animation: v4-ring-spin 1.2s linear infinite;
+}
+
+.v4-dots {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 3px;
+}
+
+.v4-dots i {
+    width: 3px;
+    height: 3px;
+    border-radius: 999px;
+    background: rgba(59, 130, 246, 0.85);
+    display: block;
+    animation: v4-dot-bounce 0.6s infinite ease-in-out;
+}
+
+.v4-dots i:nth-child(2) { animation-delay: 0.12s; }
+.v4-dots i:nth-child(3) { animation-delay: 0.24s; }
+
+/* Status Indicators */
+.v4-status-icon {
+    position: absolute;
+    top: -12px;
+    right: -8px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #111;
+    border: 2px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #fff;
+    transform: scale(0);
+    z-index: 20;
+}
+
+/* ------------------------------------------------ */
+/* Animation Keyframes */
+/* ------------------------------------------------ */
+
+@keyframes v4-data-idle {
+    0% { left: -30%; opacity: 0; }
+    8% { opacity: 1; }
+    40% { left: 130%; opacity: 1; }
+    45% { opacity: 0; }
+    100% { left: 130%; opacity: 0; }
+}
+
+@keyframes v4-posted-icon {
+    0% { opacity: 0; transform: scale(0.98); }
+    10% { opacity: 1; }
+    28% { opacity: 1; }
+    34% { opacity: 0; transform: scale(1.02); }
+    100% { opacity: 0; }
+}
+
+@keyframes v4-upload-line {
+    0% { opacity: 0; transform: translateX(0); }
+    10% { opacity: 1; }
+    28% { opacity: 1; transform: translateX(220%); }
+    34% { opacity: 0; }
+    100% { opacity: 0; transform: translateX(220%); }
+}
+
+@keyframes v4-processing-seq {
+    0% { opacity: 0; transform: translateX(-50%) scale(0.98); }
+    12% { opacity: 1; }
+    55% { opacity: 1; transform: translateX(-50%) scale(1.03); }
+    60% { opacity: 0; transform: translateX(-50%) scale(0.98); }
+    100% { opacity: 0; }
+}
+
+@keyframes v4-core-pulse {
+    0%, 55% { box-shadow: 0 0 0 rgba(59, 130, 246, 0); }
+    18% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.25); }
+    55% { box-shadow: 0 0 28px rgba(59, 130, 246, 0.38); }
+    100% { box-shadow: 0 0 0 rgba(59, 130, 246, 0); }
+}
+
+@keyframes v4-ring-spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes v4-dot-bounce {
+    0%, 100% { transform: translateY(0); opacity: 0.55; }
+    50% { transform: translateY(-2px); opacity: 1; }
+}
+
+@keyframes v4-followers-tint {
+    0%, 62% { color: rgba(59, 130, 246, 0.78); }
+    62.1%, 100% { color: rgba(0, 255, 157, 0.78); }
+}
+
+@keyframes v4-followers-glow {
+    0%, 62% { color: rgba(255, 255, 255, 0.75); text-shadow: none; }
+    62.1%, 100% { color: rgba(0, 255, 157, 0.95); text-shadow: 0 0 10px rgba(0, 255, 157, 0.35); }
+}
+
+@keyframes v4-followers-pulse {
+    0%, 61.5% { transform: scale(1); filter: none; }
+    62.5% { transform: scale(1.08); filter: drop-shadow(0 0 10px rgba(0, 255, 157, 0.25)); }
+    64% { transform: scale(1); filter: none; }
+    100% { transform: scale(1); filter: none; }
+}
+
+
+/* --- Module A: REJECTED --- */
+@keyframes v4-module-fail {
+    0%, 52% { border-color: rgba(255, 255, 255, 0.1); transform: scale(1); opacity: 1; }
+    56% { border-color: #ff3333; transform: translateX(-1px); }
+    58% { transform: translateX(1px); }
+    60% { border-color: #330000; background: rgba(50, 0, 0, 0.2); opacity: 0.5; filter: grayscale(1); }
+    100% { border-color: #330000; background: rgba(50, 0, 0, 0.2); opacity: 0.5; filter: grayscale(1); }
+}
+
+@keyframes v4-label-fail {
+    0%, 52% { color: #444; }
+    60% { color: #ff3333; }
+    100% { color: #550000; }
+}
+
+@keyframes v4-screen-fail {
+    0%, 52% { border-color: #222; }
+    60% { border-color: #ff3333; background: #110000; }
+    /* Static Noise effect */
+    62% { background-image: repeating-linear-gradient(45deg, #220000 0, #110000 2px); }
+    100% { border-color: #550000; opacity: 0.4; }
+}
+
+@keyframes v4-icon-fail {
+    0%, 60% { transform: scale(0); border-color: #333; background: #111; }
+    62% { transform: scale(1.1); border-color: #ff3333; background: #aa0000; content: "✕"; }
+    64% { transform: scale(1); }
+    100% { transform: scale(1); border-color: #ff3333; background: #aa0000; }
+}
+
+/* --- Module B: APPROVED --- */
+@keyframes v4-module-success {
+    0%, 52% { border-color: rgba(255, 255, 255, 0.1); transform: scale(1); box-shadow: none; }
+    56% { border-color: #00ff9d; }
+    60% { transform: scale(1.05); background: rgba(0, 255, 157, 0.05); box-shadow: 0 0 15px rgba(0, 255, 157, 0.1); }
+    100% { transform: scale(1.05); background: rgba(0, 255, 157, 0.05); box-shadow: 0 0 20px rgba(0, 255, 157, 0.2); border-color: #00ff9d; }
+}
+
+@keyframes v4-label-success {
+    0%, 52% { color: #444; }
+    60% { color: #00ff9d; text-shadow: 0 0 5px #00ff9d; }
+    100% { color: #00ff9d; text-shadow: 0 0 5px #00ff9d; }
+}
+
+@keyframes v4-screen-success {
+    0%, 52% { border-color: #222; }
+    60% { border-color: #00ff9d; }
+    100% { border-color: #00ff9d; background: rgba(0, 255, 157, 0.05); }
+}
+
+@keyframes v4-data-success {
+    0%, 52% { height: 1px; background: #444; top: 0; }
+    /* Transforms into a rising bar graph */
+    60% { height: 4px; width: 6px; background: #00ff9d; left: -10px; top: 10px; box-shadow: 10px -5px #00ff9d, 20px -15px #00ff9d; }
+    100% { height: 4px; width: 6px; background: #00ff9d; left: -10px; top: 10px; box-shadow: 10px -5px #00ff9d, 20px -20px #00ff9d; }
+}
+
+@keyframes v4-icon-success {
+    0%, 56% { transform: scale(0); border-color: #333; background: #111; }
+    58% { transform: scale(1.2); border-color: #ffffff; background: #00ff9d; }
+    60% { transform: scale(1); box-shadow: 0 0 10px #00ff9d; }
+    100% { transform: scale(1); border-color: #ffffff; background: #00ff9d; box-shadow: 0 0 10px #00ff9d; }
+}
+
+/* ------------------------------------------------ */
+/* Applying Animations */
+/* ------------------------------------------------ */
+
+/* Module A Assignments */
+.v4-module-a { animation: v4-module-fail 10s infinite; }
+.v4-module-a .v4-label { animation: v4-label-fail 10s infinite; }
+.v4-module-a .v4-screen { animation: v4-screen-fail 10s infinite; }
+.v4-module-a .v4-status-icon { animation: v4-icon-fail 10s infinite; }
+.v4-module-a .v4-status-icon::after { content: '✕'; font-weight: bold; }
+
+/* Module B Assignments */
+.v4-module-b { animation: v4-module-success 10s infinite; }
+.v4-module-b .v4-label { animation: v4-label-success 10s infinite; }
+.v4-module-b .v4-screen { animation: v4-screen-success 10s infinite; }
+.v4-module-b .v4-data-line { animation: v4-data-success 10s infinite; }
+.v4-module-b .v4-data-line::after { display: none; } /* Remove idle ani */
+.v4-module-b .v4-status-icon { animation: v4-icon-success 10s infinite; }
+.v4-module-b .v4-status-icon::after { content: '✔'; font-weight: bold; color: #000; }
+
+/* =========================================
+   REDUCED MOTION OVERRIDES
+   ========================================= */
+@media (prefers-reduced-motion: reduce) {
+    /* Ensure this demo animation still plays even if OS requests reduced motion.
+       The global rule in `adam-styles.css` clamps all animations to 1 iteration.
+       These re-assert the intended timings for this card. */
+
+    .visual-viral-lab-v4 .v4-screen::before {
+        animation: v4-posted-icon 10s infinite !important;
+    }
+
+    .visual-viral-lab-v4 .v4-screen::after {
+        animation: v4-upload-line 10s infinite !important;
+    }
+
+    .visual-viral-lab-v4 .v4-processing {
+        animation: v4-processing-seq 10s infinite cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .visual-viral-lab-v4 .v4-core {
+        animation: v4-core-pulse 10s infinite !important;
+    }
+
+    .visual-viral-lab-v4 .v4-processing::before {
+        animation: v4-ring-spin 1.2s linear infinite !important;
+    }
+
+    .visual-viral-lab-v4 .v4-dots i {
+        animation: v4-dot-bounce 0.6s infinite ease-in-out !important;
+    }
+
+    .visual-viral-lab-v4 .v4-data-line::after {
+        animation: v4-data-idle 10s infinite linear !important;
+    }
+
+    .visual-viral-lab-v4 .v4-followers-label {
+        animation: v4-followers-tint 10s infinite !important;
+    }
+
+    .visual-viral-lab-v4 .v4-followers-value {
+        animation: v4-followers-glow 10s infinite, v4-followers-pulse 10s infinite !important;
+    }
+
+    .visual-viral-lab-v4 .v4-module-a {
+        animation: v4-module-fail 10s infinite !important;
+    }
+    .visual-viral-lab-v4 .v4-module-a .v4-label {
+        animation: v4-label-fail 10s infinite !important;
+    }
+    .visual-viral-lab-v4 .v4-module-a .v4-screen {
+        animation: v4-screen-fail 10s infinite !important;
+    }
+    .visual-viral-lab-v4 .v4-module-a .v4-status-icon {
+        animation: v4-icon-fail 10s infinite !important;
+    }
+
+    .visual-viral-lab-v4 .v4-module-b {
+        animation: v4-module-success 10s infinite !important;
+    }
+    .visual-viral-lab-v4 .v4-module-b .v4-label {
+        animation: v4-label-success 10s infinite !important;
+    }
+    .visual-viral-lab-v4 .v4-module-b .v4-screen {
+        animation: v4-screen-success 10s infinite !important;
+    }
+    .visual-viral-lab-v4 .v4-module-b .v4-data-line {
+        animation: v4-data-success 10s infinite !important;
+    }
+    .visual-viral-lab-v4 .v4-module-b .v4-status-icon {
+        animation: v4-icon-success 10s infinite !important;
+    }
+}

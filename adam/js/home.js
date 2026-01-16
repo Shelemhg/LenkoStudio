@@ -373,11 +373,108 @@
         }, 30);
     }
 
+    function animateCountFrom(
+        element,
+        start,
+        target,
+        formatter = (n) => n.toLocaleString(),
+        options = {}
+    ) {
+        if (element._countTimer) {
+            clearInterval(element._countTimer);
+            element._countTimer = null;
+        }
+
+        let current = start;
+        const steps = Number.isFinite(options.steps) ? options.steps : 50;
+        const intervalMs = Number.isFinite(options.intervalMs) ? options.intervalMs : 30;
+        const increment = (target - start) / steps;
+
+        element._countTimer = setInterval(() => {
+            current += increment;
+            if ((increment >= 0 && current >= target) || (increment < 0 && current <= target)) {
+                current = target;
+                clearInterval(element._countTimer);
+                element._countTimer = null;
+            }
+            element.textContent = formatter(Math.floor(current));
+        }, intervalMs);
+    }
+
     function formatNumber(num) {
         if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M+';
         if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
         return num.toLocaleString();
     }
+
+    // Viral Lab V4: Followers counter (starts after "Video B" is selected, then full 3s pause)
+    const V4_CYCLE_MS = 10000;
+    // Sequence: checkmark completes (~60%) -> followers pulse (60-62%) -> counter starts after pulse
+    const V4_COUNTER_START_MS = 6500;
+    // 25 * 20ms = 500ms => finishes right before the 3s hold (starts at 7000ms)
+    const V4_COUNTER_STEPS = 25;
+    const V4_COUNTER_INTERVAL_MS = 20;
+
+    const v4FollowersObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const el = entry.target;
+            const container = el.closest('.visual-viral-lab-v4');
+            if (!container) return;
+
+            const start = parseInt(el.dataset.countStart || '0', 10);
+            const target = parseInt(el.dataset.countTarget || '0', 10);
+            if (!Number.isFinite(start) || !Number.isFinite(target)) return;
+
+            if (!entry.isIntersecting) {
+                if (el._v4CycleTimer) {
+                    clearInterval(el._v4CycleTimer);
+                    el._v4CycleTimer = null;
+                }
+                if (el._v4StartTimer) {
+                    clearTimeout(el._v4StartTimer);
+                    el._v4StartTimer = null;
+                }
+                delete el.dataset.v4LoopSetup;
+                return;
+            }
+
+            if (el.dataset.v4LoopSetup === 'true') return;
+            el.dataset.v4LoopSetup = 'true';
+
+            const formatter = (n) => n.toLocaleString();
+
+            const restartV4Animations = () => {
+                // Forces all CSS animations inside the V4 visual to restart at 0%
+                container.classList.add('v4-reset');
+                void container.offsetWidth;
+                container.classList.remove('v4-reset');
+            };
+
+            const runCycle = () => {
+                if (el._v4StartTimer) {
+                    clearTimeout(el._v4StartTimer);
+                    el._v4StartTimer = null;
+                }
+
+                el.textContent = formatter(start);
+
+                el._v4StartTimer = window.setTimeout(() => {
+                    animateCountFrom(el, start, target, formatter, {
+                        steps: V4_COUNTER_STEPS,
+                        intervalMs: V4_COUNTER_INTERVAL_MS
+                    });
+                }, V4_COUNTER_START_MS);
+            };
+
+            restartV4Animations();
+            runCycle();
+            el._v4CycleTimer = window.setInterval(runCycle, V4_CYCLE_MS);
+        });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.v4-followers-number[data-count-start][data-count-target]').forEach(el => {
+        v4FollowersObserver.observe(el);
+    });
 
     // =====================================================================
     // NAVIGATION

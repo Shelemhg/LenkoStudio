@@ -1,0 +1,291 @@
+/* Viral Lab V5 - "The Scientific Method" (Enhanced V3) */
+
+.visual-viral-lab-v5 {
+    position: relative;
+    background: #000;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 12px; /* Space between cards and counter */
+}
+
+/* 1. Background: Blueprint Style */
+.v5-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    z-index: 1;
+}
+
+/* 2. Container */
+.v5-lab-interface {
+    display: flex;
+    gap: 30px;
+    position: relative;
+    z-index: 10;
+    padding-top: 15px; /* Room for header/scanner */
+}
+
+/* 3. The Modules (Cards) */
+.v5-card {
+    width: 60px;
+    height: 80px;
+    background: rgba(20, 20, 20, 0.8);
+    border: 1px solid #333;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 6px;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Label (A/B) */
+.v5-tag {
+    font-size: 9px;
+    font-weight: 800;
+    background: #222;
+    color: #666;
+    padding: 2px 4px;
+    border-radius: 3px;
+    margin-bottom: 6px;
+    font-family: sans-serif;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    width: 100%;
+    text-align: center;
+}
+
+/* Screen Window */
+.v5-viewport {
+    width: 100%;
+    flex: 1;
+    background: #080808;
+    border-radius: 4px;
+    border: 1px solid #222;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Line Graph SVG */
+.v5-graph-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+.v5-graph-path {
+    fill: none;
+    stroke: #333;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+/* Confidence Score Badge */
+.v5-score {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 9px;
+    font-weight: bold;
+    color: #fff;
+    background: #000;
+    border: 1px solid #333;
+    padding: 1px 4px;
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(10px);
+    z-index: 5;
+}
+
+/* 4. The Scanner */
+.v5-laser-line {
+    position: absolute;
+    left: -10%;
+    width: 120%;
+    height: 2px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    z-index: 20;
+    opacity: 0;
+}
+
+/* 5. Followers Counter */
+.v5-counter-box {
+    z-index: 10;
+    background: rgba(10, 10, 10, 0.5);
+    border: 1px solid #222;
+    border-radius: 4px;
+    padding: 4px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* margin-top: 10px; handled by gap */
+}
+
+.v5-counter-label {
+    font-size: 7px;
+    color: #555;
+    letter-spacing: 1.5px;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+}
+
+.v5-counter-value {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    color: #777;
+    display: flex;
+    align-items: center;
+    height: 16px;
+    line-height: 16px;
+}
+
+.v5-digit-reel {
+    height: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.v5-digit-reel span {
+    display: block;
+    height: 16px; 
+}
+
+/* Only animate the reel */
+.v5-digit-reel {
+    animation: v5-reel-spin 6s infinite ease-out; /* Match global 3s x 2 cycle or similar */
+}
+
+/* ------------------------------------------- */
+/* Animations */
+/* ------------------------------------------- */
+
+/* Laser Scan Sequence */
+@keyframes v5-scan-down {
+    0% { top: -20px; opacity: 0; }
+    10% { opacity: 1; }
+    50% { top: 120px; opacity: 1; }
+    60% { opacity: 0; }
+    100% { top: 120px; opacity: 0; }
+}
+
+/* Counter Animation Sequence */
+@keyframes v5-reel-spin {
+    0%, 45% { transform: translateY(0); } /* Shows first number */
+    50% { transform: translateY(-80%); } /* Scrolls to last number (assuming 5 items height) */
+    100% { transform: translateY(-80%); }
+}
+
+@keyframes v5-counter-glow {
+    0%, 45% { color: #777; text-shadow: none; }
+    50% { color: #00ff9d; text-shadow: 0 0 8px rgba(0,255,157,0.6); }
+    100% { color: #00ff9d; text-shadow: 0 0 8px rgba(0,255,157,0.6); }
+}
+
+/* --- Card A: FAIL Behaviour --- */
+@keyframes v5-card-fail {
+    0%, 40% { transform: scale(1); border-color: #333; }
+    45% { border-color: #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.2); }
+    50% { transform: scale(0.95); opacity: 0.5; }
+    100% { transform: scale(0.95); border-color: #550000; opacity: 0.4; }
+}
+
+@keyframes v5-tag-fail {
+    0%, 40% { background: #222; color: #666; }
+    45% { background: #550000; color: #ef4444; }
+    100% { background: #330000; color: #770000; content: "DROP"; }
+}
+
+@keyframes v5-viewport-fail {
+    0%, 40% { border-color: #222; }
+    45% { border-color: #ef4444; background: #1a0505; }
+    100% { border-color: #550000; background: #1a0505; }
+}
+
+@keyframes v5-path-fail {
+    0%, 40% { stroke: #333; d: path('M0,50 Q12,45 25,50 T50,45'); }
+    45% { stroke: #ef4444; d: path('M0,50 Q12,45 25,50 T50,75'); } /* Drop down */
+    100% { stroke: #550000; d: path('M0,50 Q12,45 25,50 T50,75'); }
+}
+
+@keyframes v5-score-fail {
+    0%, 45% { opacity: 0; transform: translateY(10px); }
+    50% { opacity: 1; transform: translateY(0); color: #ef4444; border-color: #ef4444; }
+    100% { opacity: 1; transform: translateY(0); color: #ef4444; border-color: #ef4444; }
+}
+
+/* --- Card B: SUCCESS Behaviour --- */
+@keyframes v5-card-win {
+    0%, 40% { transform: scale(1); border-color: #333; }
+    45% { border-color: #00ff9d; box-shadow: 0 0 20px rgba(0, 255, 157, 0.3); }
+    55% { transform: scale(1.1); }
+    100% { transform: scale(1.1); border-color: #00ff9d; box-shadow: 0 0 25px rgba(0, 255, 157, 0.4); background: rgba(0, 255, 157, 0.05); }
+}
+
+@keyframes v5-tag-win {
+    0%, 40% { background: #222; color: #666; }
+    45% { background: #00ff9d; color: #000; }
+    100% { background: #00ff9d; color: #000; box-shadow: 0 0 10px #00ff9d; }
+}
+
+@keyframes v5-viewport-win {
+    0%, 40% { border-color: #222; }
+    100% { border-color: #00ff9d; background: rgba(0, 255, 157, 0.1); }
+}
+
+@keyframes v5-path-win {
+    0%, 40% { stroke: #333; d: path('M0,50 Q12,45 25,50 T50,45'); }
+    45% { stroke: #00ff9d; }
+    50% { d: path('M0,50 Q12,45 25,15 T50,5'); stroke-width: 3; } /* Shoots up */
+    100% { stroke: #00ff9d; d: path('M0,50 Q12,45 25,15 T50,5'); stroke-width: 3; filter: drop-shadow(0 0 5px #00ff9d); }
+}
+
+@keyframes v5-score-win {
+    0%, 45% { opacity: 0; transform: translateY(10px); }
+    50% { opacity: 1; transform: translateY(-5px); color: #00ff9d; border-color: #00ff9d; background: #003320; }
+    100% { opacity: 1; transform: translateY(-5px); color: #00ff9d; border-color: #00ff9d; background: #003320; }
+}
+
+/* ------------------------------------------- */
+/* Assignment */
+/* ------------------------------------------- */
+
+.v5-laser-line {
+    animation: v5-scan-down 3s infinite ease-in-out;
+}
+
+.v5-counter-value {
+    animation: v5-counter-glow 3s infinite ease-in-out;
+}
+.v5-digit-reel {
+    animation: v5-reel-spin 3s infinite cubic-bezier(0.1, 0, 0.2, 1);
+}
+
+/* Fail Module */
+.v5-card-a { animation: v5-card-fail 3s infinite ease-in-out; }
+.v5-card-a .v5-tag { animation: v5-tag-fail 3s infinite; }
+.v5-card-a .v5-viewport { animation: v5-viewport-fail 3s infinite; }
+.v5-card-a .v5-graph-path { animation: v5-path-fail 3s infinite forwards; }
+.v5-card-a .v5-score { animation: v5-score-fail 3s infinite; }
+
+/* Win Module */
+.v5-card-b { animation: v5-card-win 3s infinite ease-in-out; }
+.v5-card-b .v5-tag { animation: v5-tag-win 3s infinite; }
+.v5-card-b .v5-viewport { animation: v5-viewport-win 3s infinite; }
+.v5-card-b .v5-graph-path { animation: v5-path-win 3s infinite forwards; }
+.v5-card-b .v5-score { animation: v5-score-win 3s infinite; }
