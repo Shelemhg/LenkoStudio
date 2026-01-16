@@ -4577,6 +4577,60 @@ img, video {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+
+  /* Exceptions: keep hero/above-the-fold motion visuals running.
+     This site uses animation as part of the product demo. */
+  .adam-hero::before {
+    animation: pulseGradient 10s ease-in-out infinite alternate !important;
+  }
+
+  .adam-hero .particle {
+    animation-name: float !important;
+    animation-duration: 15s !important;
+    animation-timing-function: ease-in-out !important;
+    animation-iteration-count: infinite !important;
+  }
+
+  .adam-hero h1 {
+    animation: fadeInUp 0.8s ease-out !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .adam-hero .subheadline {
+    animation: fadeInUp 0.8s ease-out 0.2s backwards !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .adam-hero .adam-cta-group {
+    animation: fadeInUp 0.8s ease-out 0.4s backwards !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .adam-hero .adam-stats-bar {
+    animation: fadeInUp 0.8s ease-out 0.6s backwards !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .adam-hero .scroll-indicator {
+    animation: bounce 2s infinite !important;
+  }
+
+  .adam-hero .hero-dashboard-preview {
+    animation: fadeInUp 1s ease-out 0.8s backwards !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .adam-hero .dashboard-3d-container {
+    animation: dashboard-float 6s ease-in-out infinite !important;
+  }
+
+  .adam-hero .dashboard-card.alert-card {
+    animation: card-pulse 3s ease-in-out infinite !important;
+  }
+
+  .adam-hero .dashboard-card.mission-card {
+    animation: card-pulse 3s ease-in-out infinite 1.5s !important;
+  }
 }
 
 /* =============================================================================
