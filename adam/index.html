@@ -736,74 +736,17 @@ DEPENDENCIES:
                         Get early access to the beta. Limited spots available.
                     </p>
 
-                    <form id="waitlist-form" class="adam-waitlist-form reveal" novalidate>
-                        <div class="adam-form-group">
-                            <label for="waitlist-email">Email Address</label>
-                            <input 
-                                type="email" 
-                                id="waitlist-email" 
-                                name="email" 
-                                placeholder="you@example.com" 
-                                required 
-                                aria-required="true"
-                            />
-                        </div>
-
-                        <div class="adam-form-row">
-                            <div class="adam-form-group">
-                                <label for="follower-range">Current Followers</label>
-                                <select id="follower-range" name="followers" required>
-                                    <option value="">Choose...</option>
-                                    <option value="100-500">100 - 500</option>
-                                    <option value="500-1000">500 - 1,000</option>
-                                    <option value="1000-5000">1,000 - 5,000</option>
-                                    <option value="5000-10000">5,000 - 10,000</option>
-                                    <option value="10000+">10,000+</option>
-                                </select>
-                            </div>
-
-                            <div class="adam-form-group">
-                                <label for="niche">Primary Niche</label>
-                                <select id="niche" name="niche" required>
-                                    <option value="">Choose...</option>
-                                    <option value="dance">Dance</option>
-                                    <option value="music">Music/Singing</option>
-                                    <option value="comedy">Comedy</option>
-                                    <option value="lifestyle">Lifestyle/Vlog</option>
-                                    <option value="education">Education</option>
-                                    <option value="beauty">Beauty</option>
-                                    <option value="fitness">Fitness</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="adam-btn-primary adam-btn-large">Join Waitlist</button>
-
+                    <div class="adam-waitlist-form reveal" style="text-align: center;">
+                        <a
+                            href="https://adam.lenkostudio.com/signup"
+                            class="adam-btn-primary adam-btn-large"
+                            id="waitlist-cta-signup"
+                        >
+                            Initialize Growth Sequence
+                        </a>
                         <p class="adam-form-note">
-                            🎁 <strong>Referral Bonus:</strong> Share with friends and skip 10 spots in line for each signup.
+                            Takes ~60 seconds. Secure, read-only access via the official TikTok API.
                         </p>
-                    </form>
-
-                    <div id="waitlist-success" class="adam-success-message" style="display: none;">
-                        <svg class="adam-success-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <h3>You're On The List! 🎉</h3>
-                        <p>Check your email for confirmation and next steps.</p>
-                        <p class="adam-waitlist-position">Your position: <strong>#<span id="position-number">2848</span></strong></p>
-
-                        <div class="adam-share-buttons">
-                            <p><strong>Skip 10 spots per referral:</strong></p>
-                            <button class="adam-share-btn" id="share-twitter-btn">
-                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
-                                Share on Twitter
-                            </button>
-                            <button class="adam-share-btn" id="copy-referral-btn">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                                Copy Referral Link
-                            </button>
-                        </div>
                     </div>
                 </div>
             </section>
