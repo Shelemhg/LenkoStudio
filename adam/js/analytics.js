@@ -56,59 +56,70 @@
     const BLOCKED_IPS = [
         '189.203.193.210'  // Owner's computer IP
     ];
-    
-    // Check IP address (using ipify API)
-    fetch('https://api.ipify.org?format=json')
-        .then(response => response.json())
-        .then(data => {
-            if (BLOCKED_IPS.includes(data.ip)) {
-                console.log('PostHog: Analytics disabled for blocked IP:', data.ip);
-                // Stop PostHog if already initialized
-                if (window.posthog) {
-                    window.posthog.opt_out_capturing();
-                }
-            }
-        })
-        .catch(error => {
-            console.log('PostHog: Could not check IP', error);
-            // Continue with analytics if IP check fails
-        });
-    
+
     // Check if PostHog should be loaded (respect privacy settings)
     if (!POSTHOG_API_KEY || POSTHOG_API_KEY === 'YOUR_PROJECT_API_KEY') {
         console.warn('PostHog: API key not configured. Analytics disabled.');
         return;
     }
 
-    // Load PostHog script
-    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    // ── Check IP BEFORE initializing PostHog ──
+    // This avoids the race condition where PostHog starts a recording and then
+    // opt_out_capturing() is called mid-session, producing a corrupt recording.
+    function initPostHog() {
+        // Load PostHog script
+        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
 
-    // Initialize PostHog with configuration
-    posthog.init(POSTHOG_API_KEY, {
-        api_host: POSTHOG_HOST,
-        autocapture: true, // Automatically capture clicks and form interactions
-        capture_pageview: true, // Track page views
-        capture_pageleave: true, // Track when users leave pages
-        cross_subdomain_cookie: true, // Track users across subdomains (lenkostudio.com, adam.lenkostudio.com, etc.)
-        
-        // Session recording settings
-        session_recording: {
-            recordCanvas: false, // Don't record canvas (for privacy and performance)
-            recordCrossOriginIframes: false,
-            maskAllInputs: true, // Mask all form inputs for privacy
-            maskTextSelector: '*', // Optional: mask all text for extra privacy
-        },
-        
-        // Privacy settings
-        respect_dnt: true, // Respect Do Not Track browser setting
-        opt_out_capturing_by_default: false,
-        
-        // Performance
-        loaded: function(posthog) {
-            console.log('PostHog: Analytics initialized');
-            initCustomTracking();
-        }
-    });
+        // Initialize PostHog with configuration
+        posthog.init(POSTHOG_API_KEY, {
+            api_host: POSTHOG_HOST,
+            autocapture: true, // Automatically capture clicks and form interactions
+            capture_pageview: true, // Track page views
+            capture_pageleave: true, // Track when users leave pages
+            cross_subdomain_cookie: true, // Track users across subdomains (lenkostudio.com, adam.lenkostudio.com, etc.)
+            persistence: 'localStorage+cookie', // Improve session continuity when cookies are blocked
+
+            // Session recording settings
+            disable_session_recording: false, // Explicitly enable session recordings
+            session_recording: {
+                minimum_duration_ms: 1000, // Drop recordings shorter than 1 s (reduces noise)
+                recordCanvas: false, // Don't record canvas (for privacy and performance)
+                recordCrossOriginIframes: false,
+                maskAllInputs: true, // Mask all form inputs for privacy
+                // maskTextSelector removed — masking EVERY text node inflated snapshot
+                // size and caused PostHog to silently drop/truncate recordings.
+            },
+
+            // Privacy settings
+            // respect_dnt disabled — the DNT standard was abandoned by the W3C in 2019
+            // and has no legal standing. Enabling it silently drops ~15-25 % of traffic
+            // (Firefox/Brave/some Chrome) for no compliance benefit.
+            respect_dnt: false,
+            opt_out_capturing_by_default: false,
+
+            // Performance
+            loaded: function(posthog) {
+                console.log('PostHog: Analytics initialized');
+                initCustomTracking();
+            }
+        });
+    }
+
+    // Resolve IP first; only then decide whether to boot PostHog.
+    // On network error we proceed (fail-open) to avoid losing all analytics.
+    fetch('https://api.ipify.org?format=json')
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            if (BLOCKED_IPS.includes(data.ip)) {
+                console.log('PostHog: Analytics disabled for blocked IP:', data.ip);
+                return; // do NOT initialize PostHog at all
+            }
+            initPostHog();
+        })
+        .catch(function(error) {
+            console.log('PostHog: Could not check IP, proceeding with analytics', error);
+            initPostHog(); // fail-open
+        });
 
     /**
      * ===== Custom Event Tracking =====
